@@ -385,7 +385,7 @@ export default function Goals() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card>
+        <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Search className="w-5 h-5" />
@@ -478,7 +478,7 @@ export default function Goals() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card>
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Goals</CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
@@ -495,7 +495,7 @@ export default function Goals() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card>
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Completed</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
@@ -512,7 +512,7 @@ export default function Goals() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card>
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Progress</CardTitle>
               <Filter className="h-4 w-4 text-muted-foreground" />
@@ -554,7 +554,7 @@ export default function Goals() {
                   transition={{ delay: index * 0.05 }}
                   whileHover={{ y: -5 }}
                 >
-                  <Card className={`transition-all hover:shadow-lg ${goal.completed ? 'ring-2 ring-green-500/20 bg-green-50/50 dark:bg-green-950/20' : ''}`}>
+                  <Card className={`transition-all hover:shadow-lg border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95`}>
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1 flex-1">
@@ -630,7 +630,7 @@ export default function Goals() {
             </AnimatePresence>
           </div>
         ) : (
-          <Card>
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
               <motion.div
                 animate={{ 
