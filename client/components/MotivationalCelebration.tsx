@@ -213,7 +213,7 @@ export const MotivationalProgress = ({ completionRate, totalGoals, streak }: {
 
   if (completionRate === 100 && totalGoals > 0) {
     message = "Perfect score! You're absolutely crushing it! 🎯";
-    icon = "👑";
+    icon = "����";
     gradient = "from-yellow-400 to-orange-400";
   } else if (completionRate >= 80) {
     message = "Outstanding performance! You're in the excellence zone! ⭐";
@@ -258,6 +258,12 @@ export const MotivationalProgress = ({ completionRate, totalGoals, streak }: {
       )}
     </motion.div>
   );
+};
+
+// Default export for the main celebration system
+const MotivationalCelebration = {
+  triggerMotivationalCelebration,
+  MotivationalProgress
 };
 
 export default MotivationalCelebration;
