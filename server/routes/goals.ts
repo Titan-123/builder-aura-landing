@@ -464,51 +464,65 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     };
 
     // Calculate daily streak (consecutive days with all daily goals completed)
-    let dailyStreak = 0;
-    const today = new Date();
-    let checkDate = new Date(today);
-    let consecutiveDaysWithoutGoals = 0;
-    const MAX_DAYS_WITHOUT_GOALS = 7; // Break streak if no goals for more than 7 days
+    // Find the range of dates with goals and count consecutive completed days
 
-    console.log("🔍 Starting streak calculation from:", checkDate.toDateString());
+    // Get all dates that have daily goals
+    const datesWithDailyGoals = [...new Set(
+      goals
+        .filter(goal => goal.type === 'daily')
+        .map(goal => {
+          const date = new Date(goal.deadline);
+          return date.toDateString();
+        })
+    )].map(dateStr => new Date(dateStr)).sort((a, b) => a.getTime() - b.getTime());
 
-    // Look back up to 365 days
-    for (let day = 0; day < 365; day++) {
-      const dayCompletion = isDayFullyCompleted(checkDate);
+    console.log("📊 Dates with daily goals:", datesWithDailyGoals.map(d => d.toDateString()));
 
-      console.log(`📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+    if (datesWithDailyGoals.length === 0) {
+      console.log("❌ No daily goals found");
+      const streaks = { dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 };
+      console.log("✅ Streaks calculated:", streaks);
+      return res.json(streaks);
+    }
 
-      if (dayCompletion === null) {
-        // No daily goals for this day
-        consecutiveDaysWithoutGoals++;
-        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, consecutive days without goals: ${consecutiveDaysWithoutGoals}`);
+    // Find the longest streak of consecutive completed days
+    let maxStreak = 0;
+    let currentStreak = 0;
 
-        // If we've gone too many days without any goals, break the streak
-        if (consecutiveDaysWithoutGoals > MAX_DAYS_WITHOUT_GOALS) {
-          console.log(`❌ Streak broken: ${consecutiveDaysWithoutGoals} consecutive days without goals (max allowed: ${MAX_DAYS_WITHOUT_GOALS})`);
-          break;
-        }
+    console.log("🔍 Checking consecutive completed days...");
 
-        checkDate = new Date(checkDate);
-        checkDate.setDate(checkDate.getDate() - 1);
-        continue;
-      }
+    for (let i = 0; i < datesWithDailyGoals.length; i++) {
+      const currentDate = datesWithDailyGoals[i];
+      const dayCompletion = isDayFullyCompleted(currentDate);
 
-      // Reset the counter since we found goals on this day
-      consecutiveDaysWithoutGoals = 0;
+      console.log(`📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`);
 
       if (dayCompletion === true) {
-        // All daily goals completed on this day
-        dailyStreak++;
-        console.log(`✅ Day completed! Streak now: ${dailyStreak}`);
-        checkDate = new Date(checkDate);
-        checkDate.setDate(checkDate.getDate() - 1);
+        currentStreak++;
+        console.log(`✅ Day completed! Current streak: ${currentStreak}`);
+
+        // Check if this date is consecutive with the previous one (if any)
+        if (i > 0) {
+          const prevDate = datesWithDailyGoals[i - 1];
+          const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+
+          if (daysDiff > 1) {
+            // Gap found, reset streak
+            console.log(`⚠️ Gap of ${daysDiff} days found, resetting streak`);
+            currentStreak = 1; // Start new streak from current day
+          }
+        }
+
+        maxStreak = Math.max(maxStreak, currentStreak);
+        console.log(`🎯 Max streak so far: ${maxStreak}`);
       } else {
-        // Streak broken - found a day with incomplete daily goals
-        console.log(`❌ Streak broken on ${checkDate.toDateString()}: incomplete daily goals`);
-        break;
+        // Day not completed, break current streak
+        console.log(`❌ Day not completed, resetting streak`);
+        currentStreak = 0;
       }
     }
+
+    const dailyStreak = maxStreak;
 
     console.log(`🎯 Final daily streak: ${dailyStreak}`);
 
