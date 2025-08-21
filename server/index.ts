@@ -4,7 +4,7 @@ import cors from "cors";
 import connectDB from "./database";
 import { handleDemo } from "./routes/demo";
 import { handleRegister, handleLogin, handleMe, verifyToken } from "./routes/auth";
-import { handleGetGoals, handleCreateGoal, handleUpdateGoal, handleDeleteGoal } from "./routes/goals";
+import { handleGetGoals, handleCreateGoal, handleUpdateGoal, handleDeleteGoal, handleGetStreaks } from "./routes/goals";
 import { handleGetAnalytics } from "./routes/analytics";
 
 export function createServer() {
