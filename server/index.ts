@@ -1,22 +1,22 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import connectDB from "./database";
-import { handleDemo } from "./routes/demo";
+import connectDB from "./database.js";
+import { handleDemo } from "./routes/demo.js";
 import {
   handleRegister,
   handleLogin,
   handleMe,
   verifyToken,
-} from "./routes/auth";
+} from "./routes/auth.js";
 import {
   handleGetGoals,
   handleCreateGoal,
   handleUpdateGoal,
   handleDeleteGoal,
   handleGetStreaks,
-} from "./routes/goals";
-import { handleGetAnalytics } from "./routes/analytics";
+} from "./routes/goals.js";
+import { handleGetAnalytics } from "./routes/analytics.js";
 
 export function createServer() {
   const app = express();
