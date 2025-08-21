@@ -39,6 +39,9 @@ export function createServer() {
   app.put("/api/goals/:id", verifyToken, handleUpdateGoal);
   app.delete("/api/goals/:id", verifyToken, handleDeleteGoal);
 
+  // Streaks routes (protected)
+  app.get("/api/streaks", verifyToken, handleGetStreaks);
+
   // Analytics routes (protected)
   app.get("/api/analytics", verifyToken, handleGetAnalytics);
 
