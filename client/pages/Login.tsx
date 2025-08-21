@@ -191,7 +191,7 @@ export default function Login() {
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        className="pl-10 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="pl-10 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         required
