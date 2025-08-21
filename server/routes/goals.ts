@@ -167,16 +167,17 @@ export const handleUpdateGoal: RequestHandler<{ id: string }, GoalType | ErrorRe
     if (updates.completed !== undefined) {
       const wasCompleted = goal.completed;
       goal.completed = updates.completed;
-      
+
       if (updates.completed && !wasCompleted) {
         // Goal is being marked as completed
         goal.completedAt = new Date();
-        // Simple streak increment (in production, implement proper streak calculation)
-        goal.streak = goal.streak + 1;
+        // Calculate streak based on consecutive completions
+        goal.streak = await calculateStreak(req.userId, goal);
       } else if (!updates.completed && wasCompleted) {
         // Goal is being marked as incomplete
         goal.completedAt = undefined;
-        // Optionally reset streak or implement more complex logic
+        // Recalculate streak when goal is marked incomplete
+        goal.streak = await calculateStreak(req.userId, goal);
       }
     }
 
