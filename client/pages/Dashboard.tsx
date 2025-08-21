@@ -435,7 +435,7 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
+        transition={{ delay: 0.8 }}
       >
         <MotivationalProgress
           completionRate={completionRate}
