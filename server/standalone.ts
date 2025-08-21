@@ -442,11 +442,158 @@ app.delete("/api/goals/:goalId", verifyToken, async (req: any, res) => {
 
 app.get("/api/streaks", verifyToken, async (req: any, res) => {
   try {
-    // Simple streak calculation for now
+    const goals = await Goal.find({ userId: req.userId }).sort({ createdAt: -1 });
+
+    // Calculate daily streak (consecutive days with all daily goals completed)
+    let dailyStreak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Start checking from yesterday and go backwards
+    let checkDate = new Date(today);
+    checkDate.setDate(checkDate.getDate() - 1);
+
+    for (let day = 0; day < 365; day++) {
+      const dayStart = new Date(checkDate);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(checkDate);
+      dayEnd.setHours(23, 59, 59, 999);
+
+      // Get all daily goals for this date
+      const dailyGoals = goals.filter(goal => {
+        const goalDate = new Date(goal.deadline);
+        return goal.type === 'daily' &&
+               goalDate >= dayStart && goalDate <= dayEnd;
+      });
+
+      if (dailyGoals.length === 0) {
+        // No daily goals for this day, skip
+        checkDate.setDate(checkDate.getDate() - 1);
+        continue;
+      }
+
+      // Check if all daily goals for this day were completed
+      const completedDailyGoals = dailyGoals.filter(goal => {
+        if (!goal.completed || !goal.completedAt) return false;
+        const completedDate = new Date(goal.completedAt);
+        return completedDate >= dayStart && completedDate <= dayEnd;
+      });
+
+      if (completedDailyGoals.length === dailyGoals.length) {
+        // All daily goals completed on this day
+        dailyStreak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        // Streak broken
+        break;
+      }
+    }
+
+    // Check if today should also count (if all today's daily goals are completed)
+    const todayStart = new Date(today);
+    const todayEnd = new Date(today);
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const todayDailyGoals = goals.filter(goal => {
+      const goalDate = new Date(goal.deadline);
+      return goal.type === 'daily' &&
+             goalDate >= todayStart && goalDate <= todayEnd;
+    });
+
+    if (todayDailyGoals.length > 0) {
+      const todayCompletedDaily = todayDailyGoals.filter(goal => {
+        if (!goal.completed || !goal.completedAt) return false;
+        const completedDate = new Date(goal.completedAt);
+        return completedDate >= todayStart && completedDate <= todayEnd;
+      });
+
+      if (todayCompletedDaily.length === todayDailyGoals.length) {
+        dailyStreak++; // Add today to the streak
+      }
+    }
+
+    // Calculate weekly and monthly streaks (simplified)
+    let weeklyStreak = 0;
+    let monthlyStreak = 0;
+
+    // Weekly streak calculation
+    const getWeekStart = (date) => {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = d.getDate() - day;
+      return new Date(d.setDate(diff));
+    };
+
+    let weekStart = getWeekStart(today);
+    weekStart.setHours(0, 0, 0, 0);
+
+    for (let week = 0; week < 52; week++) {
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+
+      const weeklyGoals = goals.filter(goal => {
+        const goalDate = new Date(goal.deadline);
+        return goal.type === 'weekly' &&
+               goalDate >= weekStart && goalDate <= weekEnd;
+      });
+
+      if (weeklyGoals.length === 0) {
+        weekStart.setDate(weekStart.getDate() - 7);
+        continue;
+      }
+
+      const completedWeekly = weeklyGoals.filter(goal => goal.completed);
+
+      if (completedWeekly.length === weeklyGoals.length) {
+        weeklyStreak++;
+        weekStart.setDate(weekStart.getDate() - 7);
+      } else {
+        break;
+      }
+    }
+
+    // Monthly streak calculation
+    let checkMonth = today.getMonth();
+    let checkYear = today.getFullYear();
+
+    for (let month = 0; month < 12; month++) {
+      const monthStart = new Date(checkYear, checkMonth, 1);
+      const monthEnd = new Date(checkYear, checkMonth + 1, 0, 23, 59, 59, 999);
+
+      const monthlyGoals = goals.filter(goal => {
+        const goalDate = new Date(goal.deadline);
+        return goal.type === 'monthly' &&
+               goalDate >= monthStart && goalDate <= monthEnd;
+      });
+
+      if (monthlyGoals.length === 0) {
+        checkMonth--;
+        if (checkMonth < 0) {
+          checkMonth = 11;
+          checkYear--;
+        }
+        continue;
+      }
+
+      const completedMonthly = monthlyGoals.filter(goal => goal.completed);
+
+      if (completedMonthly.length === monthlyGoals.length) {
+        monthlyStreak++;
+        checkMonth--;
+        if (checkMonth < 0) {
+          checkMonth = 11;
+          checkYear--;
+        }
+      } else {
+        break;
+      }
+    }
+
     res.json({
-      dailyStreak: 0,
-      weeklyStreak: 0,
-      monthlyStreak: 0,
+      dailyStreak,
+      weeklyStreak,
+      monthlyStreak,
     });
   } catch (error) {
     console.error("Get streaks error:", error);
