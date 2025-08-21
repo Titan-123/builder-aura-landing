@@ -62,6 +62,21 @@ export default function Goals() {
     fetchGoals();
   }, []);
 
+  // Update edit form when editing goal changes
+  useEffect(() => {
+    if (editingGoal) {
+      setEditForm({
+        title: editingGoal.title,
+        description: editingGoal.description,
+        category: editingGoal.category,
+        type: editingGoal.type,
+        timeAllotted: editingGoal.timeAllotted,
+        deadline: new Date(editingGoal.deadline).toISOString().split('T')[0],
+        priority: editingGoal.priority || 'medium'
+      });
+    }
+  }, [editingGoal]);
+
   // Filter and search goals
   useEffect(() => {
     let filtered = goals;
