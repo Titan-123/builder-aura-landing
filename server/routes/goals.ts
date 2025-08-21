@@ -191,7 +191,7 @@ export const handleGetGoals: RequestHandler<
     // One-time migration: Add default priority to goals that don't have it
     await Goal.updateMany(
       { userId: req.userId, priority: { $exists: false } },
-      { $set: { priority: "medium" } }
+      { $set: { priority: "medium" } },
     );
 
     const { type, category, completed } = req.query;
@@ -237,8 +237,15 @@ export const handleCreateGoal: RequestHandler<
   try {
     await connectDB();
 
-    const { title, description, category, type, priority, timeAllotted, deadline } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      type,
+      priority,
+      timeAllotted,
+      deadline,
+    } = req.body;
 
     // Validate input
     if (
@@ -466,24 +473,30 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     // Log all goals for debugging
     goals.forEach((goal, index) => {
       const goalDate = new Date(goal.deadline);
-      console.log(`Goal ${index + 1}: "${goal.title}" | Type: ${goal.type} | Deadline: ${goalDate.toDateString()} | Completed: ${goal.completed} | CompletedAt: ${goal.completedAt ? new Date(goal.completedAt).toDateString() : 'null'}`);
+      console.log(
+        `Goal ${index + 1}: "${goal.title}" | Type: ${goal.type} | Deadline: ${goalDate.toDateString()} | Completed: ${goal.completed} | CompletedAt: ${goal.completedAt ? new Date(goal.completedAt).toDateString() : "null"}`,
+      );
     });
 
     // Helper function to check if all daily goals are completed for a specific date
     const isDayFullyCompleted = (checkDate: Date) => {
-      const allDailyGoals = goals.filter(goal => {
+      const allDailyGoals = goals.filter((goal) => {
         const goalDate = new Date(goal.deadline);
-        return goal.type === 'daily' &&
-               goalDate.getDate() === checkDate.getDate() &&
-               goalDate.getMonth() === checkDate.getMonth() &&
-               goalDate.getFullYear() === checkDate.getFullYear();
+        return (
+          goal.type === "daily" &&
+          goalDate.getDate() === checkDate.getDate() &&
+          goalDate.getMonth() === checkDate.getMonth() &&
+          goalDate.getFullYear() === checkDate.getFullYear()
+        );
       });
 
       if (allDailyGoals.length === 0) {
         return null; // No daily goals for this day
       }
 
-      const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+      const completedDailyGoals = allDailyGoals.filter(
+        (goal) => goal.completed,
+      );
       return completedDailyGoals.length === allDailyGoals.length;
     };
 
@@ -491,16 +504,23 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     // Find the CURRENT streak from the most recent date backwards
 
     // Get all dates that have daily goals
-    const datesWithDailyGoals = [...new Set(
-      goals
-        .filter(goal => goal.type === 'daily')
-        .map(goal => {
-          const date = new Date(goal.deadline);
-          return date.toDateString();
-        })
-    )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
+    const datesWithDailyGoals = [
+      ...new Set(
+        goals
+          .filter((goal) => goal.type === "daily")
+          .map((goal) => {
+            const date = new Date(goal.deadline);
+            return date.toDateString();
+          }),
+      ),
+    ]
+      .map((dateStr) => new Date(dateStr))
+      .sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
-    console.log("📊 Dates with daily goals (newest first):", datesWithDailyGoals.map(d => d.toDateString()));
+    console.log(
+      "📊 Dates with daily goals (newest first):",
+      datesWithDailyGoals.map((d) => d.toDateString()),
+    );
 
     if (datesWithDailyGoals.length === 0) {
       console.log("❌ No daily goals found");
@@ -512,13 +532,17 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     // Find the CURRENT streak starting from the most recent date and going backwards
     let currentStreak = 0;
 
-    console.log("🔍 Calculating current streak from most recent date backwards...");
+    console.log(
+      "🔍 Calculating current streak from most recent date backwards...",
+    );
 
     for (let i = 0; i < datesWithDailyGoals.length; i++) {
       const currentDate = datesWithDailyGoals[i];
       const dayCompletion = isDayFullyCompleted(currentDate);
 
-      console.log(`📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+      console.log(
+        `📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`,
+      );
 
       if (dayCompletion === true) {
         currentStreak++;
@@ -527,11 +551,16 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
         // Check if this date is consecutive with the previous one (if any)
         if (i > 0) {
           const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
-          const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+          const daysDiff = Math.floor(
+            (nextNewerDate.getTime() - currentDate.getTime()) /
+              (1000 * 60 * 60 * 24),
+          );
 
           if (daysDiff > 1) {
             // Gap found between this completed day and the next newer one, so streak ends here
-            console.log(`⚠️ Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextNewerDate.toDateString()}, streak ends`);
+            console.log(
+              `⚠️ Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextNewerDate.toDateString()}, streak ends`,
+            );
             break;
           }
         }

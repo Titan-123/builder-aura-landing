@@ -139,7 +139,7 @@ export default function Dashboard() {
 
       // Add a small delay to prevent race conditions
       if (retryCount > 0) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
 
       const controller = new AbortController();
@@ -149,18 +149,26 @@ export default function Dashboard() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
-      console.log("📡 Streaks response status:", response.status, response.statusText);
+      console.log(
+        "📡 Streaks response status:",
+        response.status,
+        response.statusText,
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log("✅ Streaks data received:", data);
         setStreaks(data);
       } else {
-        console.error("❌ Streaks response not ok:", response.status, response.statusText);
+        console.error(
+          "❌ Streaks response not ok:",
+          response.status,
+          response.statusText,
+        );
         const errorText = await response.text();
         console.error("Error details:", errorText);
 
@@ -173,9 +181,12 @@ export default function Dashboard() {
         setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
       }
     } catch (error) {
-      console.error(`❌ Failed to fetch streaks (attempt ${retryCount + 1}):`, error);
+      console.error(
+        `❌ Failed to fetch streaks (attempt ${retryCount + 1}):`,
+        error,
+      );
 
-      if (retryCount < 2 && error.name !== 'AbortError') {
+      if (retryCount < 2 && error.name !== "AbortError") {
         console.log(`🔄 Retrying streaks fetch (${retryCount + 1}/3)...`);
         return fetchStreaks(retryCount + 1);
       }

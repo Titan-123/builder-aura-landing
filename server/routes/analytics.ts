@@ -35,31 +35,39 @@ export const handleGetAnalytics: RequestHandler<
     // Calculate current streak using the same logic as /api/streaks
     const calculateCurrentStreak = () => {
       const isDayFullyCompleted = (checkDate: Date) => {
-        const allDailyGoals = goals.filter(goal => {
+        const allDailyGoals = goals.filter((goal) => {
           const goalDate = new Date(goal.deadline);
-          return goal.type === 'daily' &&
-                 goalDate.getDate() === checkDate.getDate() &&
-                 goalDate.getMonth() === checkDate.getMonth() &&
-                 goalDate.getFullYear() === checkDate.getFullYear();
+          return (
+            goal.type === "daily" &&
+            goalDate.getDate() === checkDate.getDate() &&
+            goalDate.getMonth() === checkDate.getMonth() &&
+            goalDate.getFullYear() === checkDate.getFullYear()
+          );
         });
 
         if (allDailyGoals.length === 0) {
           return null;
         }
 
-        const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+        const completedDailyGoals = allDailyGoals.filter(
+          (goal) => goal.completed,
+        );
         return completedDailyGoals.length === allDailyGoals.length;
       };
 
       // Get all dates that have daily goals
-      const datesWithDailyGoals = [...new Set(
-        goals
-          .filter(goal => goal.type === 'daily')
-          .map(goal => {
-            const date = new Date(goal.deadline);
-            return date.toDateString();
-          })
-      )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
+      const datesWithDailyGoals = [
+        ...new Set(
+          goals
+            .filter((goal) => goal.type === "daily")
+            .map((goal) => {
+              const date = new Date(goal.deadline);
+              return date.toDateString();
+            }),
+        ),
+      ]
+        .map((dateStr) => new Date(dateStr))
+        .sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
       if (datesWithDailyGoals.length === 0) {
         return 0;
@@ -78,7 +86,10 @@ export const handleGetAnalytics: RequestHandler<
           // Check if this date is consecutive with the previous one (if any)
           if (i > 0) {
             const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
-            const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+            const daysDiff = Math.floor(
+              (nextNewerDate.getTime() - currentDate.getTime()) /
+                (1000 * 60 * 60 * 24),
+            );
 
             if (daysDiff > 1) {
               // Gap found between this completed day and the next newer one, so streak ends here

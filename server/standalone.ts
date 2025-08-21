@@ -448,12 +448,14 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     // This matches exactly how the calendar determines completion
     const isDayFullyCompleted = (checkDate) => {
       // Get all daily goals with deadline on this date (same logic as calendar)
-      const allDailyGoals = goals.filter(goal => {
+      const allDailyGoals = goals.filter((goal) => {
         const goalDate = new Date(goal.deadline);
-        return goal.type === 'daily' &&
-               goalDate.getDate() === checkDate.getDate() &&
-               goalDate.getMonth() === checkDate.getMonth() &&
-               goalDate.getFullYear() === checkDate.getFullYear();
+        return (
+          goal.type === "daily" &&
+          goalDate.getDate() === checkDate.getDate() &&
+          goalDate.getMonth() === checkDate.getMonth() &&
+          goalDate.getFullYear() === checkDate.getFullYear()
+        );
       });
 
       if (allDailyGoals.length === 0) {
@@ -461,7 +463,9 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
       }
 
       // Check if all daily goals are completed (regardless of when completed)
-      const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+      const completedDailyGoals = allDailyGoals.filter(
+        (goal) => goal.completed,
+      );
 
       return completedDailyGoals.length === allDailyGoals.length;
     };
@@ -474,18 +478,25 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     let checkDate = new Date(today);
     let consecutiveStreak = 0;
 
-    console.log("🔍 Starting streak calculation from:", checkDate.toDateString());
+    console.log(
+      "🔍 Starting streak calculation from:",
+      checkDate.toDateString(),
+    );
 
     // Look back up to 365 days
     for (let day = 0; day < 365; day++) {
       const dayCompletion = isDayFullyCompleted(checkDate);
 
-      console.log(`📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+      console.log(
+        `📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`,
+      );
 
       if (dayCompletion === null) {
         // No daily goals for this day, move to previous day without breaking streak
         // This allows for days without goals to not break the streak
-        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, continuing...`);
+        console.log(
+          `⚪ No daily goals on ${checkDate.toDateString()}, continuing...`,
+        );
         checkDate.setDate(checkDate.getDate() - 1);
         continue;
       }
@@ -525,10 +536,11 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
       weekEnd.setDate(weekEnd.getDate() + 6);
       weekEnd.setHours(23, 59, 59, 999);
 
-      const weeklyGoals = goals.filter(goal => {
+      const weeklyGoals = goals.filter((goal) => {
         const goalDate = new Date(goal.deadline);
-        return goal.type === 'weekly' &&
-               goalDate >= weekStart && goalDate <= weekEnd;
+        return (
+          goal.type === "weekly" && goalDate >= weekStart && goalDate <= weekEnd
+        );
       });
 
       if (weeklyGoals.length === 0) {
@@ -536,7 +548,7 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
         continue;
       }
 
-      const completedWeekly = weeklyGoals.filter(goal => goal.completed);
+      const completedWeekly = weeklyGoals.filter((goal) => goal.completed);
 
       if (completedWeekly.length === weeklyGoals.length) {
         weeklyStreak++;
@@ -554,10 +566,13 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
       const monthStart = new Date(checkYear, checkMonth, 1);
       const monthEnd = new Date(checkYear, checkMonth + 1, 0, 23, 59, 59, 999);
 
-      const monthlyGoals = goals.filter(goal => {
+      const monthlyGoals = goals.filter((goal) => {
         const goalDate = new Date(goal.deadline);
-        return goal.type === 'monthly' &&
-               goalDate >= monthStart && goalDate <= monthEnd;
+        return (
+          goal.type === "monthly" &&
+          goalDate >= monthStart &&
+          goalDate <= monthEnd
+        );
       });
 
       if (monthlyGoals.length === 0) {
@@ -569,7 +584,7 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
         continue;
       }
 
-      const completedMonthly = monthlyGoals.filter(goal => goal.completed);
+      const completedMonthly = monthlyGoals.filter((goal) => goal.completed);
 
       if (completedMonthly.length === monthlyGoals.length) {
         monthlyStreak++;
