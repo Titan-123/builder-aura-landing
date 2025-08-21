@@ -231,7 +231,7 @@ export const handleCreateGoal: RequestHandler<
   try {
     await connectDB();
 
-    const { title, description, category, type, timeAllotted, deadline } =
+    const { title, description, category, type, priority, timeAllotted, deadline } =
       req.body;
 
     // Validate input
