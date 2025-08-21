@@ -713,9 +713,73 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
       });
     }
 
+    // Calculate current streak using the same logic as /api/streaks
+    const calculateCurrentStreak = () => {
+      const isDayFullyCompleted = (checkDate) => {
+        const allDailyGoals = goals.filter(goal => {
+          const goalDate = new Date(goal.deadline);
+          return goal.type === 'daily' &&
+                 goalDate.getDate() === checkDate.getDate() &&
+                 goalDate.getMonth() === checkDate.getMonth() &&
+                 goalDate.getFullYear() === checkDate.getFullYear();
+        });
+
+        if (allDailyGoals.length === 0) {
+          return null;
+        }
+
+        const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+        return completedDailyGoals.length === allDailyGoals.length;
+      };
+
+      // Get all dates that have daily goals
+      const datesWithDailyGoals = [...new Set(
+        goals
+          .filter(goal => goal.type === 'daily')
+          .map(goal => {
+            const date = new Date(goal.deadline);
+            return date.toDateString();
+          })
+      )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
+
+      if (datesWithDailyGoals.length === 0) {
+        return 0;
+      }
+
+      // Find the CURRENT streak starting from the most recent date and going backwards
+      let currentStreak = 0;
+
+      for (let i = 0; i < datesWithDailyGoals.length; i++) {
+        const currentDate = datesWithDailyGoals[i];
+        const dayCompletion = isDayFullyCompleted(currentDate);
+
+        if (dayCompletion === true) {
+          currentStreak++;
+
+          // Check if this date is consecutive with the previous one (if any)
+          if (i > 0) {
+            const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+            const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (daysDiff > 1) {
+              // Gap found between this completed day and the next newer one, so streak ends here
+              break;
+            }
+          }
+        } else {
+          // Day not completed, streak ends
+          break;
+        }
+      }
+
+      return currentStreak;
+    };
+
+    const currentStreakValue = calculateCurrentStreak();
+
     res.json({
       completionRate: Math.round(completionRate * 100) / 100,
-      currentStreak: 0, // Can be enhanced later
+      currentStreak: currentStreakValue,
       longestStreak: 0, // Can be enhanced later
       goalsCompleted: completedGoals.length,
       totalGoals: goals.length,
