@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import connectDB from "../database";
-import Goal, { IGoal } from "../models/Goal";
-import { verifyToken } from "./auth";
+import connectDB from "../database.js";
+import Goal, { IGoal } from "../models/Goal.js";
+import { verifyToken } from "./auth.js";
 import {
   Goal as GoalType,
   CreateGoalRequest,
