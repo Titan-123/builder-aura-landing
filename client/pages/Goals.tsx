@@ -64,7 +64,7 @@ export default function Goals() {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<EnhancedGoal | null>(null);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<
