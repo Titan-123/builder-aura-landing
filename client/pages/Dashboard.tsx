@@ -172,33 +172,6 @@ export default function Dashboard() {
   const completedGoals = goals.filter(g => g.completed);
   const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
 
-  // Quick actions
-  const quickActions = [
-    { 
-      title: 'Add Daily Goal', 
-      icon: Plus, 
-      action: () => setIsCreateOpen(true),
-      color: 'bg-green-500 hover:bg-green-600'
-    },
-    { 
-      title: 'View All Goals', 
-      icon: Target, 
-      action: '/goals',
-      color: 'bg-blue-500 hover:bg-blue-600'
-    },
-    { 
-      title: 'Check Calendar', 
-      icon: Calendar, 
-      action: '/calendar',
-      color: 'bg-purple-500 hover:bg-purple-600'
-    },
-    { 
-      title: 'View Analytics', 
-      icon: TrendingUp, 
-      action: '/analytics',
-      color: 'bg-orange-500 hover:bg-orange-600'
-    }
-  ];
 
   if (loading) {
     return (
