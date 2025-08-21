@@ -82,7 +82,7 @@ export default function Index() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950 dark:via-slate-900 dark:to-indigo-950 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-slate-900 dark:to-teal-950 relative overflow-hidden">
       {/* Enhanced Motivational Background */}
       <MotivationalBackground variant="floating" intensity="medium" />
       
