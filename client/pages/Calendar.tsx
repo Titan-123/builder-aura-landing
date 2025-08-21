@@ -66,18 +66,35 @@ export default function Calendar() {
   const fetchStreaks = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+      if (!token) {
+        console.warn("No access token found for streaks");
+        return;
+      }
+
+      console.log("📡 Fetching streaks...");
       const response = await fetch("/api/streaks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      console.log("📡 Streaks response status:", response.status, response.statusText);
+
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Streaks data received:", data);
         setStreaks(data);
+      } else {
+        console.error("❌ Streaks response not ok:", response.status, response.statusText);
+        const errorText = await response.text();
+        console.error("Error details:", errorText);
+        // Set default values to prevent UI issues
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
       }
     } catch (error) {
-      console.error("Failed to fetch streaks:", error);
+      console.error("❌ Failed to fetch streaks:", error);
+      // Set default values to prevent UI issues
+      setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     }
   };
 
