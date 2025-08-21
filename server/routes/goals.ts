@@ -436,44 +436,71 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     console.log("🔄 Fetching streaks for user:", req.userId);
     await connectDB();
 
-    // Simple streak calculation for development
     const goals = await Goal.find({ userId: req.userId });
     console.log("📊 Found", goals.length, "goals for user");
 
-    // Basic daily streak calculation
-    let dailyStreak = 0;
-    const today = new Date();
-
-    // Check last few days to see if daily goals were completed
-    for (let i = 0; i < 7; i++) {
-      const checkDate = new Date(today);
-      checkDate.setDate(today.getDate() - i);
-      checkDate.setHours(0, 0, 0, 0);
-
-      const endDate = new Date(checkDate);
-      endDate.setHours(23, 59, 59, 999);
-
-      const dailyGoals = goals.filter(goal => {
+    // Helper function to check if all daily goals are completed for a specific date
+    const isDayFullyCompleted = (checkDate: Date) => {
+      const allDailyGoals = goals.filter(goal => {
         const goalDate = new Date(goal.deadline);
         return goal.type === 'daily' &&
-               goalDate >= checkDate &&
-               goalDate <= endDate;
+               goalDate.getDate() === checkDate.getDate() &&
+               goalDate.getMonth() === checkDate.getMonth() &&
+               goalDate.getFullYear() === checkDate.getFullYear();
       });
 
-      if (dailyGoals.length === 0) continue;
+      if (allDailyGoals.length === 0) {
+        return null; // No daily goals for this day
+      }
 
-      const completedDaily = dailyGoals.filter(goal => goal.completed);
-      if (completedDaily.length === dailyGoals.length) {
+      const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+      return completedDailyGoals.length === allDailyGoals.length;
+    };
+
+    // Calculate daily streak (consecutive days with all daily goals completed)
+    let dailyStreak = 0;
+    const today = new Date();
+    let checkDate = new Date(today);
+
+    console.log("🔍 Starting streak calculation from:", checkDate.toDateString());
+
+    // Look back up to 365 days
+    for (let day = 0; day < 365; day++) {
+      const dayCompletion = isDayFullyCompleted(checkDate);
+
+      console.log(`📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+
+      if (dayCompletion === null) {
+        // No daily goals for this day, move to previous day without breaking streak
+        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, continuing...`);
+        checkDate = new Date(checkDate);
+        checkDate.setDate(checkDate.getDate() - 1);
+        continue;
+      }
+
+      if (dayCompletion === true) {
+        // All daily goals completed on this day
         dailyStreak++;
+        console.log(`✅ Day completed! Streak now: ${dailyStreak}`);
+        checkDate = new Date(checkDate);
+        checkDate.setDate(checkDate.getDate() - 1);
       } else {
+        // Streak broken - found a day with incomplete daily goals
+        console.log(`❌ Streak broken on ${checkDate.toDateString()}`);
         break;
       }
     }
 
+    console.log(`🎯 Final daily streak: ${dailyStreak}`);
+
+    // Weekly and monthly streaks (simplified for now)
+    let weeklyStreak = 0;
+    let monthlyStreak = 0;
+
     const streaks = {
       dailyStreak,
-      weeklyStreak: 0,
-      monthlyStreak: 0,
+      weeklyStreak,
+      monthlyStreak,
     };
 
     console.log("✅ Streaks calculated:", streaks);
