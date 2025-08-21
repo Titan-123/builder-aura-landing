@@ -32,9 +32,59 @@ export const handleGetAnalytics: RequestHandler<
     const completedGoals = goals.filter((g) => g.completed);
     const completionRate = (completedGoals.length / goals.length) * 100;
 
-    // Calculate basic streaks (simplified for now)
-    // Note: For a full implementation, this should use the global streak calculation
-    const currentStreak = 0; // TODO: Implement global streak calculation
+    // Calculate current streak using the same logic as /api/streaks
+    const calculateCurrentStreak = () => {
+      const isDayFullyCompleted = (checkDate: Date) => {
+        const allDailyGoals = goals.filter(goal => {
+          const goalDate = new Date(goal.deadline);
+          return goal.type === 'daily' &&
+                 goalDate.getDate() === checkDate.getDate() &&
+                 goalDate.getMonth() === checkDate.getMonth() &&
+                 goalDate.getFullYear() === checkDate.getFullYear();
+        });
+
+        if (allDailyGoals.length === 0) {
+          return null; // No daily goals for this day
+        }
+
+        const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+        return completedDailyGoals.length === allDailyGoals.length;
+      };
+
+      let dailyStreak = 0;
+      const today = new Date();
+      let checkDate = new Date(today);
+      let consecutiveDaysWithoutGoals = 0;
+      const MAX_DAYS_WITHOUT_GOALS = 7;
+
+      for (let day = 0; day < 365; day++) {
+        const dayCompletion = isDayFullyCompleted(checkDate);
+
+        if (dayCompletion === null) {
+          consecutiveDaysWithoutGoals++;
+          if (consecutiveDaysWithoutGoals > MAX_DAYS_WITHOUT_GOALS) {
+            break;
+          }
+          checkDate = new Date(checkDate);
+          checkDate.setDate(checkDate.getDate() - 1);
+          continue;
+        }
+
+        consecutiveDaysWithoutGoals = 0;
+
+        if (dayCompletion === true) {
+          dailyStreak++;
+          checkDate = new Date(checkDate);
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+
+      return dailyStreak;
+    };
+
+    const currentStreak = calculateCurrentStreak();
     const longestStreak = 0; // TODO: Implement longest streak tracking
 
     // Category breakdown
