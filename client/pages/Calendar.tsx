@@ -30,7 +30,7 @@ export default function Calendar() {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setGoals(data.goals);
@@ -39,6 +39,24 @@ export default function Calendar() {
       console.error('Failed to fetch goals:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchStreaks = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('/api/streaks', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStreaks(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch streaks:', error);
     }
   };
 
