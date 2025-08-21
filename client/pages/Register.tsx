@@ -203,7 +203,7 @@ export default function Register() {
                   >
                     <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                     <div className="relative group">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="name"
                         type="text"
@@ -224,7 +224,7 @@ export default function Register() {
                   >
                     <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="email"
                         type="email"
@@ -245,7 +245,7 @@ export default function Register() {
                   >
                     <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
@@ -279,7 +279,7 @@ export default function Register() {
                   >
                     <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
