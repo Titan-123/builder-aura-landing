@@ -41,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950 dark:via-slate-900 dark:to-indigo-950 relative">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-slate-900 dark:to-emerald-950 relative">
       {/* Motivational Background */}
       <MotivationalBackground variant="gradient" intensity="low" />
       {/* Top Navbar */}
@@ -59,13 +59,13 @@ export default function Layout({ children }: LayoutProps) {
                 whileHover={{ scale: 1.02 }}
               >
                 <motion.div
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white shadow-lg"
                   whileHover={{ rotate: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Target className="w-5 h-5" />
                 </motion.div>
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
                   GoalTracker
                 </span>
               </motion.div>
@@ -80,7 +80,7 @@ export default function Layout({ children }: LayoutProps) {
                       to={item.href}
                       className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
-                          ? 'text-indigo-600 dark:text-indigo-400'
+                          ? 'text-green-600 dark:text-green-400'
                           : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
                       {isActive(item.href) && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg -z-10"
+                          className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-lg -z-10"
                           initial={false}
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
@@ -107,9 +107,9 @@ export default function Layout({ children }: LayoutProps) {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:ring-2 hover:ring-indigo-500/20 transition-all">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:ring-2 hover:ring-green-500/20 transition-all">
                       <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold">
+                        <AvatarFallback className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white font-semibold">
                           {user.name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || 'U'}
                         </AvatarFallback>
                       </Avatar>
@@ -149,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
                           <Link
                             to={item.href}
                             className={`flex items-center gap-2 ${
-                              isActive(item.href) ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-950' : ''
+                              isActive(item.href) ? 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950' : ''
                             }`}
                           >
                             <Icon className="w-4 h-4" />
