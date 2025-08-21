@@ -21,6 +21,69 @@ const formatGoal = (goal: IGoal): GoalType => ({
   updatedAt: goal.updatedAt
 });
 
+// Helper function to calculate proper streak for a goal
+const calculateStreak = async (userId: string, currentGoal: IGoal): Promise<number> => {
+  try {
+    // Get all completed goals of the same type for this user
+    const completedGoals = await Goal.find({
+      userId,
+      type: currentGoal.type,
+      completed: true,
+      completedAt: { $exists: true }
+    }).sort({ completedAt: -1 });
+
+    if (completedGoals.length === 0) {
+      return 0;
+    }
+
+    // For streak calculation, we need consecutive periods of completion
+    let streak = 0;
+    const today = new Date();
+    let checkDate = new Date(today);
+
+    // Set to start of day for comparison
+    checkDate.setHours(0, 0, 0, 0);
+
+    // Calculate period length based on goal type
+    const periodMap = {
+      'daily': 1,      // 1 day
+      'weekly': 7,     // 7 days
+      'monthly': 30    // 30 days (approximation)
+    };
+
+    const periodDays = periodMap[currentGoal.type as keyof typeof periodMap] || 1;
+
+    // Check consecutive periods backwards from today
+    for (let period = 0; period < 365; period++) { // Max check 1 year
+      const periodStart = new Date(checkDate);
+      const periodEnd = new Date(checkDate);
+      periodEnd.setDate(periodEnd.getDate() + periodDays - 1);
+      periodEnd.setHours(23, 59, 59, 999);
+
+      // Check if there's a completed goal in this period
+      const hasCompletionInPeriod = completedGoals.some(goal => {
+        if (!goal.completedAt) return false;
+        const completedDate = new Date(goal.completedAt);
+        return completedDate >= periodStart && completedDate <= periodEnd;
+      });
+
+      if (hasCompletionInPeriod) {
+        streak++;
+        // Move to previous period
+        checkDate.setDate(checkDate.getDate() - periodDays);
+      } else {
+        // Streak broken
+        break;
+      }
+    }
+
+    return streak;
+  } catch (error) {
+    console.error('Error calculating streak:', error);
+    return 0;
+  }
+};
+
 export const handleGetGoals: RequestHandler<{}, GoalsResponse | ErrorResponse> = async (req: any, res) => {
   try {
     await connectDB();
