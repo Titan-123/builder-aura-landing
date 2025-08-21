@@ -14,6 +14,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import AchievementBadge, { useAchievements } from '@/components/AchievementBadge';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MotivationalQuote from '@/components/MotivationalQuote';
+import { triggerMotivationalCelebration, MotivationalProgress } from '@/components/MotivationalCelebration';
+import MotivationalBackground from '@/components/MotivationalBackground';
 import { Goal, CreateGoalRequest, AnalyticsResponse } from '@shared/api';
 
 export default function Dashboard() {
@@ -147,14 +150,16 @@ export default function Dashboard() {
         await fetchAnalytics();
         
         if (completed) {
-          // Trigger celebration
-          confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { y: 0.8 },
-            colors: ['#22c55e', '#eab308', '#3b82f6']
+          // Trigger motivational celebration
+          const goalData = goals.find(g => g.id === goalId);
+          const isFirstGoal = completedGoals.length === 0;
+
+          triggerMotivationalCelebration({
+            goalTitle: goalData?.title || 'Goal',
+            streak: goalData?.streak || 0,
+            isFirstGoal,
+            category: goalData?.category
           });
-          toast.success('Goal completed! Amazing work! 🎉');
         } else {
           toast.success('Goal marked as incomplete');
         }
@@ -216,6 +221,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 relative">
+      {/* Motivational Background */}
+      <MotivationalBackground variant="floating" intensity="low" />
+
       {/* Dark Mode Toggle */}
       <div className="absolute top-0 right-0 lg:hidden">
         <DarkModeToggle />
@@ -399,6 +407,28 @@ export default function Dashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Motivational Quote */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <MotivationalQuote variant="banner" />
+      </motion.div>
+
+      {/* Motivational Progress */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <MotivationalProgress
+          completionRate={analytics?.completionRate || 0}
+          totalGoals={goals.length}
+          streak={analytics?.currentStreak || 0}
+        />
+      </motion.div>
 
       {/* Achievements Section */}
       {achievements.some(a => a.unlocked) && (

@@ -1,0 +1,210 @@
+import { motion } from 'framer-motion';
+import { Star, Sparkles, Heart, Zap, Target, Trophy } from 'lucide-react';
+
+interface MotivationalBackgroundProps {
+  variant?: 'floating' | 'gradient' | 'particles' | 'success';
+  intensity?: 'low' | 'medium' | 'high';
+}
+
+export default function MotivationalBackground({ 
+  variant = 'floating', 
+  intensity = 'medium' 
+}: MotivationalBackgroundProps) {
+  
+  const getParticleCount = () => {
+    switch (intensity) {
+      case 'low': return 8;
+      case 'medium': return 15;
+      case 'high': return 25;
+      default: return 15;
+    }
+  };
+
+  const getOpacity = () => {
+    switch (intensity) {
+      case 'low': return 0.1;
+      case 'medium': return 0.15;
+      case 'high': return 0.25;
+      default: return 0.15;
+    }
+  };
+
+  if (variant === 'gradient') {
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-indigo-500/20"
+          animate={{
+            background: [
+              'linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2))',
+              'linear-gradient(45deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2), rgba(147, 51, 234, 0.2))',
+              'linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2))',
+            ]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (variant === 'particles') {
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: getParticleCount() }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: getOpacity(),
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, Math.random() * 20 - 10, 0],
+              scale: [1, 1.5, 1],
+              opacity: [getOpacity(), getOpacity() * 2, getOpacity()],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (variant === 'success') {
+    const successIcons = [Star, Trophy, Heart, Sparkles];
+    
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => {
+          const IconComponent = successIcons[Math.floor(Math.random() * successIcons.length)];
+          return (
+            <motion.div
+              key={i}
+              className="absolute text-yellow-400"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                fontSize: `${12 + Math.random() * 8}px`,
+              }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.8, 0],
+                scale: [0, 1.5, 0],
+                y: [0, -50],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: Math.random() * 5,
+              }}
+            >
+              <IconComponent />
+            </motion.div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Default floating variant
+  const floatingElements = [
+    { icon: Star, color: 'text-yellow-400', size: 'w-4 h-4' },
+    { icon: Sparkles, color: 'text-purple-400', size: 'w-5 h-5' },
+    { icon: Heart, color: 'text-pink-400', size: 'w-4 h-4' },
+    { icon: Zap, color: 'text-blue-400', size: 'w-4 h-4' },
+    { icon: Target, color: 'text-green-400', size: 'w-5 h-5' },
+  ];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {Array.from({ length: getParticleCount() }).map((_, i) => {
+        const element = floatingElements[Math.floor(Math.random() * floatingElements.length)];
+        const IconComponent = element.icon;
+        
+        return (
+          <motion.div
+            key={i}
+            className={`absolute ${element.color} ${element.size}`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: getOpacity(),
+            }}
+            animate={{
+              y: [0, -40, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              rotate: [0, 360],
+              scale: [1, 1.3, 1],
+              opacity: [getOpacity(), getOpacity() * 2, getOpacity()],
+            }}
+            transition={{
+              duration: 6 + Math.random() * 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 3,
+            }}
+          >
+            <IconComponent />
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Enhanced gradient background for special occasions
+export const CelebrationBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <motion.div
+      className="absolute inset-0"
+      style={{
+        background: 'radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.3) 0%, rgba(255, 105, 180, 0.2) 50%, rgba(138, 43, 226, 0.1) 100%)'
+      }}
+      animate={{
+        scale: [1, 1.1, 1],
+        opacity: [0.3, 0.6, 0.3],
+      }}
+      transition={{
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+    
+    {/* Animated rays */}
+    {Array.from({ length: 8 }).map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute top-1/2 left-1/2 w-1 bg-gradient-to-t from-transparent via-yellow-400/30 to-transparent"
+        style={{
+          height: '200px',
+          transformOrigin: 'bottom center',
+          transform: `rotate(${i * 45}deg) translateY(-100px)`,
+        }}
+        animate={{
+          opacity: [0, 0.8, 0],
+          scaleY: [0, 1, 0],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: i * 0.2,
+        }}
+      />
+    ))}
+  </div>
+);

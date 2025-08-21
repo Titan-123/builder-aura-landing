@@ -3,6 +3,9 @@ import { Plus, Calendar, Clock, Target, CheckCircle2, Edit, Trash2, Filter, Sear
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import toast from 'react-hot-toast';
+import { triggerMotivationalCelebration } from '@/components/MotivationalCelebration';
+import MotivationalQuote from '@/components/MotivationalQuote';
+import MotivationalBackground from '@/components/MotivationalBackground';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -174,13 +177,15 @@ export default function Goals() {
         await fetchGoals();
         
         if (completed) {
-          confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { y: 0.8 },
-            colors: ['#6366f1', '#8b5cf6', '#ec4899']
+          const goalData = goals.find(g => g.id === goalId);
+          const isFirstGoal = completedGoals.length === 0;
+
+          triggerMotivationalCelebration({
+            goalTitle: goalData?.title || 'Goal',
+            streak: goalData?.streak || 0,
+            isFirstGoal,
+            category: goalData?.category
           });
-          toast.success('Goal completed! Amazing work! 🎉');
         } else {
           toast.success('Goal marked as incomplete');
         }
@@ -248,7 +253,9 @@ export default function Goals() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Motivational Background */}
+      <MotivationalBackground variant="particles" intensity="low" />
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -519,6 +526,15 @@ export default function Goals() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Motivational Quote */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <MotivationalQuote variant="compact" />
+      </motion.div>
 
       {/* Goals Display */}
       <motion.div

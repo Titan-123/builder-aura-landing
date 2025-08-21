@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MotivationalBackground from '@/components/MotivationalBackground';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -40,7 +41,9 @@ export default function Layout({ children }: LayoutProps) {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950 dark:via-slate-900 dark:to-indigo-950 relative">
+      {/* Motivational Background */}
+      <MotivationalBackground variant="gradient" intensity="low" />
       {/* Top Navbar */}
       <motion.nav
         initial={{ y: -100 }}
