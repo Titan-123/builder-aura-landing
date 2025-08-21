@@ -63,21 +63,33 @@ export default function Calendar() {
     }
   };
 
-  const fetchStreaks = async () => {
+  const fetchStreaks = async (retryCount = 0) => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         console.warn("No access token found for streaks");
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
         return;
       }
 
-      console.log("📡 Fetching streaks...");
+      console.log(`📡 Fetching streaks (attempt ${retryCount + 1})...`);
+
+      // Add a small delay to prevent race conditions
+      if (retryCount > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch("/api/streaks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
       console.log("📡 Streaks response status:", response.status, response.statusText);
 
       if (response.ok) {
@@ -88,12 +100,24 @@ export default function Calendar() {
         console.error("❌ Streaks response not ok:", response.status, response.statusText);
         const errorText = await response.text();
         console.error("Error details:", errorText);
-        // Set default values to prevent UI issues
+
+        if (retryCount < 2) {
+          console.log(`🔄 Retrying streaks fetch (${retryCount + 1}/3)...`);
+          return fetchStreaks(retryCount + 1);
+        }
+
+        // Set default values after all retries failed
         setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
       }
     } catch (error) {
-      console.error("❌ Failed to fetch streaks:", error);
-      // Set default values to prevent UI issues
+      console.error(`❌ Failed to fetch streaks (attempt ${retryCount + 1}):`, error);
+
+      if (retryCount < 2 && error.name !== 'AbortError') {
+        console.log(`🔄 Retrying streaks fetch (${retryCount + 1}/3)...`);
+        return fetchStreaks(retryCount + 1);
+      }
+
+      // Set default values after all retries failed
       setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     }
   };
