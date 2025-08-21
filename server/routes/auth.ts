@@ -1,21 +1,44 @@
 import { RequestHandler } from "express";
-import { AuthResponse, LoginRequest, RegisterRequest, User, ErrorResponse } from "@shared/api";
+import jwt from 'jsonwebtoken';
+import connectDB from '../database';
+import User, { IUser } from '../models/User';
+import { AuthResponse, LoginRequest, RegisterRequest, ErrorResponse } from "@shared/api";
 
-// In-memory storage for demo (replace with MongoDB in production)
-let users: User[] = [];
-let nextUserId = 1;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this';
+const JWT_EXPIRES_IN = '7d';
+const JWT_REFRESH_EXPIRES_IN = '30d';
 
-const generateToken = (userId: string) => {
-  // Simple token generation for demo (use proper JWT in production)
-  return `token_${userId}_${Date.now()}`;
+// Generate JWT tokens
+const generateTokens = (userId: string) => {
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  const refreshToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
+  return { accessToken, refreshToken };
 };
 
-export const handleRegister: RequestHandler<{}, AuthResponse | ErrorResponse, RegisterRequest> = (req, res) => {
+export const handleRegister: RequestHandler<{}, AuthResponse | ErrorResponse, RegisterRequest> = async (req, res) => {
   try {
+    await connectDB();
+    
     const { name, email, password } = req.body;
 
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Name, email, and password are required"
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Password must be at least 6 characters long"
+      });
+    }
+
     // Check if user already exists
-    if (users.find(u => u.email === email)) {
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
       return res.status(400).json({
         error: "USER_EXISTS",
         message: "User with this email already exists"
@@ -23,31 +46,48 @@ export const handleRegister: RequestHandler<{}, AuthResponse | ErrorResponse, Re
     }
 
     // Create new user
-    const newUser: User = {
-      id: nextUserId.toString(),
-      name,
-      email,
-      password, // In production: hash with bcrypt
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    const user = new User({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password
+    });
 
-    users.push(newUser);
-    nextUserId++;
+    await user.save();
 
     // Generate tokens
-    const accessToken = generateToken(newUser.id);
-    const refreshToken = generateToken(newUser.id);
+    const { accessToken, refreshToken } = generateTokens(user._id.toString());
 
     // Return user without password
-    const { password: _, ...userWithoutPassword } = newUser;
+    const userResponse = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
 
     res.status(201).json({
-      user: userWithoutPassword,
+      user: userResponse,
       accessToken,
       refreshToken
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Register error:', error);
+    
+    if (error.code === 11000) {
+      return res.status(400).json({
+        error: "USER_EXISTS",
+        message: "User with this email already exists"
+      });
+    }
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: Object.values(error.errors).map((e: any) => e.message).join(', ')
+      });
+    }
+
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
@@ -55,13 +95,32 @@ export const handleRegister: RequestHandler<{}, AuthResponse | ErrorResponse, Re
   }
 };
 
-export const handleLogin: RequestHandler<{}, AuthResponse | ErrorResponse, LoginRequest> = (req, res) => {
+export const handleLogin: RequestHandler<{}, AuthResponse | ErrorResponse, LoginRequest> = async (req, res) => {
   try {
+    await connectDB();
+    
     const { email, password } = req.body;
 
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Email and password are required"
+      });
+    }
+
     // Find user
-    const user = users.find(u => u.email === email);
-    if (!user || user.password !== password) { // In production: compare with bcrypt
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(401).json({
+        error: "INVALID_CREDENTIALS",
+        message: "Invalid email or password"
+      });
+    }
+
+    // Check password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
       return res.status(401).json({
         error: "INVALID_CREDENTIALS",
         message: "Invalid email or password"
@@ -69,18 +128,24 @@ export const handleLogin: RequestHandler<{}, AuthResponse | ErrorResponse, Login
     }
 
     // Generate tokens
-    const accessToken = generateToken(user.id);
-    const refreshToken = generateToken(user.id);
+    const { accessToken, refreshToken } = generateTokens(user._id.toString());
 
     // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
+    const userResponse = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
 
     res.json({
-      user: userWithoutPassword,
+      user: userResponse,
       accessToken,
       refreshToken
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Login error:', error);
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
@@ -88,9 +153,11 @@ export const handleLogin: RequestHandler<{}, AuthResponse | ErrorResponse, Login
   }
 };
 
-export const handleMe: RequestHandler<{}, Omit<User, 'password'> | ErrorResponse> = (req, res) => {
+export const handleMe: RequestHandler<{}, Omit<IUser, 'password'> | ErrorResponse> = async (req, res) => {
   try {
-    // Simple auth check for demo (use proper JWT verification in production)
+    await connectDB();
+    
+    // Get token from authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({
@@ -100,22 +167,66 @@ export const handleMe: RequestHandler<{}, Omit<User, 'password'> | ErrorResponse
     }
 
     const token = authHeader.substring(7);
-    const userId = token.split('_')[1];
     
-    const user = users.find(u => u.id === userId);
-    if (!user) {
+    // Verify token
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (jwtError) {
       return res.status(401).json({
         error: "UNAUTHORIZED",
-        message: "Invalid token"
+        message: "Invalid or expired token"
       });
     }
 
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
-  } catch (error) {
+    // Find user
+    const user = await User.findById(decoded.userId).select('-password');
+    if (!user) {
+      return res.status(401).json({
+        error: "UNAUTHORIZED",
+        message: "User not found"
+      });
+    }
+
+    // Return user data
+    const userResponse = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
+
+    res.json(userResponse);
+  } catch (error: any) {
+    console.error('Get user error:', error);
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
+    });
+  }
+};
+
+// Middleware to verify JWT token and get user ID
+export const verifyToken = (req: any, res: any, next: any) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: "UNAUTHORIZED",
+      message: "Authentication required"
+    });
+  }
+
+  const token = authHeader.substring(7);
+  
+  try {
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      error: "UNAUTHORIZED",
+      message: "Invalid or expired token"
     });
   }
 };

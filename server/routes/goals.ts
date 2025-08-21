@@ -1,34 +1,58 @@
 import { RequestHandler } from "express";
-import { Goal, CreateGoalRequest, UpdateGoalRequest, GoalsResponse, ErrorResponse } from "@shared/api";
+import connectDB from '../database';
+import Goal, { IGoal } from '../models/Goal';
+import { verifyToken } from './auth';
+import { Goal as GoalType, CreateGoalRequest, UpdateGoalRequest, GoalsResponse, ErrorResponse } from "@shared/api";
 
-// In-memory storage for demo (replace with MongoDB in production)
-let goals: Goal[] = [];
-let nextGoalId = 1;
+// Helper function to convert Mongoose document to API response format
+const formatGoal = (goal: IGoal): GoalType => ({
+  id: goal._id.toString(),
+  userId: goal.userId,
+  title: goal.title,
+  description: goal.description,
+  category: goal.category,
+  type: goal.type,
+  timeAllotted: goal.timeAllotted,
+  deadline: goal.deadline,
+  completed: goal.completed,
+  completedAt: goal.completedAt,
+  streak: goal.streak,
+  createdAt: goal.createdAt,
+  updatedAt: goal.updatedAt
+});
 
-// Helper function to get user ID from token
-const getUserIdFromToken = (authHeader?: string): string | null => {
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  const token = authHeader.substring(7);
-  return token.split('_')[1] || null;
-};
-
-export const handleGetGoals: RequestHandler<{}, GoalsResponse | ErrorResponse> = (req, res) => {
+export const handleGetGoals: RequestHandler<{}, GoalsResponse | ErrorResponse> = async (req: any, res) => {
   try {
-    const userId = getUserIdFromToken(req.headers.authorization);
-    if (!userId) {
-      return res.status(401).json({
-        error: "UNAUTHORIZED",
-        message: "Authentication required"
-      });
+    await connectDB();
+    
+    const { type, category, completed } = req.query;
+    
+    // Build filter
+    const filter: any = { userId: req.userId };
+    
+    if (type && type !== 'all') {
+      filter.type = type;
+    }
+    
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+    
+    if (completed !== undefined) {
+      filter.completed = completed === 'true';
     }
 
-    const userGoals = goals.filter(g => g.userId === userId);
+    // Get goals with sorting (newest first)
+    const goals = await Goal.find(filter).sort({ createdAt: -1 });
+    
+    const formattedGoals = goals.map(formatGoal);
     
     res.json({
-      goals: userGoals,
-      total: userGoals.length
+      goals: formattedGoals,
+      total: formattedGoals.length
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Get goals error:', error);
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
@@ -36,38 +60,60 @@ export const handleGetGoals: RequestHandler<{}, GoalsResponse | ErrorResponse> =
   }
 };
 
-export const handleCreateGoal: RequestHandler<{}, Goal | ErrorResponse, CreateGoalRequest> = (req, res) => {
+export const handleCreateGoal: RequestHandler<{}, GoalType | ErrorResponse, CreateGoalRequest> = async (req: any, res) => {
   try {
-    const userId = getUserIdFromToken(req.headers.authorization);
-    if (!userId) {
-      return res.status(401).json({
-        error: "UNAUTHORIZED",
-        message: "Authentication required"
+    await connectDB();
+    
+    const { title, description, category, type, timeAllotted, deadline } = req.body;
+
+    // Validate input
+    if (!title || !description || !category || !type || !timeAllotted || !deadline) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "All fields are required"
       });
     }
 
-    const { title, description, category, type, timeAllotted, deadline } = req.body;
+    if (!['daily', 'weekly', 'monthly'].includes(type)) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Type must be daily, weekly, or monthly"
+      });
+    }
 
-    const newGoal: Goal = {
-      id: nextGoalId.toString(),
-      userId,
-      title,
-      description,
-      category,
+    if (timeAllotted < 1 || timeAllotted > 1440) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Time allotted must be between 1 and 1440 minutes"
+      });
+    }
+
+    // Create new goal
+    const goal = new Goal({
+      userId: req.userId,
+      title: title.trim(),
+      description: description.trim(),
+      category: category.trim(),
       type,
       timeAllotted,
       deadline: new Date(deadline),
       completed: false,
-      streak: 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+      streak: 0
+    });
 
-    goals.push(newGoal);
-    nextGoalId++;
+    await goal.save();
+    
+    res.status(201).json(formatGoal(goal));
+  } catch (error: any) {
+    console.error('Create goal error:', error);
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: Object.values(error.errors).map((e: any) => e.message).join(', ')
+      });
+    }
 
-    res.status(201).json(newGoal);
-  } catch (error) {
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
@@ -75,54 +121,86 @@ export const handleCreateGoal: RequestHandler<{}, Goal | ErrorResponse, CreateGo
   }
 };
 
-export const handleUpdateGoal: RequestHandler<{ id: string }, Goal | ErrorResponse, UpdateGoalRequest> = (req, res) => {
+export const handleUpdateGoal: RequestHandler<{ id: string }, GoalType | ErrorResponse, UpdateGoalRequest> = async (req: any, res) => {
   try {
-    const userId = getUserIdFromToken(req.headers.authorization);
-    if (!userId) {
-      return res.status(401).json({
-        error: "UNAUTHORIZED",
-        message: "Authentication required"
-      });
-    }
-
-    const goalId = req.params.id;
-    const goalIndex = goals.findIndex(g => g.id === goalId && g.userId === userId);
+    await connectDB();
     
-    if (goalIndex === -1) {
+    const goalId = req.params.id;
+    const updates = req.body;
+
+    // Find the goal
+    const goal = await Goal.findOne({ _id: goalId, userId: req.userId });
+    if (!goal) {
       return res.status(404).json({
         error: "GOAL_NOT_FOUND",
         message: "Goal not found"
       });
     }
 
-    const updates = req.body;
-    const goal = goals[goalIndex];
+    // Update fields
+    if (updates.title !== undefined) goal.title = updates.title.trim();
+    if (updates.description !== undefined) goal.description = updates.description.trim();
+    if (updates.category !== undefined) goal.category = updates.category.trim();
+    if (updates.type !== undefined) {
+      if (!['daily', 'weekly', 'monthly'].includes(updates.type)) {
+        return res.status(400).json({
+          error: "VALIDATION_ERROR",
+          message: "Type must be daily, weekly, or monthly"
+        });
+      }
+      goal.type = updates.type;
+    }
+    if (updates.timeAllotted !== undefined) {
+      if (updates.timeAllotted < 1 || updates.timeAllotted > 1440) {
+        return res.status(400).json({
+          error: "VALIDATION_ERROR",
+          message: "Time allotted must be between 1 and 1440 minutes"
+        });
+      }
+      goal.timeAllotted = updates.timeAllotted;
+    }
+    if (updates.deadline !== undefined) {
+      goal.deadline = new Date(updates.deadline);
+    }
 
-    // Update goal fields
-    if (updates.title !== undefined) goal.title = updates.title;
-    if (updates.description !== undefined) goal.description = updates.description;
-    if (updates.category !== undefined) goal.category = updates.category;
-    if (updates.type !== undefined) goal.type = updates.type;
-    if (updates.timeAllotted !== undefined) goal.timeAllotted = updates.timeAllotted;
-    if (updates.deadline !== undefined) goal.deadline = new Date(updates.deadline);
-    
-    // Handle completion
+    // Handle completion status
     if (updates.completed !== undefined) {
+      const wasCompleted = goal.completed;
       goal.completed = updates.completed;
-      if (updates.completed) {
+      
+      if (updates.completed && !wasCompleted) {
+        // Goal is being marked as completed
         goal.completedAt = new Date();
-        // Simple streak calculation (in production, this would be more sophisticated)
+        // Simple streak increment (in production, implement proper streak calculation)
         goal.streak = goal.streak + 1;
-      } else {
+      } else if (!updates.completed && wasCompleted) {
+        // Goal is being marked as incomplete
         goal.completedAt = undefined;
+        // Optionally reset streak or implement more complex logic
       }
     }
 
     goal.updatedAt = new Date();
-    goals[goalIndex] = goal;
+    await goal.save();
 
-    res.json(goal);
-  } catch (error) {
+    res.json(formatGoal(goal));
+  } catch (error: any) {
+    console.error('Update goal error:', error);
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: Object.values(error.errors).map((e: any) => e.message).join(', ')
+      });
+    }
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        error: "INVALID_ID",
+        message: "Invalid goal ID"
+      });
+    }
+
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
@@ -130,29 +208,33 @@ export const handleUpdateGoal: RequestHandler<{ id: string }, Goal | ErrorRespon
   }
 };
 
-export const handleDeleteGoal: RequestHandler<{ id: string }, { success: boolean } | ErrorResponse> = (req, res) => {
+export const handleDeleteGoal: RequestHandler<{ id: string }, { success: boolean } | ErrorResponse> = async (req: any, res) => {
   try {
-    const userId = getUserIdFromToken(req.headers.authorization);
-    if (!userId) {
-      return res.status(401).json({
-        error: "UNAUTHORIZED",
-        message: "Authentication required"
-      });
-    }
-
-    const goalId = req.params.id;
-    const goalIndex = goals.findIndex(g => g.id === goalId && g.userId === userId);
+    await connectDB();
     
-    if (goalIndex === -1) {
+    const goalId = req.params.id;
+
+    // Find and delete the goal
+    const deletedGoal = await Goal.findOneAndDelete({ _id: goalId, userId: req.userId });
+    
+    if (!deletedGoal) {
       return res.status(404).json({
         error: "GOAL_NOT_FOUND",
         message: "Goal not found"
       });
     }
 
-    goals.splice(goalIndex, 1);
     res.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Delete goal error:', error);
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        error: "INVALID_ID",
+        message: "Invalid goal ID"
+      });
+    }
+
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
