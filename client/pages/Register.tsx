@@ -203,12 +203,12 @@ export default function Register() {
                   >
                     <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                     <div className="relative group">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 dark:text-slate-400 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="name"
                         type="text"
                         placeholder="Enter your full name"
-                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300"
+                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
@@ -224,12 +224,12 @@ export default function Register() {
                   >
                     <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 dark:text-slate-400 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300"
+                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         required
