@@ -85,6 +85,41 @@ const App = () => (
             background: 'hsl(var(--card))',
             color: 'hsl(var(--foreground))',
             border: '1px solid hsl(var(--border))',
+            borderRadius: '8px',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+            backdropFilter: 'blur(8px)',
+          },
+          success: {
+            style: {
+              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+              color: 'white',
+              border: '1px solid rgba(34, 197, 94, 0.3)',
+              boxShadow: '0 10px 25px rgba(34, 197, 94, 0.2)',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#22c55e',
+            },
+          },
+          error: {
+            style: {
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              color: 'white',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              boxShadow: '0 10px 25px rgba(239, 68, 68, 0.2)',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#ef4444',
+            },
+          },
+          loading: {
+            style: {
+              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+              color: 'white',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              boxShadow: '0 10px 25px rgba(59, 130, 246, 0.2)',
+            },
           },
         }}
       />
