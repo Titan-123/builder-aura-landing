@@ -188,6 +188,12 @@ export const handleGetGoals: RequestHandler<
   try {
     await connectDB();
 
+    // One-time migration: Add default priority to goals that don't have it
+    await Goal.updateMany(
+      { userId: req.userId, priority: { $exists: false } },
+      { $set: { priority: "medium" } }
+    );
+
     const { type, category, completed } = req.query;
 
     // Build filter
