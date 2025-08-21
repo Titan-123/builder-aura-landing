@@ -181,6 +181,34 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+app.get("/api/auth/me", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ error: "UNAUTHORIZED", message: "No valid token provided" });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
+
+    if (!user) {
+      return res.status(401).json({ error: "UNAUTHORIZED", message: "User not found" });
+    }
+
+    res.json({
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    });
+  } catch (error) {
+    console.error("Get user error:", error);
+    res.status(401).json({ error: "UNAUTHORIZED", message: "Invalid or expired token" });
+  }
+});
+
 // Goals routes
 app.get("/api/goals", verifyToken, async (req: any, res) => {
   try {
