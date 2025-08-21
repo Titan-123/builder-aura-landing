@@ -298,7 +298,7 @@ app.get("/api/goals", verifyToken, async (req: any, res) => {
 
 app.post("/api/goals", verifyToken, async (req: any, res) => {
   try {
-    const { title, description, category, type, timeAllotted, deadline } =
+    const { title, description, category, type, priority, timeAllotted, deadline } =
       req.body;
 
     if (
