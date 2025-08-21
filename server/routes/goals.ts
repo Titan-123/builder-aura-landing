@@ -433,16 +433,20 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
   res,
 ) => {
   try {
+    console.log("🔄 Fetching streaks for user:", req.userId);
     await connectDB();
 
     const streaks = await calculateGlobalStreaks(req.userId);
+    console.log("✅ Streaks calculated:", streaks);
 
     res.json(streaks);
   } catch (error: any) {
-    console.error("Get streaks error:", error);
+    console.error("❌ Get streaks error:", error);
+    console.error("Error stack:", error.stack);
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error",
+      details: error.message,
     });
   }
 };
