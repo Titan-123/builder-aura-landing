@@ -110,11 +110,11 @@ export default function Calendar() {
     };
   };
 
-  // Calculate streak for date
-  const getStreakForDate = (date: Date) => {
-    const completedGoals = getCompletedGoalsForDate(date);
-    if (completedGoals.length === 0) return 0;
-    return Math.max(...completedGoals.map(g => g.streak));
+  // For daily completion calculation (whether all daily goals were completed on a specific date)
+  const getDailyCompletionForDate = (date: Date) => {
+    const allDailyGoals = getAllGoalsForDate(date).filter(g => g.type === 'daily');
+    const completedDailyGoals = getCompletedGoalsForDate(date).filter(g => g.type === 'daily');
+    return allDailyGoals.length > 0 && completedDailyGoals.length === allDailyGoals.length;
   };
 
   // Generate calendar days
