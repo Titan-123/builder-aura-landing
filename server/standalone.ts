@@ -306,6 +306,7 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       !description ||
       !category ||
       !type ||
+      !priority ||
       !timeAllotted ||
       !deadline
     ) {
