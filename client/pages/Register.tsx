@@ -203,12 +203,12 @@ export default function Register() {
                   >
                     <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                     <div className="relative group">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-700 dark:text-slate-300 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-800 dark:text-slate-200 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="name"
                         type="text"
                         placeholder="Enter your full name"
-                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-600 dark:placeholder:text-slate-300"
+                        className="pl-10 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
@@ -224,12 +224,12 @@ export default function Register() {
                   >
                     <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-700 dark:text-slate-300 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-800 dark:text-slate-200 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        className="pl-10 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-600 dark:placeholder:text-slate-300"
+                        className="pl-10 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         required
@@ -245,12 +245,12 @@ export default function Register() {
                   >
                     <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-700 dark:text-slate-300 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-800 dark:text-slate-200 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
-                        className="pl-10 pr-12 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-600 dark:placeholder:text-slate-300"
+                        className="pl-10 pr-12 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         required
@@ -263,9 +263,9 @@ export default function Register() {
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                          <EyeOff className="h-4 w-4 text-slate-800 dark:text-slate-200" />
                         ) : (
-                          <Eye className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                          <Eye className="h-4 w-4 text-slate-800 dark:text-slate-200" />
                         )}
                       </Button>
                     </div>
@@ -279,12 +279,12 @@ export default function Register() {
                   >
                     <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-700 dark:text-slate-300 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-800 dark:text-slate-200 group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm your password"
-                        className="pl-10 pr-12 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300 placeholder:text-slate-600 dark:placeholder:text-slate-300"
+                        className="pl-10 pr-12 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
@@ -297,9 +297,9 @@ export default function Register() {
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
                         {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                          <EyeOff className="h-4 w-4 text-slate-800 dark:text-slate-200" />
                         ) : (
-                          <Eye className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                          <Eye className="h-4 w-4 text-slate-800 dark:text-slate-200" />
                         )}
                       </Button>
                     </div>
