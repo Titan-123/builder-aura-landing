@@ -471,49 +471,61 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     };
 
     // Calculate daily streak (consecutive days with all daily goals completed)
-    let dailyStreak = 0;
-    const today = new Date();
+    // Find the CURRENT streak from the most recent date backwards
 
-    // Start checking from today and go backwards
-    let checkDate = new Date(today);
-    let consecutiveStreak = 0;
+    // Get all dates that have daily goals
+    const datesWithDailyGoals = [...new Set(
+      goals
+        .filter(goal => goal.type === 'daily')
+        .map(goal => {
+          const date = new Date(goal.deadline);
+          return date.toDateString();
+        })
+    )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
-    console.log(
-      "🔍 Starting streak calculation from:",
-      checkDate.toDateString(),
-    );
+    console.log("📊 Dates with daily goals (newest first):", datesWithDailyGoals.map(d => d.toDateString()));
 
-    // Look back up to 365 days
-    for (let day = 0; day < 365; day++) {
-      const dayCompletion = isDayFullyCompleted(checkDate);
+    if (datesWithDailyGoals.length === 0) {
+      console.log("❌ No daily goals found");
+      const streaks = { dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 };
+      console.log("✅ Streaks calculated:", streaks);
+      return res.json(streaks);
+    }
 
-      console.log(
-        `📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`,
-      );
+    // Find the CURRENT streak starting from the most recent date and going backwards
+    let currentStreak = 0;
 
-      if (dayCompletion === null) {
-        // No daily goals for this day, move to previous day without breaking streak
-        // This allows for days without goals to not break the streak
-        console.log(
-          `⚪ No daily goals on ${checkDate.toDateString()}, continuing...`,
-        );
-        checkDate.setDate(checkDate.getDate() - 1);
-        continue;
-      }
+    console.log("🔍 Calculating current streak from most recent date backwards...");
+
+    for (let i = 0; i < datesWithDailyGoals.length; i++) {
+      const currentDate = datesWithDailyGoals[i];
+      const dayCompletion = isDayFullyCompleted(currentDate);
+
+      console.log(`📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`);
 
       if (dayCompletion === true) {
-        // All daily goals completed on this day
-        consecutiveStreak++;
-        console.log(`✅ Day completed! Streak now: ${consecutiveStreak}`);
-        checkDate.setDate(checkDate.getDate() - 1);
+        currentStreak++;
+        console.log(`✅ Day completed! Current streak: ${currentStreak}`);
+
+        // Check if this date is consecutive with the previous one (if any)
+        if (i > 0) {
+          const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+          const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+
+          if (daysDiff > 1) {
+            // Gap found between this completed day and the next newer one, so streak ends here
+            console.log(`⚠️ Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextNewerDate.toDateString()}, streak ends`);
+            break;
+          }
+        }
       } else {
-        // Streak broken - found a day with incomplete daily goals
-        console.log(`❌ Streak broken on ${checkDate.toDateString()}`);
+        // Day not completed, streak ends
+        console.log(`❌ Day not completed, streak ends`);
         break;
       }
     }
 
-    dailyStreak = consecutiveStreak;
+    const dailyStreak = currentStreak;
     console.log(`🎯 Final daily streak: ${dailyStreak}`);
 
     // Calculate weekly and monthly streaks (simplified)
