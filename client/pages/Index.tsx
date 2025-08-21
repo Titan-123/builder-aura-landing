@@ -411,7 +411,7 @@ export default function Index() {
             className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <Heart className="w-4 h-4 text-green-500" />
-            Free forever • No limits • Start in seconds
+            Start your journey today • Join thousands of achievers
             <Heart className="w-4 h-4 text-green-500" />
           </motion.div>
         </motion.div>
