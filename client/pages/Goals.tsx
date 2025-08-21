@@ -721,6 +721,105 @@ export default function Goals() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          {/* Edit Goal Dialog */}
+          <Dialog open={!!editingGoal} onOpenChange={() => setEditingGoal(null)}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Edit Goal</DialogTitle>
+                <DialogDescription>
+                  Update your goal details and settings.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-title">Title</Label>
+                  <Input
+                    id="edit-title"
+                    value={editForm.title}
+                    onChange={(e) => setEditForm({...editForm, title: e.target.value})}
+                    placeholder="Enter goal title"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-description">Description</Label>
+                  <Textarea
+                    id="edit-description"
+                    value={editForm.description}
+                    onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                    placeholder="Describe your goal"
+                    className="min-h-[80px]"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-category">Category</Label>
+                    <Input
+                      id="edit-category"
+                      value={editForm.category}
+                      onChange={(e) => setEditForm({...editForm, category: e.target.value})}
+                      placeholder="e.g., Health, Work"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-priority">Priority</Label>
+                    <Select value={editForm.priority} onValueChange={(value: Priority) => setEditForm({...editForm, priority: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-type">Type</Label>
+                    <Select value={editForm.type} onValueChange={(value: any) => setEditForm({...editForm, type: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-timeAllotted">Time (minutes)</Label>
+                    <Input
+                      id="edit-timeAllotted"
+                      type="number"
+                      value={editForm.timeAllotted}
+                      onChange={(e) => setEditForm({...editForm, timeAllotted: parseInt(e.target.value) || 0})}
+                      min="1"
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-deadline">Deadline</Label>
+                  <Input
+                    id="edit-deadline"
+                    type="date"
+                    value={editForm.deadline}
+                    onChange={(e) => setEditForm({...editForm, deadline: e.target.value})}
+                  />
+                </div>
+              </div>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => setEditingGoal(null)}>
+                  Cancel
+                </Button>
+                <Button onClick={updateGoal} disabled={!editForm.title.trim()}>
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </motion.div>
 
