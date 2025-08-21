@@ -499,11 +499,11 @@ export default function Calendar() {
                   <span className="text-sm">Today</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full">
-                    <Flame className="w-3 h-3 text-orange-500" />
-                    <span className="text-xs font-medium">3</span>
+                  <div className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full">
+                    <CheckCircle2 className="w-3 h-3 text-green-500" />
+                    <span className="text-xs font-medium">✓</span>
                   </div>
-                  <span className="text-sm">Streak count</span>
+                  <span className="text-sm">All daily goals completed</span>
                 </div>
               </CardContent>
             </Card>
