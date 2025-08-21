@@ -33,12 +33,12 @@ export default function MotivationalBackground({
     return (
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-indigo-500/20"
+          className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20"
           animate={{
             background: [
-              'linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2))',
-              'linear-gradient(45deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2), rgba(147, 51, 234, 0.2))',
-              'linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2))',
+              'linear-gradient(45deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.2))',
+              'linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.2), rgba(34, 197, 94, 0.2))',
+              'linear-gradient(45deg, rgba(20, 184, 166, 0.2), rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2))',
             ]
           }}
           transition={{
@@ -57,7 +57,7 @@ export default function MotivationalBackground({
         {Array.from({ length: getParticleCount() }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+            className="absolute w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -122,9 +122,9 @@ export default function MotivationalBackground({
   // Default floating variant
   const floatingElements = [
     { icon: Star, color: 'text-yellow-400', size: 'w-4 h-4' },
-    { icon: Sparkles, color: 'text-purple-400', size: 'w-5 h-5' },
-    { icon: Heart, color: 'text-pink-400', size: 'w-4 h-4' },
-    { icon: Zap, color: 'text-blue-400', size: 'w-4 h-4' },
+    { icon: Sparkles, color: 'text-emerald-400', size: 'w-5 h-5' },
+    { icon: Heart, color: 'text-teal-400', size: 'w-4 h-4' },
+    { icon: Zap, color: 'text-green-400', size: 'w-4 h-4' },
     { icon: Target, color: 'text-green-400', size: 'w-5 h-5' },
   ];
 
