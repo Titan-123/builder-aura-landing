@@ -14,6 +14,7 @@ export default function Calendar() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [streaks, setStreaks] = useState<{dailyStreak: number, weeklyStreak: number, monthlyStreak: number} | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
