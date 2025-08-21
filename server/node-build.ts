@@ -1,5 +1,5 @@
 import path from "path";
-import { createServer } from "./index";
+import { createServer } from "./index.js";
 import express from "express";
 
 const app = createServer();
@@ -18,43 +18,29 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Handle React Router - serve index.html for all non-API routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+// SPA routes - serve index.html for specific routes
+const spaRoutes = ["/", "/dashboard", "/goals", "/calendar", "/analytics", "/login", "/register"];
+
+spaRoutes.forEach(route => {
+  app.get(route, (req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
 });
 
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Server error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
-app.get("/goals", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.get("/calendar", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.get("/analytics", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.get("/register", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-// Fallback for any other routes (must be last)
-app.use((req, res) => {
+// Catch-all handler for remaining routes (must be last)
+app.use("*", (req, res) => {
   // Don't serve index.html for API routes
-  if (req.path.startsWith("/api/")) {
+  if (req.originalUrl.startsWith("/api/")) {
     return res.status(404).json({ error: "API endpoint not found" });
   }
 
-  // Serve index.html for any other routes
+  // Serve index.html for any other routes (SPA fallback)
   res.sendFile(path.join(distPath, "index.html"));
 });
 
