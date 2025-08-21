@@ -212,7 +212,7 @@ export default function Login() {
                         id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
-                        className="pl-10 pr-12 h-12 border-0 bg-background/50 backdrop-blur-sm focus:bg-background/80 transition-all duration-300"
+                        className="pl-10 pr-12 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         required
