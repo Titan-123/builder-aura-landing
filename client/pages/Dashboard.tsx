@@ -367,8 +367,8 @@ export default function Dashboard() {
                       key={goal.id}
                       whileHover={{ scale: 1.02 }}
                       className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                        goal.completed 
-                          ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
+                        goal.completed
+                          ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
                           : 'bg-muted/50 border-border hover:border-primary/50'
                       }`}
                       onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
@@ -376,8 +376,8 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                            goal.completed 
-                              ? 'bg-green-500 border-green-500' 
+                            goal.completed
+                              ? 'bg-green-500 border-green-500'
                               : 'border-muted-foreground hover:border-primary'
                           }`}>
                             {goal.completed && <CheckCircle2 className="w-3 h-3 text-white" />}
@@ -413,97 +413,49 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Quick Actions & Recent Activity */}
-        <div className="space-y-6">
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
-                  Quick Actions
-                </CardTitle>
-                <CardDescription>Fast access to common tasks</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  {quickActions.map((action, index) => {
-                    const Icon = action.icon;
-                    const isLink = typeof action.action === 'string';
-                    
-                    const content = (
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`${action.color} text-white p-4 rounded-lg text-center cursor-pointer transition-all shadow-md hover:shadow-lg`}
-                        onClick={!isLink ? action.action as () => void : undefined}
-                      >
-                        <Icon className="w-6 h-6 mx-auto mb-2" />
-                        <p className="text-sm font-medium">{action.title}</p>
-                      </motion.div>
-                    );
-
-                    return isLink ? (
-                      <Link key={index} to={action.action as string}>
-                        {content}
-                      </Link>
-                    ) : (
-                      <div key={index}>{content}</div>
-                    );
-                  })}
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-green-500" />
+                Recent Wins
+              </CardTitle>
+              <CardDescription>Your latest completed goals</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentlyCompleted.length === 0 ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  <Star className="w-8 h-8 mx-auto mb-2" />
+                  <p className="text-sm">Complete your first goal to see it here!</p>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
-          >
-            <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-green-500" />
-                  Recent Wins
-                </CardTitle>
-                <CardDescription>Your latest completed goals</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {recentlyCompleted.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <Star className="w-8 h-8 mx-auto mb-2" />
-                    <p className="text-sm">Complete your first goal to see it here!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {recentlyCompleted.map((goal) => (
-                      <div key={goal.id} className="flex items-center gap-3 p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{goal.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {goal.completedAt && new Date(goal.completedAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                        {goal.category && (
-                          <Badge variant="outline" className="text-xs">
-                            {goal.category}
-                          </Badge>
-                        )}
+              ) : (
+                <div className="space-y-3">
+                  {recentlyCompleted.map((goal) => (
+                    <div key={goal.id} className="flex items-center gap-3 p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{goal.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {goal.completedAt && new Date(goal.completedAt).toLocaleDateString()}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+                      {goal.category && (
+                        <Badge variant="outline" className="text-xs">
+                          {goal.category}
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Motivational Progress */}
