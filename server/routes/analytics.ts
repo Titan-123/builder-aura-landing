@@ -44,44 +44,55 @@ export const handleGetAnalytics: RequestHandler<
         });
 
         if (allDailyGoals.length === 0) {
-          return null; // No daily goals for this day
+          return null;
         }
 
         const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
         return completedDailyGoals.length === allDailyGoals.length;
       };
 
-      let dailyStreak = 0;
-      const today = new Date();
-      let checkDate = new Date(today);
-      let consecutiveDaysWithoutGoals = 0;
-      const MAX_DAYS_WITHOUT_GOALS = 7;
+      // Get all dates that have daily goals
+      const datesWithDailyGoals = [...new Set(
+        goals
+          .filter(goal => goal.type === 'daily')
+          .map(goal => {
+            const date = new Date(goal.deadline);
+            return date.toDateString();
+          })
+      )].map(dateStr => new Date(dateStr)).sort((a, b) => a.getTime() - b.getTime());
 
-      for (let day = 0; day < 365; day++) {
-        const dayCompletion = isDayFullyCompleted(checkDate);
+      if (datesWithDailyGoals.length === 0) {
+        return 0;
+      }
 
-        if (dayCompletion === null) {
-          consecutiveDaysWithoutGoals++;
-          if (consecutiveDaysWithoutGoals > MAX_DAYS_WITHOUT_GOALS) {
-            break;
-          }
-          checkDate = new Date(checkDate);
-          checkDate.setDate(checkDate.getDate() - 1);
-          continue;
-        }
+      // Find the longest streak of consecutive completed days
+      let maxStreak = 0;
+      let currentStreak = 0;
 
-        consecutiveDaysWithoutGoals = 0;
+      for (let i = 0; i < datesWithDailyGoals.length; i++) {
+        const currentDate = datesWithDailyGoals[i];
+        const dayCompletion = isDayFullyCompleted(currentDate);
 
         if (dayCompletion === true) {
-          dailyStreak++;
-          checkDate = new Date(checkDate);
-          checkDate.setDate(checkDate.getDate() - 1);
+          currentStreak++;
+
+          // Check if this date is consecutive with the previous one (if any)
+          if (i > 0) {
+            const prevDate = datesWithDailyGoals[i - 1];
+            const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (daysDiff > 1) {
+              currentStreak = 1; // Start new streak from current day
+            }
+          }
+
+          maxStreak = Math.max(maxStreak, currentStreak);
         } else {
-          break;
+          currentStreak = 0;
         }
       }
 
-      return dailyStreak;
+      return maxStreak;
     };
 
     const currentStreak = calculateCurrentStreak();
