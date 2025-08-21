@@ -29,9 +29,10 @@ export const handleGetAnalytics: RequestHandler<{}, AnalyticsResponse | ErrorRes
     const completedGoals = goals.filter(g => g.completed);
     const completionRate = (completedGoals.length / goals.length) * 100;
 
-    // Calculate streaks
-    const currentStreak = Math.max(...goals.map(g => g.streak));
-    const longestStreak = currentStreak; // In production, track this separately
+    // Calculate basic streaks (simplified for now)
+    // Note: For a full implementation, this should use the global streak calculation
+    const currentStreak = 0; // TODO: Implement global streak calculation
+    const longestStreak = 0; // TODO: Implement longest streak tracking
 
     // Category breakdown
     const categoryMap = new Map<string, { completed: number; total: number }>();
