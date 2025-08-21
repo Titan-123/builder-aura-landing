@@ -11,7 +11,6 @@ export interface IGoal extends Document {
   deadline: Date;
   completed: boolean;
   completedAt?: Date;
-  streak: number;
   createdAt: Date;
   updatedAt: Date;
 }
