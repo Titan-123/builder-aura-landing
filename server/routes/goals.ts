@@ -467,6 +467,8 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     let dailyStreak = 0;
     const today = new Date();
     let checkDate = new Date(today);
+    let consecutiveDaysWithoutGoals = 0;
+    const MAX_DAYS_WITHOUT_GOALS = 7; // Break streak if no goals for more than 7 days
 
     console.log("🔍 Starting streak calculation from:", checkDate.toDateString());
 
@@ -477,12 +479,23 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       console.log(`📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`);
 
       if (dayCompletion === null) {
-        // No daily goals for this day, move to previous day without breaking streak
-        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, continuing...`);
+        // No daily goals for this day
+        consecutiveDaysWithoutGoals++;
+        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, consecutive days without goals: ${consecutiveDaysWithoutGoals}`);
+
+        // If we've gone too many days without any goals, break the streak
+        if (consecutiveDaysWithoutGoals > MAX_DAYS_WITHOUT_GOALS) {
+          console.log(`❌ Streak broken: ${consecutiveDaysWithoutGoals} consecutive days without goals (max allowed: ${MAX_DAYS_WITHOUT_GOALS})`);
+          break;
+        }
+
         checkDate = new Date(checkDate);
         checkDate.setDate(checkDate.getDate() - 1);
         continue;
       }
+
+      // Reset the counter since we found goals on this day
+      consecutiveDaysWithoutGoals = 0;
 
       if (dayCompletion === true) {
         // All daily goals completed on this day
@@ -492,7 +505,7 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
         checkDate.setDate(checkDate.getDate() - 1);
       } else {
         // Streak broken - found a day with incomplete daily goals
-        console.log(`❌ Streak broken on ${checkDate.toDateString()}`);
+        console.log(`❌ Streak broken on ${checkDate.toDateString()}: incomplete daily goals`);
         break;
       }
     }
