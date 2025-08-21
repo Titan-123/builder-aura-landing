@@ -439,6 +439,12 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     const goals = await Goal.find({ userId: req.userId });
     console.log("📊 Found", goals.length, "goals for user");
 
+    // Log all goals for debugging
+    goals.forEach((goal, index) => {
+      const goalDate = new Date(goal.deadline);
+      console.log(`Goal ${index + 1}: "${goal.title}" | Type: ${goal.type} | Deadline: ${goalDate.toDateString()} | Completed: ${goal.completed} | CompletedAt: ${goal.completedAt ? new Date(goal.completedAt).toDateString() : 'null'}`);
+    });
+
     // Helper function to check if all daily goals are completed for a specific date
     const isDayFullyCompleted = (checkDate: Date) => {
       const allDailyGoals = goals.filter(goal => {
