@@ -203,14 +203,7 @@ export default function Goals() {
 
       if (response.ok) {
         const data = await response.json();
-        // Add random priorities for demo purposes
-        const goalsWithPriority = data.goals.map((goal: Goal) => ({
-          ...goal,
-          priority: ["low", "medium", "high"][
-            Math.floor(Math.random() * 3)
-          ] as Priority,
-        }));
-        setGoals(goalsWithPriority);
+        setGoals(data.goals);
       }
     } catch (error) {
       console.error("Failed to fetch goals:", error);
