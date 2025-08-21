@@ -772,7 +772,7 @@ export default function Goals() {
           renderBoardView()
         ) : (
           <AnimatePresence>
-            <div className={viewMode === 'grid' ? "grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr" : "space-y-4"}>
+            <div className={viewMode === 'grid' ? "grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 auto-rows-fr" : "space-y-6"}>
               {filteredGoals.map((goal, index) => renderGoalCard(goal, index))}
             </div>
           </AnimatePresence>
