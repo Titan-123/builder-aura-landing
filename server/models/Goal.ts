@@ -46,6 +46,12 @@ const GoalSchema = new Schema<IGoal>(
       required: [true, "Type is required"],
       enum: ["daily", "weekly", "monthly"],
     },
+    priority: {
+      type: String,
+      required: [true, "Priority is required"],
+      enum: ["low", "medium", "high"],
+      default: "medium",
+    },
     timeAllotted: {
       type: Number,
       required: [true, "Time allotted is required"],
