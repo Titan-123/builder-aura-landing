@@ -460,7 +460,7 @@ export default function Goals() {
     );
   }
 
-  const renderGoalCard = (goal: EnhancedGoal, index: number) => {
+  const renderGoalCard = (goal: Goal, index: number) => {
     const isOverdue = new Date(goal.deadline) < new Date() && !goal.completed;
     const isDueToday =
       new Date(goal.deadline).toDateString() === new Date().toDateString();
