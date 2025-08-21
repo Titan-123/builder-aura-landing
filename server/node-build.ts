@@ -19,9 +19,17 @@ app.get("/health", (req, res) => {
 });
 
 // SPA routes - serve index.html for specific routes
-const spaRoutes = ["/", "/dashboard", "/goals", "/calendar", "/analytics", "/login", "/register"];
+const spaRoutes = [
+  "/",
+  "/dashboard",
+  "/goals",
+  "/calendar",
+  "/analytics",
+  "/login",
+  "/register",
+];
 
-spaRoutes.forEach(route => {
+spaRoutes.forEach((route) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
