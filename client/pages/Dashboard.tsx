@@ -334,7 +334,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Goals</CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
@@ -354,7 +354,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
               <BarChart className="h-4 w-4 text-muted-foreground" />
@@ -372,7 +372,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
               <Zap className="h-4 w-4 text-muted-foreground" />
@@ -392,7 +392,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Today's Goals</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -437,11 +437,11 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                Achievements
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              Achievements
               </CardTitle>
               <CardDescription>
                 Your progress milestones and accomplishments
@@ -471,7 +471,7 @@ export default function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <Card>
+        <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="w-5 h-5" />
@@ -525,7 +525,7 @@ export default function Dashboard() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -5 }}
             >
-              <Card className={`transition-all hover:shadow-lg ${goal.completed ? 'ring-2 ring-success/20 bg-success/5' : ''}`}>
+              <Card className={`transition-all hover:shadow-lg border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95`}>
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1 flex-1">
@@ -598,7 +598,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Card>
+          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
               <motion.div
                 animate={{ 
