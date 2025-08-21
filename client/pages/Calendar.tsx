@@ -19,6 +19,7 @@ export default function Calendar() {
 
   useEffect(() => {
     fetchGoals();
+    fetchStreaks();
   }, []);
 
   const fetchGoals = async () => {
