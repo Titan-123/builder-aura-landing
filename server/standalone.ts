@@ -447,11 +447,6 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     // Helper function to check if all daily goals are completed for a specific date
     // This matches exactly how the calendar determines completion
     const isDayFullyCompleted = (checkDate) => {
-      const dayStart = new Date(checkDate);
-      dayStart.setHours(0, 0, 0, 0);
-      const dayEnd = new Date(checkDate);
-      dayEnd.setHours(23, 59, 59, 999);
-
       // Get all daily goals with deadline on this date (same logic as calendar)
       const allDailyGoals = goals.filter(goal => {
         const goalDate = new Date(goal.deadline);
@@ -474,29 +469,41 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     // Calculate daily streak (consecutive days with all daily goals completed)
     let dailyStreak = 0;
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     // Start checking from today and go backwards
     let checkDate = new Date(today);
+    let consecutiveStreak = 0;
 
+    console.log("🔍 Starting streak calculation from:", checkDate.toDateString());
+
+    // Look back up to 365 days
     for (let day = 0; day < 365; day++) {
       const dayCompletion = isDayFullyCompleted(checkDate);
 
+      console.log(`📅 Checking ${checkDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+
       if (dayCompletion === null) {
-        // No daily goals for this day, move to previous day
+        // No daily goals for this day, move to previous day without breaking streak
+        // This allows for days without goals to not break the streak
+        console.log(`⚪ No daily goals on ${checkDate.toDateString()}, continuing...`);
         checkDate.setDate(checkDate.getDate() - 1);
         continue;
       }
 
       if (dayCompletion === true) {
         // All daily goals completed on this day
-        dailyStreak++;
+        consecutiveStreak++;
+        console.log(`✅ Day completed! Streak now: ${consecutiveStreak}`);
         checkDate.setDate(checkDate.getDate() - 1);
       } else {
         // Streak broken - found a day with incomplete daily goals
+        console.log(`❌ Streak broken on ${checkDate.toDateString()}`);
         break;
       }
     }
+
+    dailyStreak = consecutiveStreak;
+    console.log(`🎯 Final daily streak: ${dailyStreak}`);
 
     // Calculate weekly and monthly streaks (simplified)
     let weeklyStreak = 0;
@@ -510,7 +517,7 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
       return new Date(d.setDate(diff));
     };
 
-    let weekStart = getWeekStart(today);
+    let weekStart = getWeekStart(new Date(today));
     weekStart.setHours(0, 0, 0, 0);
 
     for (let week = 0; week < 52; week++) {
