@@ -165,6 +165,10 @@ export const handleCreateGoal: RequestHandler<{}, GoalType | ErrorResponse, Crea
     });
 
     await goal.save();
+
+    // Calculate initial streak if there are existing completed goals of the same type
+    goal.streak = await calculateStreak(req.userId, goal);
+    await goal.save();
     
     res.status(201).json(formatGoal(goal));
   } catch (error: any) {
