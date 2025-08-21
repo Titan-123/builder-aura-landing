@@ -186,7 +186,7 @@ export default function Login() {
                   >
                     <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="email"
                         type="email"
@@ -207,7 +207,7 @@ export default function Login() {
                   >
                     <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" style={{transform: 'translateY(-50%)'}} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
