@@ -288,10 +288,10 @@ export default function Dashboard() {
               <Zap className="h-5 w-5 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-orange-600">{analytics?.currentStreak || 0}</div>
-              <p className="text-xs text-muted-foreground">days in a row</p>
+              <div className="text-3xl font-bold text-orange-600">{streaks?.dailyStreak || 0}</div>
+              <p className="text-xs text-muted-foreground">days completing all goals</p>
               <div className="flex items-center gap-1 mt-2">
-                {Array.from({ length: Math.min(analytics?.currentStreak || 0, 7) }).map((_, i) => (
+                {Array.from({ length: Math.min(streaks?.dailyStreak || 0, 7) }).map((_, i) => (
                   <div key={i} className="w-2 h-2 bg-orange-500 rounded-full" />
                 ))}
               </div>
