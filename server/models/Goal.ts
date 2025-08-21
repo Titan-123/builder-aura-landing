@@ -7,6 +7,7 @@ export interface IGoal extends Document {
   description: string;
   category: string;
   type: "daily" | "weekly" | "monthly";
+  priority: "low" | "medium" | "high";
   timeAllotted: number;
   deadline: Date;
   completed: boolean;
