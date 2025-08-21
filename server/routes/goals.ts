@@ -16,71 +16,158 @@ const formatGoal = (goal: IGoal): GoalType => ({
   deadline: goal.deadline,
   completed: goal.completed,
   completedAt: goal.completedAt,
-  streak: goal.streak,
   createdAt: goal.createdAt,
   updatedAt: goal.updatedAt
 });
 
-// Helper function to calculate proper streak for a goal
-const calculateStreak = async (userId: string, currentGoal: IGoal): Promise<number> => {
+// Helper function to calculate global completion streaks for goal tracker
+const calculateGlobalStreaks = async (userId: string) => {
   try {
-    // Get all completed goals of the same type for this user
-    const completedGoals = await Goal.find({
-      userId,
-      type: currentGoal.type,
-      completed: true,
-      completedAt: { $exists: true }
-    }).sort({ completedAt: -1 });
-
-    if (completedGoals.length === 0) {
-      return 0;
-    }
-
-    // For streak calculation, we need consecutive periods of completion
-    let streak = 0;
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate daily streak (consecutive days with all daily goals completed)
+    let dailyStreak = 0;
     let checkDate = new Date(today);
 
-    // Set to start of day for comparison
-    checkDate.setHours(0, 0, 0, 0);
+    for (let day = 0; day < 365; day++) { // Max check 1 year
+      const dayStart = new Date(checkDate);
+      const dayEnd = new Date(checkDate);
+      dayEnd.setHours(23, 59, 59, 999);
 
-    // Calculate period length based on goal type
-    const periodMap = {
-      'daily': 1,      // 1 day
-      'weekly': 7,     // 7 days
-      'monthly': 30    // 30 days (approximation)
-    };
-
-    const periodDays = periodMap[currentGoal.type as keyof typeof periodMap] || 1;
-
-    // Check consecutive periods backwards from today
-    for (let period = 0; period < 365; period++) { // Max check 1 year
-      const periodStart = new Date(checkDate);
-      const periodEnd = new Date(checkDate);
-      periodEnd.setDate(periodEnd.getDate() + periodDays - 1);
-      periodEnd.setHours(23, 59, 59, 999);
-
-      // Check if there's a completed goal in this period
-      const hasCompletionInPeriod = completedGoals.some(goal => {
-        if (!goal.completedAt) return false;
-        const completedDate = new Date(goal.completedAt);
-        return completedDate >= periodStart && completedDate <= periodEnd;
+      // Get all daily goals for this date
+      const dailyGoals = await Goal.find({
+        userId,
+        type: 'daily',
+        deadline: {
+          $gte: dayStart,
+          $lte: dayEnd
+        }
       });
 
-      if (hasCompletionInPeriod) {
-        streak++;
-        // Move to previous period
-        checkDate.setDate(checkDate.getDate() - periodDays);
+      if (dailyGoals.length === 0) {
+        // No goals for this day, continue checking previous days
+        checkDate.setDate(checkDate.getDate() - 1);
+        continue;
+      }
+
+      // Check if all daily goals for this day were completed
+      const completedGoals = dailyGoals.filter(goal => goal.completed);
+      const allCompleted = completedGoals.length === dailyGoals.length;
+
+      if (allCompleted) {
+        dailyStreak++;
+        checkDate.setDate(checkDate.getDate() - 1);
       } else {
         // Streak broken
         break;
       }
     }
 
-    return streak;
+    // Calculate weekly streak (consecutive weeks with all weekly goals completed)
+    let weeklyStreak = 0;
+    const getWeekStart = (date: Date) => {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = d.getDate() - day;
+      return new Date(d.setDate(diff));
+    };
+
+    let weekStart = getWeekStart(today);
+    weekStart.setHours(0, 0, 0, 0);
+
+    for (let week = 0; week < 52; week++) { // Max check 1 year
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+
+      // Get all weekly goals for this week
+      const weeklyGoals = await Goal.find({
+        userId,
+        type: 'weekly',
+        deadline: {
+          $gte: weekStart,
+          $lte: weekEnd
+        }
+      });
+
+      if (weeklyGoals.length === 0) {
+        // No goals for this week, continue checking previous weeks
+        weekStart.setDate(weekStart.getDate() - 7);
+        continue;
+      }
+
+      // Check if all weekly goals for this week were completed
+      const completedGoals = weeklyGoals.filter(goal => goal.completed);
+      const allCompleted = completedGoals.length === weeklyGoals.length;
+
+      if (allCompleted) {
+        weeklyStreak++;
+        weekStart.setDate(weekStart.getDate() - 7);
+      } else {
+        // Streak broken
+        break;
+      }
+    }
+
+    // Calculate monthly streak (consecutive months with all monthly goals completed)
+    let monthlyStreak = 0;
+    let checkMonth = today.getMonth();
+    let checkYear = today.getFullYear();
+
+    for (let month = 0; month < 12; month++) { // Max check 1 year
+      const monthStart = new Date(checkYear, checkMonth, 1);
+      const monthEnd = new Date(checkYear, checkMonth + 1, 0, 23, 59, 59, 999);
+
+      // Get all monthly goals for this month
+      const monthlyGoals = await Goal.find({
+        userId,
+        type: 'monthly',
+        deadline: {
+          $gte: monthStart,
+          $lte: monthEnd
+        }
+      });
+
+      if (monthlyGoals.length === 0) {
+        // No goals for this month, continue checking previous months
+        checkMonth--;
+        if (checkMonth < 0) {
+          checkMonth = 11;
+          checkYear--;
+        }
+        continue;
+      }
+
+      // Check if all monthly goals for this month were completed
+      const completedGoals = monthlyGoals.filter(goal => goal.completed);
+      const allCompleted = completedGoals.length === monthlyGoals.length;
+
+      if (allCompleted) {
+        monthlyStreak++;
+        checkMonth--;
+        if (checkMonth < 0) {
+          checkMonth = 11;
+          checkYear--;
+        }
+      } else {
+        // Streak broken
+        break;
+      }
+    }
+
+    return {
+      dailyStreak,
+      weeklyStreak,
+      monthlyStreak
+    };
   } catch (error) {
-    console.error('Error calculating streak:', error);
-    return 0;
+    console.error('Error calculating global streaks:', error);
+    return {
+      dailyStreak: 0,
+      weeklyStreak: 0,
+      monthlyStreak: 0
+    };
   }
 };
 
@@ -160,14 +247,9 @@ export const handleCreateGoal: RequestHandler<{}, GoalType | ErrorResponse, Crea
       type,
       timeAllotted,
       deadline: new Date(deadline),
-      completed: false,
-      streak: 0
+      completed: false
     });
 
-    await goal.save();
-
-    // Calculate initial streak if there are existing completed goals of the same type
-    goal.streak = await calculateStreak(req.userId, goal);
     await goal.save();
     
     res.status(201).json(formatGoal(goal));
@@ -234,17 +316,13 @@ export const handleUpdateGoal: RequestHandler<{ id: string }, GoalType | ErrorRe
     if (updates.completed !== undefined) {
       const wasCompleted = goal.completed;
       goal.completed = updates.completed;
-
+      
       if (updates.completed && !wasCompleted) {
         // Goal is being marked as completed
         goal.completedAt = new Date();
-        // Calculate streak based on consecutive completions
-        goal.streak = await calculateStreak(req.userId, goal);
       } else if (!updates.completed && wasCompleted) {
         // Goal is being marked as incomplete
         goal.completedAt = undefined;
-        // Recalculate streak when goal is marked incomplete
-        goal.streak = await calculateStreak(req.userId, goal);
       }
     }
 
@@ -303,6 +381,23 @@ export const handleDeleteGoal: RequestHandler<{ id: string }, { success: boolean
       });
     }
 
+    res.status(500).json({
+      error: "INTERNAL_ERROR",
+      message: "Internal server error"
+    });
+  }
+};
+
+// New endpoint to get global streaks
+export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (req: any, res) => {
+  try {
+    await connectDB();
+    
+    const streaks = await calculateGlobalStreaks(req.userId);
+    
+    res.json(streaks);
+  } catch (error: any) {
+    console.error('Get streaks error:', error);
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "Internal server error"
