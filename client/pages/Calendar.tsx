@@ -180,7 +180,7 @@ export default function Calendar() {
         )
         .map(g => new Date(g.completedAt!).getDate())
     ).size,
-    bestStreak: Math.max(0, ...goals.map(g => g.streak))
+    bestStreak: streaks?.dailyStreak || 0
   };
 
   const completionRate = monthlyStats.totalGoals > 0 
