@@ -306,115 +306,177 @@ export default function Goals() {
     );
   }
 
-  const renderGoalCard = (goal: EnhancedGoal, index: number) => (
-    <motion.div
-      key={goal.id}
-      initial={{ opacity: 0, y: 20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.9 }}
-      transition={{ delay: index * 0.05 }}
-      whileHover={{ y: -3, scale: 1.02 }}
-      className="group h-full"
-    >
-      <Card className={`h-full flex flex-col transition-all hover:shadow-xl border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95 ${selectedGoals.includes(goal.id) ? 'ring-2 ring-primary' : ''}`}>
-        <CardHeader className="pb-3 flex-shrink-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-2 flex-1 min-w-0">
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  checked={selectedGoals.includes(goal.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedGoals(prev => [...prev, goal.id]);
-                    } else {
-                      setSelectedGoals(prev => prev.filter(id => id !== goal.id));
-                    }
-                  }}
-                  className="rounded mt-1 flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start gap-2 mb-1">
-                    <CardTitle className={`text-lg leading-tight ${goal.completed ? 'line-through text-muted-foreground' : ''} flex-1`}>
-                      {goal.title}
-                    </CardTitle>
-                    {goal.priority && (
-                      <Badge className={`text-xs ${getPriorityColor(goal.priority)} flex items-center gap-1 flex-shrink-0`}>
-                        {getPriorityIcon(goal.priority)}
-                        {goal.priority}
-                      </Badge>
-                    )}
+  const renderGoalCard = (goal: EnhancedGoal, index: number) => {
+    const isOverdue = new Date(goal.deadline) < new Date() && !goal.completed;
+    const isDueToday = new Date(goal.deadline).toDateString() === new Date().toDateString();
+
+    return (
+      <motion.div
+        key={goal.id}
+        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -20, scale: 0.9 }}
+        transition={{ delay: index * 0.05 }}
+        whileHover={{ y: -8, scale: 1.03 }}
+        className="group h-full"
+      >
+        <Card className={`h-full flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-2xl ${goal.completed ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800' : selectedGoals.includes(goal.id) ? 'ring-2 ring-primary bg-gradient-to-br from-primary/5 to-accent/5 border-primary/50' : 'bg-gradient-to-br from-white to-gray-50/50 dark:from-slate-900 dark:to-slate-800/50 border-border/60 hover:border-primary/40'} backdrop-blur-sm shadow-lg`}>
+          {/* Priority Indicator Line */}
+          {goal.priority && (
+            <div className={`absolute top-0 left-0 right-0 h-1 ${
+              goal.priority === 'high' ? 'bg-gradient-to-r from-red-500 to-orange-500' :
+              goal.priority === 'medium' ? 'bg-gradient-to-r from-yellow-500 to-amber-500' :
+              'bg-gradient-to-r from-green-500 to-emerald-500'
+            }`} />
+          )}
+
+          {/* Status Indicators */}
+          <div className="absolute top-3 right-3 flex gap-1">
+            {isOverdue && (
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" title="Overdue" />
+            )}
+            {isDueToday && !goal.completed && (
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" title="Due Today" />
+            )}
+            {goal.completed && (
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4 text-white" />
+              </div>
+            )}
+          </div>
+
+          <CardHeader className="pb-4 pt-6">
+            <div className="flex items-start gap-3">
+              <motion.input
+                type="checkbox"
+                checked={selectedGoals.includes(goal.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedGoals(prev => [...prev, goal.id]);
+                  } else {
+                    setSelectedGoals(prev => prev.filter(id => id !== goal.id));
+                  }
+                }}
+                className="rounded-md mt-1 w-4 h-4 text-primary border-2 border-gray-300 focus:ring-primary focus:ring-2"
+                whileTap={{ scale: 0.9 }}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <CardTitle className={`text-xl font-bold leading-tight ${
+                    goal.completed ? 'line-through text-muted-foreground' :
+                    'bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent'
+                  }`}>
+                    {goal.title}
+                  </CardTitle>
+                  {goal.priority && (
+                    <Badge className={`text-xs font-semibold shadow-sm ${getPriorityColor(goal.priority)} flex items-center gap-1`}>
+                      {getPriorityIcon(goal.priority)}
+                      {goal.priority.toUpperCase()}
+                    </Badge>
+                  )}
+                </div>
+                <CardDescription className="text-sm leading-relaxed line-clamp-2 text-gray-600 dark:text-gray-400">
+                  {goal.description}
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="flex-grow flex flex-col justify-between pt-0">
+            {/* Tags and Categories */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className={`${getTypeColor(goal.type)} text-xs font-medium shadow-sm`}>
+                  {goal.type.charAt(0).toUpperCase() + goal.type.slice(1)}
+                </Badge>
+                {goal.category && (
+                  <Badge variant="outline" className="text-xs font-medium border-2 shadow-sm">
+                    {goal.category}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Goal Details */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                    <Clock className="w-4 h-4" />
+                    <span className="font-medium">{goal.timeAllotted} minutes</span>
                   </div>
-                  <CardDescription className="text-sm line-clamp-2">{goal.description}</CardDescription>
+                  {goal.streak > 0 && (
+                    <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
+                      <Target className="w-4 h-4" />
+                      <span className="font-semibold">{goal.streak} day streak</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1 text-sm">
+                  <Calendar className="w-4 h-4 text-gray-500" />
+                  <span className={`font-medium ${
+                    isOverdue ? 'text-red-600 dark:text-red-400' :
+                    isDueToday ? 'text-orange-600 dark:text-orange-400' :
+                    'text-gray-600 dark:text-gray-400'
+                  }`}>
+                    {isOverdue ? 'Overdue: ' : isDueToday ? 'Due today: ' : 'Due: '}
+                    {new Date(goal.deadline).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-1 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
-                className={`transition-all ${goal.completed ? 'text-success hover:text-success/80' : 'text-muted-foreground hover:text-success'}`}
+                className={`transition-all hover:scale-110 ${
+                  goal.completed ? 'text-green-600 hover:text-green-700 hover:bg-green-50' :
+                  'text-gray-500 hover:text-green-600 hover:bg-green-50'
+                }`}
+                title={goal.completed ? 'Mark as incomplete' : 'Mark as complete'}
               >
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setEditingGoal(goal)}
-                className="text-muted-foreground hover:text-primary"
+                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all hover:scale-110"
+                title="Edit goal"
               >
-                <Edit className="w-4 h-4" />
+                <Edit className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => deleteGoal(goal.id)}
-                className="text-muted-foreground hover:text-destructive"
+                className="text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all hover:scale-110"
+                title="Delete goal"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </Button>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3 flex-grow flex flex-col justify-between">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <Badge className={getTypeColor(goal.type)}>{goal.type}</Badge>
-              {goal.category && (
-                <Badge variant="outline">{goal.category}</Badge>
-              )}
-            </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-              <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {goal.timeAllotted}m
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {new Date(goal.deadline).toLocaleDateString()}
-              </div>
-              {goal.streak > 0 && (
-                <div className="flex items-center gap-1 text-orange-500">
-                  <Target className="w-3 h-3" />
-                  {goal.streak} streak
+
+            {/* Completion Status */}
+            {goal.completed && goal.completedAt && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-4 p-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-lg border border-green-200 dark:border-green-800"
+              >
+                <div className="flex items-center gap-2 text-sm font-medium text-green-800 dark:text-green-200">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Completed on {new Date(goal.completedAt).toLocaleDateString()}</span>
                 </div>
-              )}
-            </div>
-          </div>
-          {goal.completed && goal.completedAt && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="text-xs text-success bg-success/10 p-2 rounded mt-3"
-            >
-              ✅ Completed on {new Date(goal.completedAt).toLocaleDateString()}
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+              </motion.div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
 
   const renderBoardView = () => {
     const todoGoals = filteredGoals.filter(g => !g.completed);
