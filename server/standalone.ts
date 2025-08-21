@@ -94,6 +94,12 @@ const GoalSchema = new mongoose.Schema(
       required: true,
       enum: ["daily", "weekly", "monthly"],
     },
+    priority: {
+      type: String,
+      required: true,
+      enum: ["low", "medium", "high"],
+      default: "medium",
+    },
     timeAllotted: { type: Number, required: true, min: 1, max: 1440 },
     deadline: { type: Date, required: true },
     completed: { type: Boolean, default: false },
