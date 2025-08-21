@@ -256,6 +256,13 @@ export const handleCreateGoal: RequestHandler<
       });
     }
 
+    if (priority && !["low", "medium", "high"].includes(priority)) {
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Priority must be low, medium, or high",
+      });
+    }
+
     if (timeAllotted < 1 || timeAllotted > 1440) {
       return res.status(400).json({
         error: "VALIDATION_ERROR",
