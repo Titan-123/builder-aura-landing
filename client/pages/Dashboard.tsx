@@ -41,6 +41,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchGoals();
     fetchAnalytics();
+    fetchStreaks();
   }, []);
 
   const fetchGoals = async () => {
