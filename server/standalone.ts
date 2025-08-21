@@ -217,7 +217,7 @@ app.get("/api/goals", verifyToken, async (req: any, res) => {
 app.post("/api/goals", verifyToken, async (req: any, res) => {
   try {
     const { title, description, category, type, timeAllotted, deadline } = req.body;
-    
+
     if (!title || !description || !category || !type || !timeAllotted || !deadline) {
       return res.status(400).json({ error: "VALIDATION_ERROR", message: "All fields required" });
     }
@@ -225,7 +225,7 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
     const goal = new Goal({
       userId: req.userId,
       title: title.trim(),
-      description: description.trim(), 
+      description: description.trim(),
       category: category.trim(),
       type,
       timeAllotted,
@@ -250,6 +250,110 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
     });
   } catch (error) {
     console.error("Create goal error:", error);
+    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+  }
+});
+
+app.put("/api/goals/:goalId", verifyToken, async (req: any, res) => {
+  try {
+    const { goalId } = req.params;
+    const updates = req.body;
+
+    const goal = await Goal.findOne({ _id: goalId, userId: req.userId });
+    if (!goal) {
+      return res.status(404).json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
+    }
+
+    if (updates.title !== undefined) goal.title = updates.title.trim();
+    if (updates.description !== undefined) goal.description = updates.description.trim();
+    if (updates.category !== undefined) goal.category = updates.category.trim();
+    if (updates.type !== undefined) goal.type = updates.type;
+    if (updates.timeAllotted !== undefined) goal.timeAllotted = updates.timeAllotted;
+    if (updates.deadline !== undefined) goal.deadline = new Date(updates.deadline);
+
+    if (updates.completed !== undefined) {
+      const wasCompleted = goal.completed;
+      goal.completed = updates.completed;
+
+      if (updates.completed && !wasCompleted) {
+        goal.completedAt = new Date();
+      } else if (!updates.completed && wasCompleted) {
+        goal.completedAt = undefined;
+      }
+    }
+
+    goal.updatedAt = new Date();
+    await goal.save();
+
+    res.json({
+      id: goal._id.toString(),
+      userId: goal.userId,
+      title: goal.title,
+      description: goal.description,
+      category: goal.category,
+      type: goal.type,
+      timeAllotted: goal.timeAllotted,
+      deadline: goal.deadline,
+      completed: goal.completed,
+      completedAt: goal.completedAt,
+      createdAt: goal.createdAt,
+      updatedAt: goal.updatedAt
+    });
+  } catch (error) {
+    console.error("Update goal error:", error);
+    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+  }
+});
+
+app.delete("/api/goals/:goalId", verifyToken, async (req: any, res) => {
+  try {
+    const { goalId } = req.params;
+
+    const deletedGoal = await Goal.findOneAndDelete({ _id: goalId, userId: req.userId });
+
+    if (!deletedGoal) {
+      return res.status(404).json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Delete goal error:", error);
+    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+  }
+});
+
+app.get("/api/streaks", verifyToken, async (req: any, res) => {
+  try {
+    // Simple streak calculation for now
+    res.json({
+      dailyStreak: 0,
+      weeklyStreak: 0,
+      monthlyStreak: 0
+    });
+  } catch (error) {
+    console.error("Get streaks error:", error);
+    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+  }
+});
+
+app.get("/api/analytics", verifyToken, async (req: any, res) => {
+  try {
+    const goals = await Goal.find({ userId: req.userId });
+    const completedGoals = goals.filter(g => g.completed);
+    const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
+
+    res.json({
+      completionRate,
+      currentStreak: 0,
+      longestStreak: 0,
+      goalsCompleted: completedGoals.length,
+      totalGoals: goals.length,
+      categoryBreakdown: [],
+      weeklyTrends: [],
+      monthlyTrends: []
+    });
+  } catch (error) {
+    console.error("Get analytics error:", error);
     res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
