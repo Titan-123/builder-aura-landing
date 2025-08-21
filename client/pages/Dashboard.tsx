@@ -22,6 +22,7 @@ import { Goal, CreateGoalRequest, AnalyticsResponse } from '@shared/api';
 export default function Dashboard() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
+  const [streaks, setStreaks] = useState<{dailyStreak: number, weeklyStreak: number, monthlyStreak: number} | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
