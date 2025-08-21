@@ -325,22 +325,22 @@ export default function Calendar() {
                             }
                           `}
                         >
-                          {/* Date and Streak */}
+                          {/* Date and Status */}
                           <div className="flex items-start justify-between mb-3">
                             <span className={`text-lg font-bold ${
                               isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
                             } ${isToday(date) ? 'text-primary' : ''}`}>
                               {date.getDate()}
                             </span>
-                            {streak > 0 && (
+                            {isFullyCompleted && (
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full shadow-sm"
+                                className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full shadow-sm"
                               >
-                                <Flame className="w-3 h-3 text-orange-500" />
-                                <span className="text-xs text-orange-600 dark:text-orange-400 font-bold">
-                                  {streak}
+                                <CheckCircle2 className="w-3 h-3 text-green-500" />
+                                <span className="text-xs text-green-600 dark:text-green-400 font-bold">
+                                  ✓
                                 </span>
                               </motion.div>
                             )}
