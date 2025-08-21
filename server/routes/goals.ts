@@ -18,6 +18,7 @@ const formatGoal = (goal: IGoal): GoalType => ({
   description: goal.description,
   category: goal.category,
   type: goal.type,
+  priority: goal.priority || "medium", // Include priority with fallback
   timeAllotted: goal.timeAllotted,
   deadline: goal.deadline,
   completed: goal.completed,
