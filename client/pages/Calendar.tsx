@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Target, Flame, Sparkles, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Target, Flame, Sparkles, TrendingUp, CheckCircle2, Clock, Circle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,24 +61,40 @@ export default function Calendar() {
   const firstDayWeekday = firstDayOfMonth.getDay();
   const daysInMonth = lastDayOfMonth.getDate();
 
-  // Get goals for a specific date
-  const getGoalsForDate = (date: Date) => {
+  // Get all goals for a specific date (both completed and pending)
+  const getAllGoalsForDate = (date: Date) => {
     return goals.filter(goal => {
-      if (!goal.completedAt) return false;
-      const completedDate = new Date(goal.completedAt);
+      const goalDate = new Date(goal.deadline);
       return (
-        completedDate.getDate() === date.getDate() &&
-        completedDate.getMonth() === date.getMonth() &&
-        completedDate.getFullYear() === date.getFullYear()
+        goalDate.getDate() === date.getDate() &&
+        goalDate.getMonth() === date.getMonth() &&
+        goalDate.getFullYear() === date.getFullYear()
       );
     });
   };
 
+  // Get completed goals for a specific date
+  const getCompletedGoalsForDate = (date: Date) => {
+    return getAllGoalsForDate(date).filter(goal => goal.completed);
+  };
+
+  // Get goal statistics for a date
+  const getGoalStatsForDate = (date: Date) => {
+    const allGoals = getAllGoalsForDate(date);
+    const completedGoals = getCompletedGoalsForDate(date);
+    return {
+      total: allGoals.length,
+      completed: completedGoals.length,
+      pending: allGoals.length - completedGoals.length,
+      completionRate: allGoals.length > 0 ? (completedGoals.length / allGoals.length) * 100 : 0
+    };
+  };
+
   // Calculate streak for date
   const getStreakForDate = (date: Date) => {
-    const dateGoals = getGoalsForDate(date);
-    if (dateGoals.length === 0) return 0;
-    return Math.max(...dateGoals.map(g => g.streak));
+    const completedGoals = getCompletedGoalsForDate(date);
+    if (completedGoals.length === 0) return 0;
+    return Math.max(...completedGoals.map(g => g.streak));
   };
 
   // Generate calendar days
@@ -205,7 +221,7 @@ export default function Calendar() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
               <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -259,12 +275,12 @@ export default function Calendar() {
                 </div>
 
                 {/* Calendar grid */}
-                <div className="grid grid-cols-7 gap-1">
+                <div className="grid grid-cols-7 gap-2">
                   <AnimatePresence>
                     {calendarDays.map(({ date, isCurrentMonth }, index) => {
-                      const dayGoals = getGoalsForDate(date);
+                      const stats = getGoalStatsForDate(date);
                       const streak = getStreakForDate(date);
-                      const hasGoals = dayGoals.length > 0;
+                      const hasGoals = stats.total > 0;
 
                       return (
                         <motion.div
@@ -277,60 +293,80 @@ export default function Calendar() {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setSelectedDate(date)}
                           className={`
-                            relative min-h-[90px] p-3 border rounded-lg transition-all duration-300 cursor-pointer
+                            relative min-h-[100px] p-3 border-2 rounded-xl transition-all duration-300 cursor-pointer
                             ${isCurrentMonth ? 'bg-background hover:bg-accent/50' : 'bg-muted/30 hover:bg-muted/50'}
-                            ${isToday(date) ? 'ring-2 ring-primary shadow-lg' : ''}
+                            ${isToday(date) ? 'ring-2 ring-primary shadow-lg bg-primary/5' : ''}
                             ${isSelected(date) ? 'ring-2 ring-accent shadow-lg bg-accent/20' : ''}
-                            ${hasGoals ? 'bg-success/10 border-success/30 hover:bg-success/20' : 'border-border hover:border-accent'}
+                            ${hasGoals ? 
+                              stats.completed === stats.total ? 'bg-green-50 border-green-300 hover:bg-green-100 dark:bg-green-950/30 dark:border-green-800' :
+                              stats.completed > 0 ? 'bg-yellow-50 border-yellow-300 hover:bg-yellow-100 dark:bg-yellow-950/30 dark:border-yellow-800' :
+                              'bg-red-50 border-red-300 hover:bg-red-100 dark:bg-red-950/30 dark:border-red-800'
+                              : 'border-border hover:border-accent'
+                            }
                           `}
                         >
-                          <div className="flex items-start justify-between mb-2">
-                            <span className={`text-sm font-medium ${
+                          {/* Date and Streak */}
+                          <div className="flex items-start justify-between mb-3">
+                            <span className={`text-lg font-bold ${
                               isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
-                            } ${isToday(date) ? 'text-primary font-bold' : ''}`}>
+                            } ${isToday(date) ? 'text-primary' : ''}`}>
                               {date.getDate()}
                             </span>
                             {streak > 0 && (
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full"
+                                className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full shadow-sm"
                               >
                                 <Flame className="w-3 h-3 text-orange-500" />
-                                <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                                <span className="text-xs text-orange-600 dark:text-orange-400 font-bold">
                                   {streak}
                                 </span>
                               </motion.div>
                             )}
                           </div>
                           
+                          {/* Goal Progress */}
                           {hasGoals && (
                             <motion.div
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="space-y-1"
+                              className="space-y-2"
                             >
-                              {dayGoals.slice(0, 2).map((goal, goalIndex) => (
+                              {/* Fraction Display */}
+                              <div className="text-center">
                                 <motion.div
-                                  key={goalIndex}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: goalIndex * 0.1 }}
-                                  className="text-xs p-1.5 rounded-md bg-success/20 text-success-foreground truncate border border-success/30"
-                                  title={goal.title}
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg font-bold text-lg shadow-sm ${
+                                    stats.completed === stats.total 
+                                      ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200'
+                                      : stats.completed > 0 
+                                      ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200'
+                                      : 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'
+                                  }`}
                                 >
-                                  {goal.title}
+                                  <span>{stats.completed}</span>
+                                  <span className="text-sm opacity-70">/</span>
+                                  <span>{stats.total}</span>
                                 </motion.div>
-                              ))}
-                              {dayGoals.length > 2 && (
+                              </div>
+
+                              {/* Progress Bar */}
+                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <motion.div
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                  className="text-xs text-muted-foreground font-medium"
-                                >
-                                  +{dayGoals.length - 2} more
-                                </motion.div>
-                              )}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${stats.completionRate}%` }}
+                                  transition={{ duration: 0.5, delay: 0.2 }}
+                                  className={`h-2 rounded-full ${
+                                    stats.completed === stats.total 
+                                      ? 'bg-green-500'
+                                      : stats.completed > 0 
+                                      ? 'bg-yellow-500'
+                                      : 'bg-red-500'
+                                  }`}
+                                />
+                              </div>
                             </motion.div>
                           )}
 
@@ -339,7 +375,7 @@ export default function Calendar() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"
+                              className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-background"
                             />
                           )}
                         </motion.div>
@@ -360,7 +396,7 @@ export default function Calendar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
               <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-primary" />
@@ -412,7 +448,7 @@ export default function Calendar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card>
+            <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-accent" />
@@ -421,16 +457,26 @@ export default function Calendar() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded bg-success/20 border border-success/30 flex-shrink-0"></div>
-                  <span className="text-sm">Day with completed goals</span>
+                  <div className="w-6 h-6 rounded bg-green-200 border-2 border-green-400 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-green-800">3/3</span>
+                  </div>
+                  <span className="text-sm">All goals completed</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded bg-yellow-200 border-2 border-yellow-400 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-yellow-800">1/3</span>
+                  </div>
+                  <span className="text-sm">Partially completed</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded bg-red-200 border-2 border-red-400 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-red-800">0/3</span>
+                  </div>
+                  <span className="text-sm">No goals completed</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded ring-2 ring-primary flex-shrink-0"></div>
                   <span className="text-sm">Today</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded ring-2 ring-accent flex-shrink-0"></div>
-                  <span className="text-sm">Selected date</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full">
@@ -450,9 +496,10 @@ export default function Calendar() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.9 }}
             >
-              <Card className="border-accent/50 bg-accent/5">
+              <Card className="border-2 border-accent/50 bg-accent/5 backdrop-blur-sm shadow-md">
                 <CardHeader>
-                  <CardTitle className="text-lg">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <CalendarIcon className="w-5 h-5" />
                     {selectedDate.toLocaleDateString('en-US', { 
                       weekday: 'long',
                       year: 'numeric',
@@ -460,30 +507,78 @@ export default function Calendar() {
                       day: 'numeric'
                     })}
                   </CardTitle>
+                  <CardDescription>
+                    {(() => {
+                      const stats = getGoalStatsForDate(selectedDate);
+                      return stats.total > 0 
+                        ? `${stats.completed} of ${stats.total} goals completed (${stats.completionRate.toFixed(0)}%)`
+                        : 'No goals scheduled for this date';
+                    })()}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {getGoalsForDate(selectedDate).length > 0 ? (
-                    <div className="space-y-2">
-                      {getGoalsForDate(selectedDate).map((goal, index) => (
+                  {getAllGoalsForDate(selectedDate).length > 0 ? (
+                    <div className="space-y-3">
+                      {getAllGoalsForDate(selectedDate).map((goal, index) => (
                         <motion.div
                           key={goal.id}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="p-3 rounded-lg bg-success/10 border border-success/20"
+                          className={`p-4 rounded-lg border-2 transition-all ${
+                            goal.completed 
+                              ? 'bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800'
+                              : 'bg-gray-50 border-gray-200 dark:bg-gray-900/50 dark:border-gray-700'
+                          }`}
                         >
-                          <h4 className="font-medium text-success-foreground">{goal.title}</h4>
-                          <p className="text-sm text-muted-foreground">{goal.description}</p>
-                          <Badge variant="outline" className="mt-2">
-                            {goal.category}
-                          </Badge>
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-1">
+                              {goal.completed ? (
+                                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                              ) : (
+                                <Circle className="w-5 h-5 text-gray-400" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className={`font-semibold ${goal.completed ? 'text-green-800 dark:text-green-200 line-through' : 'text-foreground'}`}>
+                                {goal.title}
+                              </h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {goal.description}
+                              </p>
+                              <div className="flex items-center gap-3 mt-2 flex-wrap">
+                                <Badge variant={goal.completed ? 'default' : 'secondary'} className="text-xs">
+                                  {goal.category}
+                                </Badge>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Clock className="w-3 h-3" />
+                                  {goal.timeAllotted}m
+                                </div>
+                                <Badge variant="outline" className="text-xs">
+                                  {goal.type}
+                                </Badge>
+                                {goal.streak > 0 && (
+                                  <div className="flex items-center gap-1 text-xs text-orange-600">
+                                    <Flame className="w-3 h-3" />
+                                    {goal.streak} streak
+                                  </div>
+                                )}
+                              </div>
+                              {goal.completed && goal.completedAt && (
+                                <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                                  ✅ Completed on {new Date(goal.completedAt).toLocaleDateString()}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </motion.div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-muted-foreground">
-                      <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No goals completed on this date</p>
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm">No goals scheduled for this date</p>
+                      <p className="text-xs mt-1">Goals are shown based on their deadline date</p>
                     </div>
                   )}
                 </CardContent>
