@@ -47,6 +47,17 @@ export default function Goals() {
     priority: 'medium'
   });
 
+  // Edit form state
+  const [editForm, setEditForm] = useState<CreateGoalRequest & { priority?: Priority }>({
+    title: '',
+    description: '',
+    category: '',
+    type: 'daily',
+    timeAllotted: 30,
+    deadline: new Date().toISOString().split('T')[0],
+    priority: 'medium'
+  });
+
   useEffect(() => {
     fetchGoals();
   }, []);
