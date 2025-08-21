@@ -321,6 +321,7 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       description: description.trim(),
       category: category.trim(),
       type,
+      priority,
       timeAllotted,
       deadline: new Date(deadline),
       completed: false,
