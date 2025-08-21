@@ -9,37 +9,37 @@ const celebrationMessages = [
     title: "🎉 Amazing Work!",
     message: "You just crushed that goal! Keep the momentum going!",
     icon: Trophy,
-    colors: ['#FFD700', '#FFA500', '#FF6B6B']
+    colors: ['#22c55e', '#16a34a', '#15803d']
   },
   {
     title: "⭐ Superstar!",
     message: "Another goal completed! You're absolutely unstoppable!",
     icon: Star,
-    colors: ['#FF6B9D', '#C44569', '#F8B500']
+    colors: ['#10b981', '#059669', '#047857']
   },
   {
     title: "🔥 On Fire!",
     message: "You're building incredible momentum! Nothing can stop you now!",
     icon: Zap,
-    colors: ['#FF9F43', '#FF6B35', '#E55039']
+    colors: ['#14b8a6', '#0d9488', '#0f766e']
   },
   {
     title: "💎 Diamond Level!",
     message: "Excellence achieved! You're shining brighter than ever!",
     icon: Crown,
-    colors: ['#3742FA', '#5352ED', '#A4B0F7']
+    colors: ['#22c55e', '#16a34a', '#15803d']
   },
   {
     title: "💪 Goal Crusher!",
     message: "Another one bites the dust! Your determination is inspiring!",
     icon: Heart,
-    colors: ['#2ED573', '#20BF6B', '#0FB9B1']
+    colors: ['#10b981', '#059669', '#047857']
   },
   {
     title: "🚀 Rocket Mode!",
     message: "You're soaring to new heights! Keep reaching for the stars!",
     icon: Sparkles,
-    colors: ['#A29BFE', '#6C5CE7', '#FD79A8']
+    colors: ['#14b8a6', '#0d9488', '#0f766e']
   }
 ];
 
