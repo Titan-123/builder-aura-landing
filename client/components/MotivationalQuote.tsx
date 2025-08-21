@@ -9,70 +9,70 @@ const motivationalQuotes = [
     author: "Walt Disney",
     theme: "action",
     icon: Zap,
-    gradient: "from-orange-400 to-pink-400"
+    gradient: "from-green-400 to-emerald-400"
   },
   {
     text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
     author: "Winston Churchill",
     theme: "perseverance",
     icon: Heart,
-    gradient: "from-red-400 to-pink-400"
+    gradient: "from-emerald-400 to-teal-400"
   },
   {
     text: "It is during our darkest moments that we must focus to see the light.",
     author: "Aristotle",
     theme: "hope",
     icon: Star,
-    gradient: "from-yellow-400 to-orange-400"
+    gradient: "from-green-400 to-lime-400"
   },
   {
     text: "Your limitation—it's only your imagination.",
     author: "Unknown",
     theme: "mindset",
     icon: Sparkles,
-    gradient: "from-purple-400 to-pink-400"
+    gradient: "from-teal-400 to-green-400"
   },
   {
     text: "Great things never come from comfort zones.",
     author: "Unknown",
     theme: "growth",
     icon: Zap,
-    gradient: "from-green-400 to-blue-400"
+    gradient: "from-green-400 to-emerald-400"
   },
   {
     text: "Dream it. Wish it. Do it.",
     author: "Unknown",
     theme: "dreams",
     icon: Star,
-    gradient: "from-indigo-400 to-purple-400"
+    gradient: "from-emerald-400 to-green-400"
   },
   {
     text: "Success doesn't just find you. You have to go out and get it.",
     author: "Unknown",
     theme: "action",
     icon: Zap,
-    gradient: "from-cyan-400 to-blue-400"
+    gradient: "from-teal-400 to-emerald-400"
   },
   {
     text: "The harder you work for something, the greater you'll feel when you achieve it.",
     author: "Unknown",
     theme: "effort",
     icon: Heart,
-    gradient: "from-pink-400 to-red-400"
+    gradient: "from-green-400 to-teal-400"
   },
   {
     text: "Don't stop when you're tired. Stop when you're done.",
     author: "Unknown",
     theme: "persistence",
     icon: Zap,
-    gradient: "from-orange-400 to-red-400"
+    gradient: "from-emerald-400 to-green-400"
   },
   {
     text: "Wake up with determination. Go to bed with satisfaction.",
     author: "Unknown",
     theme: "daily",
     icon: Sparkles,
-    gradient: "from-violet-400 to-purple-400"
+    gradient: "from-teal-400 to-green-400"
   }
 ];
 
