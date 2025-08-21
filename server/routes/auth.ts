@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from 'jsonwebtoken';
-import connectDB from '../database';
-import User, { IUser } from '../models/User';
+import connectDB from '../database.js';
+import User, { IUser } from '../models/User.js';
 import { AuthResponse, LoginRequest, RegisterRequest, ErrorResponse } from "@shared/api";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this';
