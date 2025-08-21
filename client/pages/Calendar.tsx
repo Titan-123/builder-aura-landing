@@ -577,12 +577,6 @@ export default function Calendar() {
                                 <Badge variant="outline" className="text-xs">
                                   {goal.type}
                                 </Badge>
-                                {goal.streak > 0 && (
-                                  <div className="flex items-center gap-1 text-xs text-orange-600">
-                                    <Flame className="w-3 h-3" />
-                                    {goal.streak} streak
-                                  </div>
-                                )}
                               </div>
                               {goal.completed && goal.completedAt && (
                                 <p className="text-xs text-green-600 dark:text-green-400 mt-2">
