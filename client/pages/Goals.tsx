@@ -314,13 +314,13 @@ export default function Goals() {
       exit={{ opacity: 0, y: -20, scale: 0.9 }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ y: -3, scale: 1.02 }}
-      className="group"
+      className="group h-full"
     >
-      <Card className={`transition-all hover:shadow-xl border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95 ${selectedGoals.includes(goal.id) ? 'ring-2 ring-primary' : ''}`}>
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
+      <Card className={`h-full flex flex-col transition-all hover:shadow-xl border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95 ${selectedGoals.includes(goal.id) ? 'ring-2 ring-primary' : ''}`}>
+        <CardHeader className="pb-3 flex-shrink-0">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-2 flex-1 min-w-0">
+              <div className="flex items-start gap-2">
                 <input
                   type="checkbox"
                   checked={selectedGoals.includes(goal.id)}
@@ -331,21 +331,25 @@ export default function Goals() {
                       setSelectedGoals(prev => prev.filter(id => id !== goal.id));
                     }
                   }}
-                  className="rounded"
+                  className="rounded mt-1 flex-shrink-0"
                 />
-                <CardTitle className={`text-lg ${goal.completed ? 'line-through text-muted-foreground' : ''}`}>
-                  {goal.title}
-                </CardTitle>
-                {goal.priority && (
-                  <Badge className={`text-xs ${getPriorityColor(goal.priority)} flex items-center gap-1`}>
-                    {getPriorityIcon(goal.priority)}
-                    {goal.priority}
-                  </Badge>
-                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start gap-2 mb-1">
+                    <CardTitle className={`text-lg leading-tight ${goal.completed ? 'line-through text-muted-foreground' : ''} flex-1`}>
+                      {goal.title}
+                    </CardTitle>
+                    {goal.priority && (
+                      <Badge className={`text-xs ${getPriorityColor(goal.priority)} flex items-center gap-1 flex-shrink-0`}>
+                        {getPriorityIcon(goal.priority)}
+                        {goal.priority}
+                      </Badge>
+                    )}
+                  </div>
+                  <CardDescription className="text-sm line-clamp-2">{goal.description}</CardDescription>
+                </div>
               </div>
-              <CardDescription className="text-sm">{goal.description}</CardDescription>
             </div>
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
@@ -373,34 +377,36 @@ export default function Goals() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <Badge className={getTypeColor(goal.type)}>{goal.type}</Badge>
-            {goal.category && (
-              <Badge variant="outline">{goal.category}</Badge>
-            )}
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {goal.timeAllotted}m
+        <CardContent className="space-y-3 flex-grow flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <Badge className={getTypeColor(goal.type)}>{goal.type}</Badge>
+              {goal.category && (
+                <Badge variant="outline">{goal.category}</Badge>
+              )}
             </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              {new Date(goal.deadline).toLocaleDateString()}
-            </div>
-            {goal.streak > 0 && (
-              <div className="flex items-center gap-1 text-orange-500">
-                <Target className="w-3 h-3" />
-                {goal.streak} streak
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {goal.timeAllotted}m
               </div>
-            )}
+              <div className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                {new Date(goal.deadline).toLocaleDateString()}
+              </div>
+              {goal.streak > 0 && (
+                <div className="flex items-center gap-1 text-orange-500">
+                  <Target className="w-3 h-3" />
+                  {goal.streak} streak
+                </div>
+              )}
+            </div>
           </div>
           {goal.completed && goal.completedAt && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="text-xs text-success bg-success/10 p-2 rounded"
+              className="text-xs text-success bg-success/10 p-2 rounded mt-3"
             >
               ✅ Completed on {new Date(goal.completedAt).toLocaleDateString()}
             </motion.div>
@@ -704,7 +710,7 @@ export default function Goals() {
           renderBoardView()
         ) : (
           <AnimatePresence>
-            <div className={viewMode === 'grid' ? "grid gap-4 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
+            <div className={viewMode === 'grid' ? "grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr" : "space-y-4"}>
               {filteredGoals.map((goal, index) => renderGoalCard(goal, index))}
             </div>
           </AnimatePresence>
