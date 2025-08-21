@@ -1,76 +1,101 @@
-import { Link } from 'react-router-dom';
-import { Target, CheckCircle2, Calendar, BarChart3, ArrowRight, Users, Zap, Star, Sparkles, Heart, Trophy, Flame } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import DarkModeToggle from '@/components/DarkModeToggle';
-import MotivationalBackground from '@/components/MotivationalBackground';
+import { Link } from "react-router-dom";
+import {
+  Target,
+  CheckCircle2,
+  Calendar,
+  BarChart3,
+  ArrowRight,
+  Users,
+  Zap,
+  Star,
+  Sparkles,
+  Heart,
+  Trophy,
+  Flame,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import MotivationalBackground from "@/components/MotivationalBackground";
 
 export default function Index() {
   const features = [
     {
       icon: Target,
-      title: 'Smart Goal Setting',
-      description: 'Transform your dreams into achievable milestones with our intelligent goal tracking system.',
-      color: 'from-blue-500 to-blue-600',
-      motivational: 'Turn dreams into reality!'
+      title: "Smart Goal Setting",
+      description:
+        "Transform your dreams into achievable milestones with our intelligent goal tracking system.",
+      color: "from-blue-500 to-blue-600",
+      motivational: "Turn dreams into reality!",
     },
     {
       icon: Calendar,
-      title: 'Visual Progress',
-      description: 'Watch your success unfold day by day with beautiful calendar views and streak tracking.',
-      color: 'from-purple-500 to-purple-600',
-      motivational: 'See your growth!'
+      title: "Visual Progress",
+      description:
+        "Watch your success unfold day by day with beautiful calendar views and streak tracking.",
+      color: "from-purple-500 to-purple-600",
+      motivational: "See your growth!",
     },
     {
       icon: BarChart3,
-      title: 'Powerful Analytics',
-      description: 'Discover insights that fuel your motivation and guide your journey to greatness.',
-      color: 'from-green-500 to-green-600',
-      motivational: 'Data-driven success!'
+      title: "Powerful Analytics",
+      description:
+        "Discover insights that fuel your motivation and guide your journey to greatness.",
+      color: "from-green-500 to-green-600",
+      motivational: "Data-driven success!",
     },
     {
       icon: CheckCircle2,
-      title: 'Achievement Tracking',
-      description: 'Celebrate every victory and build unstoppable momentum with our completion system.',
-      color: 'from-orange-500 to-orange-600',
-      motivational: 'Celebrate every win!'
+      title: "Achievement Tracking",
+      description:
+        "Celebrate every victory and build unstoppable momentum with our completion system.",
+      color: "from-orange-500 to-orange-600",
+      motivational: "Celebrate every win!",
     },
     {
       icon: Zap,
-      title: 'Motivational Engine',
-      description: 'Stay inspired with dynamic quotes, celebrations, and motivational feedback.',
-      color: 'from-yellow-500 to-yellow-600',
-      motivational: 'Stay inspired daily!'
+      title: "Motivational Engine",
+      description:
+        "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
+      color: "from-yellow-500 to-yellow-600",
+      motivational: "Stay inspired daily!",
     },
     {
       icon: Trophy,
-      title: 'Achievement System',
-      description: 'Unlock badges and rewards as you conquer your goals and reach new heights.',
-      color: 'from-pink-500 to-pink-600',
-      motivational: 'Become a champion!'
-    }
+      title: "Achievement System",
+      description:
+        "Unlock badges and rewards as you conquer your goals and reach new heights.",
+      color: "from-pink-500 to-pink-600",
+      motivational: "Become a champion!",
+    },
   ];
 
   const stats = [
-    { 
-      value: '💪', 
-      label: 'Unlimited Potential', 
+    {
+      value: "💪",
+      label: "Unlimited Potential",
       icon: Star,
-      description: 'No limits on your dreams'
+      description: "No limits on your dreams",
     },
-    { 
-      value: '🎯', 
-      label: 'Goal Mastery', 
+    {
+      value: "🎯",
+      label: "Goal Mastery",
       icon: Target,
-      description: 'Track everything that matters'
+      description: "Track everything that matters",
     },
-    { 
-      value: '🚀', 
-      label: 'Success Analytics', 
+    {
+      value: "🚀",
+      label: "Success Analytics",
       icon: BarChart3,
-      description: 'Insights that inspire growth'
-    }
+      description: "Insights that inspire growth",
+    },
   ];
 
   const motivationalMessages = [
@@ -78,14 +103,14 @@ export default function Index() {
     "Every expert was once a beginner!",
     "Progress, not perfection!",
     "Your only limit is you!",
-    "Dream big, achieve bigger!"
+    "Dream big, achieve bigger!",
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-slate-900 dark:to-teal-950 relative overflow-hidden">
       {/* Enhanced Motivational Background */}
       <MotivationalBackground variant="floating" intensity="medium" />
-      
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -93,12 +118,12 @@ export default function Index() {
           animate={{
             y: [0, -40, 0],
             opacity: [0.3, 0.8, 0.3],
-            scale: [1, 1.3, 1]
+            scale: [1, 1.3, 1],
           }}
           transition={{
             duration: 6,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
         <motion.div
@@ -107,13 +132,13 @@ export default function Index() {
             y: [0, 30, 0],
             x: [0, 20, 0],
             opacity: [0.2, 0.7, 0.2],
-            scale: [1, 1.2, 1]
+            scale: [1, 1.2, 1],
           }}
           transition={{
             duration: 8,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 1
+            delay: 1,
           }}
         />
         <motion.div
@@ -121,13 +146,13 @@ export default function Index() {
           animate={{
             scale: [1, 1.8, 1],
             opacity: [0.3, 0.9, 0.3],
-            rotate: [0, 180, 360]
+            rotate: [0, 180, 360],
           }}
           transition={{
             duration: 4,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 0.5
+            delay: 0.5,
           }}
         />
       </div>
@@ -149,20 +174,20 @@ export default function Index() {
               className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white shadow-2xl"
             >
               <motion.div
-                animate={{ 
+                animate={{
                   rotate: [0, 10, -10, 0],
-                  scale: [1, 1.1, 1]
+                  scale: [1, 1.1, 1],
                 }}
-                transition={{ 
-                  duration: 3, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
               >
                 <Target className="w-12 h-12" />
               </motion.div>
             </motion.div>
-            
+
             {/* Headline */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -171,13 +196,13 @@ export default function Index() {
               className="space-y-6"
             >
               <motion.div
-                animate={{ 
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
-                transition={{ 
-                  duration: 8, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
                 className="inline-block"
               >
@@ -191,16 +216,21 @@ export default function Index() {
                   </span>
                 </h1>
               </motion.div>
-              
+
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
               >
-                Unleash your potential with our revolutionary goal tracking system. 
-                <span className="font-semibold text-green-600 dark:text-green-400"> 
-                  {motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]}
+                Unleash your potential with our revolutionary goal tracking
+                system.
+                <span className="font-semibold text-green-600 dark:text-green-400">
+                  {
+                    motivationalMessages[
+                      Math.floor(Math.random() * motivationalMessages.length)
+                    ]
+                  }
                 </span>
               </motion.p>
             </motion.div>
@@ -216,7 +246,11 @@ export default function Index() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-xl hover:shadow-2xl transform transition-all">
+                <Button
+                  asChild
+                  size="lg"
+                  className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-xl hover:shadow-2xl transform transition-all"
+                >
                   <Link to="/register" className="gap-2">
                     <Sparkles className="w-5 h-5" />
                     Start Your Journey
@@ -228,10 +262,13 @@ export default function Index() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-950">
-                  <Link to="/login">
-                    Continue Journey
-                  </Link>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="text-lg px-8 py-4 h-auto border-2 border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-950"
+                >
+                  <Link to="/login">Continue Journey</Link>
                 </Button>
               </motion.div>
             </motion.div>
@@ -252,7 +289,8 @@ export default function Index() {
             Your Success Toolkit
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Everything you need to conquer your goals and unlock your true potential.
+            Everything you need to conquer your goals and unlock your true
+            potential.
           </p>
         </motion.div>
 
@@ -278,7 +316,9 @@ export default function Index() {
                     >
                       <Icon className="w-8 h-8" />
                     </motion.div>
-                    <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl font-bold">
+                      {feature.title}
+                    </CardTitle>
                     <motion.div
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
@@ -310,7 +350,7 @@ export default function Index() {
       >
         <div className="absolute inset-0 bg-black/20" />
         <MotivationalBackground variant="success" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -339,15 +379,15 @@ export default function Index() {
                   className="space-y-4"
                 >
                   <motion.div
-                    animate={{ 
+                    animate={{
                       scale: [1, 1.2, 1],
-                      rotate: [0, 10, -10, 0]
+                      rotate: [0, 10, -10, 0],
                     }}
-                    transition={{ 
-                      duration: 4, 
-                      repeat: Infinity, 
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
                       ease: "easeInOut",
-                      delay: index * 0.5
+                      delay: index * 0.5,
                     }}
                     className="text-6xl"
                   >
@@ -375,26 +415,31 @@ export default function Index() {
             <motion.h2
               className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent"
               animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
               transition={{
                 duration: 6,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             >
               Your Dreams Are Waiting
             </motion.h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Every champion started with a single step. Make today the day you begin your extraordinary journey.
+              Every champion started with a single step. Make today the day you
+              begin your extraordinary journey.
             </p>
           </div>
-          
+
           <motion.div
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button asChild size="lg" className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transform transition-all">
+            <Button
+              asChild
+              size="lg"
+              className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transform transition-all"
+            >
               <Link to="/register" className="gap-3">
                 <Flame className="w-6 h-6" />
                 Ignite Your Success
