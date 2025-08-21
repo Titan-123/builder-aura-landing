@@ -444,48 +444,90 @@ export default function Dashboard() {
         />
       </motion.div>
 
-      {/* Achievements Preview */}
-      {achievements.some(a => a.unlocked) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
-        >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-500" />
-                  Latest Achievements
-                </CardTitle>
-                <CardDescription>Your most recent accomplishments</CardDescription>
-              </div>
-              <Link to="/analytics">
-                <Button variant="outline" size="sm" className="gap-2">
-                  View All <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4 overflow-x-auto pb-2">
-                {achievements
-                  .filter(a => a.unlocked)
-                  .slice(0, 6)
-                  .map((achievement) => (
-                    <motion.div
-                      key={achievement.id}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex-shrink-0"
-                    >
-                      <AchievementBadge achievement={achievement} size="sm" />
-                    </motion.div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+      {/* Achievements Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9 }}
+      >
+        <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-yellow-500" />
+                Achievements & Progress
+              </CardTitle>
+              <CardDescription>
+                Your accomplishments and what's coming next
+              </CardDescription>
+            </div>
+            <Link to="/analytics">
+              <Button variant="outline" size="sm" className="gap-2">
+                View Analytics <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Unlocked Achievements */}
+              {achievements.some(a => a.unlocked) && (
+                <div>
+                  <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-500" />
+                    Unlocked ({achievements.filter(a => a.unlocked).length})
+                  </h4>
+                  <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+                    {achievements
+                      .filter(a => a.unlocked)
+                      .map((achievement, index) => (
+                        <motion.div
+                          key={achievement.id}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 * index }}
+                        >
+                          <AchievementBadge achievement={achievement} size="sm" />
+                        </motion.div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Next Achievements */}
+              {achievements.some(a => !a.unlocked) && (
+                <div>
+                  <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                    <Target className="w-4 h-4 text-muted-foreground" />
+                    Coming Next ({achievements.filter(a => !a.unlocked).length})
+                  </h4>
+                  <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+                    {achievements
+                      .filter(a => !a.unlocked)
+                      .slice(0, 8)
+                      .map((achievement, index) => (
+                        <motion.div
+                          key={achievement.id}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 * index }}
+                        >
+                          <AchievementBadge achievement={achievement} size="sm" />
+                        </motion.div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {achievements.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Award className="w-12 h-12 mx-auto mb-3" />
+                  <p>Complete goals to unlock achievements!</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Quick Goal Creation Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
