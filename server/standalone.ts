@@ -442,73 +442,59 @@ app.delete("/api/goals/:goalId", verifyToken, async (req: any, res) => {
 
 app.get("/api/streaks", verifyToken, async (req: any, res) => {
   try {
-    const goals = await Goal.find({ userId: req.userId }).sort({ createdAt: -1 });
+    const goals = await Goal.find({ userId: req.userId });
+
+    // Helper function to check if all daily goals are completed for a specific date
+    // This matches exactly how the calendar determines completion
+    const isDayFullyCompleted = (checkDate) => {
+      const dayStart = new Date(checkDate);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(checkDate);
+      dayEnd.setHours(23, 59, 59, 999);
+
+      // Get all daily goals with deadline on this date (same logic as calendar)
+      const allDailyGoals = goals.filter(goal => {
+        const goalDate = new Date(goal.deadline);
+        return goal.type === 'daily' &&
+               goalDate.getDate() === checkDate.getDate() &&
+               goalDate.getMonth() === checkDate.getMonth() &&
+               goalDate.getFullYear() === checkDate.getFullYear();
+      });
+
+      if (allDailyGoals.length === 0) {
+        return null; // No daily goals for this day
+      }
+
+      // Check if all daily goals are completed (regardless of when completed)
+      const completedDailyGoals = allDailyGoals.filter(goal => goal.completed);
+
+      return completedDailyGoals.length === allDailyGoals.length;
+    };
 
     // Calculate daily streak (consecutive days with all daily goals completed)
     let dailyStreak = 0;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Start checking from yesterday and go backwards
+    // Start checking from today and go backwards
     let checkDate = new Date(today);
-    checkDate.setDate(checkDate.getDate() - 1);
 
     for (let day = 0; day < 365; day++) {
-      const dayStart = new Date(checkDate);
-      dayStart.setHours(0, 0, 0, 0);
-      const dayEnd = new Date(checkDate);
-      dayEnd.setHours(23, 59, 59, 999);
+      const dayCompletion = isDayFullyCompleted(checkDate);
 
-      // Get all daily goals for this date
-      const dailyGoals = goals.filter(goal => {
-        const goalDate = new Date(goal.deadline);
-        return goal.type === 'daily' &&
-               goalDate >= dayStart && goalDate <= dayEnd;
-      });
-
-      if (dailyGoals.length === 0) {
-        // No daily goals for this day, skip
+      if (dayCompletion === null) {
+        // No daily goals for this day, move to previous day
         checkDate.setDate(checkDate.getDate() - 1);
         continue;
       }
 
-      // Check if all daily goals for this day were completed
-      const completedDailyGoals = dailyGoals.filter(goal => {
-        if (!goal.completed || !goal.completedAt) return false;
-        const completedDate = new Date(goal.completedAt);
-        return completedDate >= dayStart && completedDate <= dayEnd;
-      });
-
-      if (completedDailyGoals.length === dailyGoals.length) {
+      if (dayCompletion === true) {
         // All daily goals completed on this day
         dailyStreak++;
         checkDate.setDate(checkDate.getDate() - 1);
       } else {
-        // Streak broken
+        // Streak broken - found a day with incomplete daily goals
         break;
-      }
-    }
-
-    // Check if today should also count (if all today's daily goals are completed)
-    const todayStart = new Date(today);
-    const todayEnd = new Date(today);
-    todayEnd.setHours(23, 59, 59, 999);
-
-    const todayDailyGoals = goals.filter(goal => {
-      const goalDate = new Date(goal.deadline);
-      return goal.type === 'daily' &&
-             goalDate >= todayStart && goalDate <= todayEnd;
-    });
-
-    if (todayDailyGoals.length > 0) {
-      const todayCompletedDaily = todayDailyGoals.filter(goal => {
-        if (!goal.completed || !goal.completedAt) return false;
-        const completedDate = new Date(goal.completedAt);
-        return completedDate >= todayStart && completedDate <= todayEnd;
-      });
-
-      if (todayCompletedDaily.length === todayDailyGoals.length) {
-        dailyStreak++; // Add today to the streak
       }
     }
 
