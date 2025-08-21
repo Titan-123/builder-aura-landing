@@ -48,7 +48,7 @@ export default function Layout({ children }: LayoutProps) {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md dark:bg-slate-950/80 shadow-sm"
+        className="sticky top-0 z-50 w-full border-b-2 border-border/50 bg-white/90 backdrop-blur-md dark:bg-slate-950/90 shadow-md"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
