@@ -133,57 +133,240 @@ export const triggerMotivationalCelebration = ({
   toast.custom(
     (t) => (
       <motion.div
-        initial={{ scale: 0, opacity: 0, y: -50 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0, opacity: 0, y: -50 }}
+        initial={{
+          scale: 0.3,
+          opacity: 0,
+          y: -100,
+          rotateX: -90,
+          filter: "blur(10px)"
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          filter: "blur(0px)"
+        }}
+        exit={{
+          scale: 0.8,
+          opacity: 0,
+          y: -50,
+          filter: "blur(5px)"
+        }}
+        transition={{
+          type: "spring",
+          damping: 25,
+          stiffness: 300,
+          duration: 0.8
+        }}
         className={`
           ${t.visible ? 'animate-enter' : 'animate-leave'}
-          max-w-md w-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500
-          shadow-xl rounded-lg pointer-events-auto flex ring-1 ring-green-200 dark:ring-green-800 text-white
-          transform transition-all duration-500 border border-green-400/30
+          max-w-md w-full relative overflow-hidden
+          pointer-events-auto flex text-white
+          transform transition-all duration-500
+          backdrop-blur-xl rounded-2xl
+          shadow-2xl shadow-green-500/25
+          border border-white/20
         `}
+        style={{
+          background: `
+            linear-gradient(135deg,
+              rgba(34, 197, 94, 0.95) 0%,
+              rgba(16, 185, 129, 0.95) 35%,
+              rgba(20, 184, 166, 0.95) 100%
+            )
+          `,
+          backdropFilter: "blur(20px)",
+          boxShadow: `
+            0 25px 50px -12px rgba(34, 197, 94, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2)
+          `
+        }}
       >
-        <div className="flex-1 w-0 p-4">
-          <div className="flex items-start">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.1, 0.3],
+              rotate: [0, 180, 360]
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-gradient-to-br from-white/20 to-transparent"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.2, 0.05, 0.2],
+              x: [0, 20, 0]
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="absolute -bottom-3 -left-3 w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-300/30 to-transparent"
+          />
+        </div>
+
+        <div className="flex-1 w-0 p-6 relative z-10">
+          <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
               <motion.div
-                animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
-                transition={{ duration: 0.6, repeat: 2 }}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30"
+                animate={{
+                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.2, 1.1, 1],
+                  boxShadow: [
+                    "0 0 20px rgba(255, 255, 255, 0.3)",
+                    "0 0 30px rgba(255, 255, 255, 0.5)",
+                    "0 0 20px rgba(255, 255, 255, 0.3)"
+                  ]
+                }}
+                transition={{
+                  duration: 1.2,
+                  repeat: 2,
+                  ease: "easeInOut"
+                }}
+                className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
+                style={{
+                  background: `
+                    linear-gradient(145deg,
+                      rgba(255, 255, 255, 0.25),
+                      rgba(255, 255, 255, 0.1)
+                    )
+                  `,
+                  boxShadow: `
+                    0 8px 32px rgba(255, 255, 255, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.2)
+                  `
+                }}
               >
-                <celebration.icon className="w-6 h-6" />
+                <celebration.icon className="w-7 h-7" />
+                <motion.div
+                  animate={{
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 0.6, 0]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeOut"
+                  }}
+                  className="absolute inset-0 rounded-2xl bg-white/30"
+                />
               </motion.div>
             </div>
-            <div className="ml-3 flex-1">
-              <p className="text-sm font-bold leading-tight">
+            <div className="flex-1 min-w-0">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-base font-bold leading-tight mb-2"
+                style={{
+                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)"
+                }}
+              >
                 {celebration.title}
-              </p>
-              <p className="mt-1 text-sm opacity-90 leading-relaxed">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-sm opacity-95 leading-relaxed mb-3"
+                style={{
+                  textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)"
+                }}
+              >
                 {celebration.message}
-              </p>
-              <p className="mt-2 text-xs opacity-75 bg-white/10 rounded px-2 py-1 inline-block">
-                Goal: "{goalTitle}"
-              </p>
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="inline-flex items-center gap-2 text-xs bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/20"
+                style={{
+                  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.2)"
+                }}
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full bg-white/80"
+                />
+                <span className="font-medium truncate">"{goalTitle}"</span>
+              </motion.div>
             </div>
           </div>
         </div>
-        <div className="flex border-l border-white/20">
+
+        <div className="flex items-stretch relative z-10">
+          <div className="w-px bg-white/20" />
           <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{
+              scale: 1.05,
+              backgroundColor: "rgba(255, 255, 255, 0.15)"
+            }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => toast.dismiss(t.id)}
-            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+            className="p-4 flex items-center justify-center text-white/90 hover:text-white transition-all duration-300 rounded-r-2xl group"
             title="Close notification"
+            style={{
+              background: "rgba(255, 255, 255, 0.05)",
+              backdropFilter: "blur(10px)"
+            }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <motion.svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              whileHover={{ rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </motion.svg>
           </motion.button>
         </div>
+
+        {/* Sparkle Effects */}
+        <motion.div
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0.5, 1, 0.5],
+            y: [10, -10, 10]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-2 right-16 w-1 h-1 bg-white rounded-full"
+        />
+        <motion.div
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0.3, 1.2, 0.3],
+            rotate: [0, 180, 360]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute bottom-4 right-6 w-1.5 h-1.5 bg-white/70 rounded-full"
+        />
       </motion.div>
     ),
     {
-      duration: 6000,
+      duration: 7000,
       position: 'top-center',
     }
   );
