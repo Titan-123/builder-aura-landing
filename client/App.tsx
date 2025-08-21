@@ -80,45 +80,99 @@ const App = () => (
       <HotToaster
         position="top-center"
         toastOptions={{
-          duration: 3000,
+          duration: 4000,
           style: {
-            background: 'hsl(var(--card))',
+            background: 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(20px)',
             color: 'hsl(var(--foreground))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '8px',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            boxShadow: `
+              0 25px 50px -12px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(255, 255, 255, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2)
+            `,
+            fontSize: '14px',
+            fontWeight: '500',
+            padding: '16px 20px',
+            maxWidth: '420px',
           },
           success: {
             style: {
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+              background: `
+                linear-gradient(135deg,
+                  rgba(34, 197, 94, 0.95) 0%,
+                  rgba(16, 185, 129, 0.95) 50%,
+                  rgba(20, 184, 166, 0.95) 100%
+                )
+              `,
+              backdropFilter: 'blur(20px)',
               color: 'white',
-              border: '1px solid rgba(34, 197, 94, 0.3)',
-              boxShadow: '0 10px 25px rgba(34, 197, 94, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '16px',
+              boxShadow: `
+                0 25px 50px -12px rgba(34, 197, 94, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `,
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+              fontWeight: '600',
             },
             iconTheme: {
               primary: 'white',
-              secondary: '#22c55e',
+              secondary: 'rgba(34, 197, 94, 0.8)',
             },
           },
           error: {
             style: {
-              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              background: `
+                linear-gradient(135deg,
+                  rgba(239, 68, 68, 0.95) 0%,
+                  rgba(220, 38, 38, 0.95) 50%,
+                  rgba(185, 28, 28, 0.95) 100%
+                )
+              `,
+              backdropFilter: 'blur(20px)',
               color: 'white',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              boxShadow: '0 10px 25px rgba(239, 68, 68, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '16px',
+              boxShadow: `
+                0 25px 50px -12px rgba(239, 68, 68, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `,
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+              fontWeight: '600',
             },
             iconTheme: {
               primary: 'white',
-              secondary: '#ef4444',
+              secondary: 'rgba(239, 68, 68, 0.8)',
             },
           },
           loading: {
             style: {
-              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+              background: `
+                linear-gradient(135deg,
+                  rgba(59, 130, 246, 0.95) 0%,
+                  rgba(37, 99, 235, 0.95) 50%,
+                  rgba(29, 78, 216, 0.95) 100%
+                )
+              `,
+              backdropFilter: 'blur(20px)',
               color: 'white',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              boxShadow: '0 10px 25px rgba(59, 130, 246, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '16px',
+              boxShadow: `
+                0 25px 50px -12px rgba(59, 130, 246, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `,
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+              fontWeight: '600',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'rgba(59, 130, 246, 0.8)',
             },
           },
         }}
