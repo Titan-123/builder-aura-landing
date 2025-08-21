@@ -18,7 +18,6 @@ export interface Goal {
   deadline: Date;
   completed: boolean;
   completedAt?: Date;
-  streak: number;
   createdAt: Date;
   updatedAt: Date;
 }
