@@ -375,19 +375,75 @@ export const triggerMotivationalCelebration = ({
   if (streak > 1) {
     setTimeout(() => {
       const streakMessage = streakMessages[Math.floor(Math.random() * streakMessages.length)];
-      toast.success(streakMessage, {
-        duration: 4000,
-        position: 'top-center',
-        icon: '🔥',
-        style: {
-          background: 'linear-gradient(45deg, #22c55e, #16a34a)',
-          color: 'white',
-          fontWeight: 'bold',
-          border: '1px solid rgba(34, 197, 94, 0.3)',
-          boxShadow: '0 10px 25px rgba(34, 197, 94, 0.3)'
+      toast.custom(
+        (t) => (
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            className={`
+              ${t.visible ? 'animate-enter' : 'animate-leave'}
+              max-w-sm w-full relative overflow-hidden
+              pointer-events-auto flex items-center gap-3 p-4
+              backdrop-blur-xl rounded-xl text-white
+              border border-white/20
+            `}
+            style={{
+              background: `
+                linear-gradient(135deg,
+                  rgba(251, 146, 60, 0.95) 0%,
+                  rgba(234, 88, 12, 0.95) 50%,
+                  rgba(194, 65, 12, 0.95) 100%
+                )
+              `,
+              boxShadow: `
+                0 20px 40px -12px rgba(251, 146, 60, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `
+            }}
+          >
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="text-2xl"
+            >
+              🔥
+            </motion.div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold" style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}>
+                {streakMessage}
+              </p>
+              <p className="text-xs opacity-90 mt-1">
+                {streak} days strong! 💪
+              </p>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => toast.dismiss(t.id)}
+              className="p-1 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
+          </motion.div>
+        ),
+        {
+          duration: 4000,
+          position: 'top-center',
         }
-      });
-    }, 2000);
+      );
+    }, 2500);
   }
 };
 
