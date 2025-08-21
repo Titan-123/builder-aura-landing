@@ -58,48 +58,62 @@ async function connectDB() {
 }
 
 // User Schema
-const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true },
-  password: { type: String, required: true, minlength: 6 }
-}, { timestamps: true });
+const UserSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: true, minlength: 6 },
+  },
+  { timestamps: true },
+);
 
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-UserSchema.methods.comparePassword = async function(candidatePassword: string) {
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.models.User || mongoose.model('User', UserSchema);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 // Goal Schema
-const GoalSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  title: { type: String, required: true, trim: true },
-  description: { type: String, required: true, trim: true },
-  category: { type: String, required: true, trim: true },
-  type: { type: String, required: true, enum: ["daily", "weekly", "monthly"] },
-  timeAllotted: { type: Number, required: true, min: 1, max: 1440 },
-  deadline: { type: Date, required: true },
-  completed: { type: Boolean, default: false },
-  completedAt: { type: Date }
-}, { timestamps: true });
+const GoalSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true },
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
+    category: { type: String, required: true, trim: true },
+    type: {
+      type: String,
+      required: true,
+      enum: ["daily", "weekly", "monthly"],
+    },
+    timeAllotted: { type: Number, required: true, min: 1, max: 1440 },
+    deadline: { type: Date, required: true },
+    completed: { type: Boolean, default: false },
+    completedAt: { type: Date },
+  },
+  { timestamps: true },
+);
 
-const Goal = mongoose.models.Goal || mongoose.model('Goal', GoalSchema);
+const Goal = mongoose.models.Goal || mongoose.model("Goal", GoalSchema);
 
 // JWT config
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this';
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-this";
 
 // Auth middleware
 const verifyToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: "UNAUTHORIZED", message: "Authentication required" });
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ error: "UNAUTHORIZED", message: "Authentication required" });
   }
 
   const token = authHeader.substring(7);
@@ -108,7 +122,9 @@ const verifyToken = (req: any, res: any, next: any) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "UNAUTHORIZED", message: "Invalid or expired token" });
+    return res
+      .status(401)
+      .json({ error: "UNAUTHORIZED", message: "Invalid or expired token" });
   }
 };
 
@@ -129,71 +145,98 @@ app.get("/api/ping", (req, res) => {
 app.post("/api/auth/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    
+
     if (!name || !email || !password) {
-      return res.status(400).json({ error: "VALIDATION_ERROR", message: "All fields required" });
+      return res
+        .status(400)
+        .json({ error: "VALIDATION_ERROR", message: "All fields required" });
     }
 
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      return res.status(400).json({ error: "USER_EXISTS", message: "User already exists" });
+      return res
+        .status(400)
+        .json({ error: "USER_EXISTS", message: "User already exists" });
     }
 
-    const user = new User({ name: name.trim(), email: email.toLowerCase(), password });
+    const user = new User({
+      name: name.trim(),
+      email: email.toLowerCase(),
+      password,
+    });
     await user.save();
 
-    const accessToken = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, { expiresIn: '7d' });
-    
+    const accessToken = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
     res.status(201).json({
       user: { id: user._id.toString(), name: user.name, email: user.email },
       accessToken,
-      refreshToken: accessToken
+      refreshToken: accessToken,
     });
   } catch (error) {
     console.error("Register error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
-      return res.status(400).json({ error: "VALIDATION_ERROR", message: "Email and password required" });
+      return res
+        .status(400)
+        .json({
+          error: "VALIDATION_ERROR",
+          message: "Email and password required",
+        });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: "INVALID_CREDENTIALS", message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ error: "INVALID_CREDENTIALS", message: "Invalid credentials" });
     }
 
-    const accessToken = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, { expiresIn: '7d' });
-    
+    const accessToken = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
     res.json({
       user: { id: user._id.toString(), name: user.name, email: user.email },
       accessToken,
-      refreshToken: accessToken
+      refreshToken: accessToken,
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
 app.get("/api/auth/me", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ error: "UNAUTHORIZED", message: "No valid token provided" });
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ error: "UNAUTHORIZED", message: "No valid token provided" });
     }
 
     const token = authHeader.substring(7);
     const decoded: any = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
+    const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
-      return res.status(401).json({ error: "UNAUTHORIZED", message: "User not found" });
+      return res
+        .status(401)
+        .json({ error: "UNAUTHORIZED", message: "User not found" });
     }
 
     res.json({
@@ -201,11 +244,13 @@ app.get("/api/auth/me", async (req, res) => {
       name: user.name,
       email: user.email,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     });
   } catch (error) {
     console.error("Get user error:", error);
-    res.status(401).json({ error: "UNAUTHORIZED", message: "Invalid or expired token" });
+    res
+      .status(401)
+      .json({ error: "UNAUTHORIZED", message: "Invalid or expired token" });
   }
 });
 
@@ -214,13 +259,13 @@ app.get("/api/goals", verifyToken, async (req: any, res) => {
   try {
     const { type, category, completed } = req.query;
     const filter: any = { userId: req.userId };
-    
+
     if (type && type !== "all") filter.type = type;
     if (category && category !== "all") filter.category = category;
     if (completed !== undefined) filter.completed = completed === "true";
 
     const goals = await Goal.find(filter).sort({ createdAt: -1 });
-    const formattedGoals = goals.map(goal => ({
+    const formattedGoals = goals.map((goal) => ({
       id: goal._id.toString(),
       userId: goal.userId,
       title: goal.title,
@@ -232,22 +277,34 @@ app.get("/api/goals", verifyToken, async (req: any, res) => {
       completed: goal.completed,
       completedAt: goal.completedAt,
       createdAt: goal.createdAt,
-      updatedAt: goal.updatedAt
+      updatedAt: goal.updatedAt,
     }));
 
     res.json({ goals: formattedGoals, total: formattedGoals.length });
   } catch (error) {
     console.error("Get goals error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
 app.post("/api/goals", verifyToken, async (req: any, res) => {
   try {
-    const { title, description, category, type, timeAllotted, deadline } = req.body;
+    const { title, description, category, type, timeAllotted, deadline } =
+      req.body;
 
-    if (!title || !description || !category || !type || !timeAllotted || !deadline) {
-      return res.status(400).json({ error: "VALIDATION_ERROR", message: "All fields required" });
+    if (
+      !title ||
+      !description ||
+      !category ||
+      !type ||
+      !timeAllotted ||
+      !deadline
+    ) {
+      return res
+        .status(400)
+        .json({ error: "VALIDATION_ERROR", message: "All fields required" });
     }
 
     const goal = new Goal({
@@ -258,7 +315,7 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       type,
       timeAllotted,
       deadline: new Date(deadline),
-      completed: false
+      completed: false,
     });
 
     await goal.save();
@@ -274,11 +331,13 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       completed: goal.completed,
       completedAt: goal.completedAt,
       createdAt: goal.createdAt,
-      updatedAt: goal.updatedAt
+      updatedAt: goal.updatedAt,
     });
   } catch (error) {
     console.error("Create goal error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
@@ -289,15 +348,20 @@ app.put("/api/goals/:goalId", verifyToken, async (req: any, res) => {
 
     const goal = await Goal.findOne({ _id: goalId, userId: req.userId });
     if (!goal) {
-      return res.status(404).json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
+      return res
+        .status(404)
+        .json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
     }
 
     if (updates.title !== undefined) goal.title = updates.title.trim();
-    if (updates.description !== undefined) goal.description = updates.description.trim();
+    if (updates.description !== undefined)
+      goal.description = updates.description.trim();
     if (updates.category !== undefined) goal.category = updates.category.trim();
     if (updates.type !== undefined) goal.type = updates.type;
-    if (updates.timeAllotted !== undefined) goal.timeAllotted = updates.timeAllotted;
-    if (updates.deadline !== undefined) goal.deadline = new Date(updates.deadline);
+    if (updates.timeAllotted !== undefined)
+      goal.timeAllotted = updates.timeAllotted;
+    if (updates.deadline !== undefined)
+      goal.deadline = new Date(updates.deadline);
 
     if (updates.completed !== undefined) {
       const wasCompleted = goal.completed;
@@ -325,11 +389,13 @@ app.put("/api/goals/:goalId", verifyToken, async (req: any, res) => {
       completed: goal.completed,
       completedAt: goal.completedAt,
       createdAt: goal.createdAt,
-      updatedAt: goal.updatedAt
+      updatedAt: goal.updatedAt,
     });
   } catch (error) {
     console.error("Update goal error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
@@ -337,16 +403,23 @@ app.delete("/api/goals/:goalId", verifyToken, async (req: any, res) => {
   try {
     const { goalId } = req.params;
 
-    const deletedGoal = await Goal.findOneAndDelete({ _id: goalId, userId: req.userId });
+    const deletedGoal = await Goal.findOneAndDelete({
+      _id: goalId,
+      userId: req.userId,
+    });
 
     if (!deletedGoal) {
-      return res.status(404).json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
+      return res
+        .status(404)
+        .json({ error: "GOAL_NOT_FOUND", message: "Goal not found" });
     }
 
     res.json({ success: true });
   } catch (error) {
     console.error("Delete goal error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
@@ -356,19 +429,22 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
     res.json({
       dailyStreak: 0,
       weeklyStreak: 0,
-      monthlyStreak: 0
+      monthlyStreak: 0,
     });
   } catch (error) {
     console.error("Get streaks error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
 app.get("/api/analytics", verifyToken, async (req: any, res) => {
   try {
     const goals = await Goal.find({ userId: req.userId });
-    const completedGoals = goals.filter(g => g.completed);
-    const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
+    const completedGoals = goals.filter((g) => g.completed);
+    const completionRate =
+      goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
 
     res.json({
       completionRate,
@@ -378,18 +454,28 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
       totalGoals: goals.length,
       categoryBreakdown: [],
       weeklyTrends: [],
-      monthlyTrends: []
+      monthlyTrends: [],
     });
   } catch (error) {
     console.error("Get analytics error:", error);
-    res.status(500).json({ error: "INTERNAL_ERROR", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "INTERNAL_ERROR", message: "Internal server error" });
   }
 });
 
 // SPA fallback routes
-const spaRoutes = ["/", "/dashboard", "/goals", "/calendar", "/analytics", "/login", "/register"];
+const spaRoutes = [
+  "/",
+  "/dashboard",
+  "/goals",
+  "/calendar",
+  "/analytics",
+  "/login",
+  "/register",
+];
 
-spaRoutes.forEach(route => {
+spaRoutes.forEach((route) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });

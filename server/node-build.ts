@@ -22,19 +22,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(distPath));
 
 // Import and setup routes manually to avoid bundling issues
-import("./index.js").then(({ createServer }) => {
-  const serverApp = createServer();
-  
-  // Copy over the routes from the created server
-  serverApp._router.stack.forEach((layer) => {
-    if (layer.route) {
-      // Copy individual routes
-      const method = Object.keys(layer.route.methods)[0];
-      const path = layer.route.path;
-      app[method](path, layer.route.stack[0].handle);
-    }
-  });
-}).catch(console.error);
+import("./index.js")
+  .then(({ createServer }) => {
+    const serverApp = createServer();
+
+    // Copy over the routes from the created server
+    serverApp._router.stack.forEach((layer) => {
+      if (layer.route) {
+        // Copy individual routes
+        const method = Object.keys(layer.route.methods)[0];
+        const path = layer.route.path;
+        app[method](path, layer.route.stack[0].handle);
+      }
+    });
+  })
+  .catch(console.error);
 
 // Health check
 app.get("/health", (req, res) => {
@@ -49,16 +51,16 @@ app.get("/api/ping", (req, res) => {
 // SPA fallback routes - explicitly define them to avoid wildcards
 const spaRoutes = [
   "/",
-  "/dashboard", 
+  "/dashboard",
   "/goals",
   "/calendar",
-  "/analytics", 
+  "/analytics",
   "/login",
-  "/register"
+  "/register",
 ];
 
 // Handle SPA routes
-spaRoutes.forEach(route => {
+spaRoutes.forEach((route) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
