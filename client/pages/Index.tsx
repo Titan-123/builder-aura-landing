@@ -89,7 +89,7 @@ export default function Index() {
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-20 w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+          className="absolute top-20 left-20 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"
           animate={{
             y: [0, -40, 0],
             opacity: [0.3, 0.8, 0.3],
@@ -102,7 +102,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"
+          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full"
           animate={{
             y: [0, 30, 0],
             x: [0, 20, 0],
@@ -117,7 +117,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-pink-400 to-red-400 rounded-full"
+          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-green-400 to-teal-400 rounded-full"
           animate={{
             scale: [1, 1.8, 1],
             opacity: [0.3, 0.9, 0.3],
@@ -146,7 +146,7 @@ export default function Index() {
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 text-white shadow-2xl"
+              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white shadow-2xl"
             >
               <motion.div
                 animate={{ 
@@ -182,11 +182,11 @@ export default function Index() {
                 className="inline-block"
               >
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
-                  <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent bg-300% animate-gradient">
+                  <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent bg-300% animate-gradient">
                     Transform Your Dreams
                   </span>
                   <br />
-                  <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
                     Into Reality
                   </span>
                 </h1>
@@ -199,7 +199,7 @@ export default function Index() {
                 className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
               >
                 Unleash your potential with our revolutionary goal tracking system. 
-                <span className="font-semibold text-purple-600 dark:text-purple-400"> 
+                <span className="font-semibold text-green-600 dark:text-green-400"> 
                   {motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]}
                 </span>
               </motion.p>
@@ -216,7 +216,7 @@ export default function Index() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 shadow-xl hover:shadow-2xl transform transition-all">
+                <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-xl hover:shadow-2xl transform transition-all">
                   <Link to="/register" className="gap-2">
                     <Sparkles className="w-5 h-5" />
                     Start Your Journey
@@ -228,7 +228,7 @@ export default function Index() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:hover:bg-purple-950">
+                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-950">
                   <Link to="/login">
                     Continue Journey
                   </Link>
@@ -248,7 +248,7 @@ export default function Index() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-4 mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Your Success Toolkit
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
@@ -283,7 +283,7 @@ export default function Index() {
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                      className="text-sm font-semibold text-green-600 dark:text-green-400"
                     >
                       {feature.motivational}
                     </motion.div>
@@ -306,7 +306,7 @@ export default function Index() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white py-20 relative overflow-hidden"
+        className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white py-20 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/20" />
         <MotivationalBackground variant="success" />
@@ -372,8 +372,8 @@ export default function Index() {
           className="space-y-8"
         >
           <div className="space-y-4">
-            <motion.h2 
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent"
+            <motion.h2
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
@@ -394,7 +394,7 @@ export default function Index() {
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button asChild size="lg" className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 shadow-2xl hover:shadow-3xl transform transition-all">
+            <Button asChild size="lg" className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transform transition-all">
               <Link to="/register" className="gap-3">
                 <Flame className="w-6 h-6" />
                 Ignite Your Success
@@ -410,9 +410,9 @@ export default function Index() {
             transition={{ delay: 0.5 }}
             className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
-            <Heart className="w-4 h-4 text-pink-500" />
+            <Heart className="w-4 h-4 text-green-500" />
             Free forever • No limits • Start in seconds
-            <Heart className="w-4 h-4 text-pink-500" />
+            <Heart className="w-4 h-4 text-green-500" />
           </motion.div>
         </motion.div>
       </div>
