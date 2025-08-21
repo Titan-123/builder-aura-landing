@@ -208,7 +208,7 @@ export default function Register() {
                         id="name"
                         type="text"
                         placeholder="Enter your full name"
-                        className="pl-10 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="pl-10 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
@@ -229,7 +229,7 @@ export default function Register() {
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        className="pl-10 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="pl-10 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         required
@@ -250,7 +250,7 @@ export default function Register() {
                         id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
-                        className="pl-10 pr-12 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="pl-10 pr-12 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         required
@@ -284,7 +284,7 @@ export default function Register() {
                         id="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm your password"
-                        className="pl-10 pr-12 h-12 border border-border/20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 transition-all duration-300 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="pl-10 pr-12 h-12 !border-slate-300 dark:!border-slate-600 !bg-white dark:!bg-slate-800 focus:!bg-white dark:focus:!bg-slate-800 focus:!border-primary !placeholder:text-slate-600 dark:!placeholder:text-slate-300 transition-all duration-300"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
