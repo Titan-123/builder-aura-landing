@@ -252,7 +252,7 @@ export default function Goals() {
           const goalData = goals.find(g => g.id === goalId);
           triggerMotivationalCelebration({
             goalTitle: goalData?.title || 'Goal',
-            streak: goalData?.streak || 0,
+            streak: 0,
             isFirstGoal: goals.filter(g => g.completed).length === 0,
             category: goalData?.category
           });
@@ -466,12 +466,6 @@ export default function Goals() {
                     <Clock className="w-4 h-4" />
                     <span className="font-medium">{goal.timeAllotted} minutes</span>
                   </div>
-                  {goal.streak > 0 && (
-                    <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
-                      <Target className="w-4 h-4" />
-                      <span className="font-semibold">{goal.streak} day streak</span>
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-1 text-sm">
