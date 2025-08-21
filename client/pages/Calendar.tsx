@@ -299,8 +299,8 @@ export default function Calendar() {
                   <AnimatePresence>
                     {calendarDays.map(({ date, isCurrentMonth }, index) => {
                       const stats = getGoalStatsForDate(date);
-                      const streak = getStreakForDate(date);
                       const hasGoals = stats.total > 0;
+                      const isFullyCompleted = getDailyCompletionForDate(date);
 
                       return (
                         <motion.div
