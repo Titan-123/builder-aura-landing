@@ -164,10 +164,17 @@ export default function Dashboard() {
     return diffDays > 0 && diffDays <= 3 && !g.completed;
   });
 
-  const recentlyCompleted = goals
-    .filter(g => g.completed && g.completedAt)
-    .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())
-    .slice(0, 3);
+  const upcomingDeadlines = goals
+    .filter(g => {
+      if (g.completed) return false;
+      const goalDate = new Date(g.deadline);
+      const today = new Date();
+      const diffTime = goalDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 && diffDays <= 7; // Next 7 days
+    })
+    .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+    .slice(0, 5);
 
   const completedGoals = goals.filter(g => g.completed);
   const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
