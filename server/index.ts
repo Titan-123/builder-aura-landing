@@ -3,8 +3,19 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./database";
 import { handleDemo } from "./routes/demo";
-import { handleRegister, handleLogin, handleMe, verifyToken } from "./routes/auth";
-import { handleGetGoals, handleCreateGoal, handleUpdateGoal, handleDeleteGoal, handleGetStreaks } from "./routes/goals";
+import {
+  handleRegister,
+  handleLogin,
+  handleMe,
+  verifyToken,
+} from "./routes/auth";
+import {
+  handleGetGoals,
+  handleCreateGoal,
+  handleUpdateGoal,
+  handleDeleteGoal,
+  handleGetStreaks,
+} from "./routes/goals";
 import { handleGetAnalytics } from "./routes/analytics";
 
 export function createServer() {
@@ -16,8 +27,8 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Initialize database connection
-  connectDB().catch(err => {
-    console.error('Failed to connect to MongoDB:', err);
+  connectDB().catch((err) => {
+    console.error("Failed to connect to MongoDB:", err);
   });
 
   // Example API routes

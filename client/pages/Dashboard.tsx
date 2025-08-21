@@ -1,39 +1,82 @@
-import { useState, useEffect } from 'react';
-import { Plus, Calendar, Clock, Target, CheckCircle2, TrendingUp, AlertCircle, Zap, Star, ArrowRight, Activity, Award, Timer } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import confetti from 'canvas-confetti';
-import toast from 'react-hot-toast';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import AchievementBadge, { useAchievements } from '@/components/AchievementBadge';
-import MotivationalQuote from '@/components/MotivationalQuote';
-import { triggerMotivationalCelebration, MotivationalProgress } from '@/components/MotivationalCelebration';
-import MotivationalBackground from '@/components/MotivationalBackground';
-import { Goal, CreateGoalRequest, AnalyticsResponse } from '@shared/api';
+import { useState, useEffect } from "react";
+import {
+  Plus,
+  Calendar,
+  Clock,
+  Target,
+  CheckCircle2,
+  TrendingUp,
+  AlertCircle,
+  Zap,
+  Star,
+  ArrowRight,
+  Activity,
+  Award,
+  Timer,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import confetti from "canvas-confetti";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import AchievementBadge, {
+  useAchievements,
+} from "@/components/AchievementBadge";
+import MotivationalQuote from "@/components/MotivationalQuote";
+import {
+  triggerMotivationalCelebration,
+  MotivationalProgress,
+} from "@/components/MotivationalCelebration";
+import MotivationalBackground from "@/components/MotivationalBackground";
+import { Goal, CreateGoalRequest, AnalyticsResponse } from "@shared/api";
 
 export default function Dashboard() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
-  const [streaks, setStreaks] = useState<{dailyStreak: number, weeklyStreak: number, monthlyStreak: number} | null>(null);
+  const [streaks, setStreaks] = useState<{
+    dailyStreak: number;
+    weeklyStreak: number;
+    monthlyStreak: number;
+  } | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Form state for quick goal creation
   const [newGoal, setNewGoal] = useState<CreateGoalRequest>({
-    title: '',
-    description: '',
-    category: '',
-    type: 'daily',
+    title: "",
+    description: "",
+    category: "",
+    type: "daily",
     timeAllotted: 30,
-    deadline: new Date().toISOString().split('T')[0]
+    deadline: new Date().toISOString().split("T")[0],
   });
 
   const achievements = useAchievements(goals, analytics);
@@ -46,20 +89,20 @@ export default function Dashboard() {
 
   const fetchGoals = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/goals', {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch("/api/goals", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setGoals(data.goals);
       }
     } catch (error) {
-      console.error('Failed to fetch goals:', error);
-      toast.error('Failed to load goals');
+      console.error("Failed to fetch goals:", error);
+      toast.error("Failed to load goals");
     } finally {
       setLoading(false);
     }
@@ -67,11 +110,11 @@ export default function Dashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/analytics', {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch("/api/analytics", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -79,17 +122,17 @@ export default function Dashboard() {
         setAnalytics(data);
       }
     } catch (error) {
-      console.error('Failed to fetch analytics:', error);
+      console.error("Failed to fetch analytics:", error);
     }
   };
 
   const fetchStreaks = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/streaks', {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch("/api/streaks", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -97,86 +140,86 @@ export default function Dashboard() {
         setStreaks(data);
       }
     } catch (error) {
-      console.error('Failed to fetch streaks:', error);
+      console.error("Failed to fetch streaks:", error);
     }
   };
 
   const createGoal = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/goals', {
-        method: 'POST',
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch("/api/goals", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newGoal)
+        body: JSON.stringify(newGoal),
       });
-      
+
       if (response.ok) {
         await fetchGoals();
         await fetchAnalytics();
         setIsCreateOpen(false);
         setNewGoal({
-          title: '',
-          description: '',
-          category: '',
-          type: 'daily',
+          title: "",
+          description: "",
+          category: "",
+          type: "daily",
           timeAllotted: 30,
-          deadline: new Date().toISOString().split('T')[0]
+          deadline: new Date().toISOString().split("T")[0],
         });
-        
-        toast.success('Goal created successfully! 🎯');
+
+        toast.success("Goal created successfully! 🎯");
       }
     } catch (error) {
-      console.error('Failed to create goal:', error);
-      toast.error('Failed to create goal');
+      console.error("Failed to create goal:", error);
+      toast.error("Failed to create goal");
     }
   };
 
   const toggleGoalCompletion = async (goalId: string, completed: boolean) => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       const response = await fetch(`/api/goals/${goalId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ completed })
+        body: JSON.stringify({ completed }),
       });
-      
+
       if (response.ok) {
         await fetchGoals();
         await fetchAnalytics();
-        
+
         if (completed) {
-          const goalData = goals.find(g => g.id === goalId);
+          const goalData = goals.find((g) => g.id === goalId);
           triggerMotivationalCelebration({
-            goalTitle: goalData?.title || 'Goal',
+            goalTitle: goalData?.title || "Goal",
             streak: goalData?.streak || 0,
-            isFirstGoal: goals.filter(g => g.completed).length === 0,
-            category: goalData?.category
+            isFirstGoal: goals.filter((g) => g.completed).length === 0,
+            category: goalData?.category,
           });
         }
       }
     } catch (error) {
-      console.error('Failed to update goal:', error);
-      toast.error('Failed to update goal');
+      console.error("Failed to update goal:", error);
+      toast.error("Failed to update goal");
     }
   };
 
   // Calculate dashboard insights
-  const todayGoals = goals.filter(g => {
+  const todayGoals = goals.filter((g) => {
     const today = new Date().toDateString();
     return new Date(g.deadline).toDateString() === today;
   });
 
-  const overdueGoals = goals.filter(g => 
-    new Date(g.deadline) < new Date() && !g.completed
+  const overdueGoals = goals.filter(
+    (g) => new Date(g.deadline) < new Date() && !g.completed,
   );
 
-  const upcomingGoals = goals.filter(g => {
+  const upcomingGoals = goals.filter((g) => {
     const goalDate = new Date(g.deadline);
     const today = new Date();
     const diffTime = goalDate.getTime() - today.getTime();
@@ -185,7 +228,7 @@ export default function Dashboard() {
   });
 
   const upcomingDeadlines = goals
-    .filter(g => {
+    .filter((g) => {
       if (g.completed) return false;
       const goalDate = new Date(g.deadline);
       const today = new Date();
@@ -193,12 +236,14 @@ export default function Dashboard() {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       return diffDays >= 0 && diffDays <= 7; // Next 7 days
     })
-    .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+    .sort(
+      (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
+    )
     .slice(0, 5);
 
-  const completedGoals = goals.filter(g => g.completed);
-  const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
-
+  const completedGoals = goals.filter((g) => g.completed);
+  const completionRate =
+    goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
 
   if (loading) {
     return (
@@ -239,11 +284,15 @@ export default function Dashboard() {
         >
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Overall Progress</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Overall Progress
+              </CardTitle>
               <Target className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-primary">{completionRate.toFixed(0)}%</div>
+              <div className="text-3xl font-bold text-primary">
+                {completionRate.toFixed(0)}%
+              </div>
               <Progress value={completionRate} className="mt-2" />
               <p className="text-xs text-muted-foreground mt-2">
                 {completedGoals.length} of {goals.length} goals completed
@@ -259,18 +308,26 @@ export default function Dashboard() {
         >
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Focus</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Today's Focus
+              </CardTitle>
               <Calendar className="h-5 w-5 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-blue-600">{todayGoals.length}</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {todayGoals.length}
+              </div>
               <p className="text-xs text-muted-foreground">
-                {todayGoals.filter(g => g.completed).length} completed today
+                {todayGoals.filter((g) => g.completed).length} completed today
               </p>
               {todayGoals.length > 0 && (
-                <Progress 
-                  value={(todayGoals.filter(g => g.completed).length / todayGoals.length) * 100} 
-                  className="mt-2" 
+                <Progress
+                  value={
+                    (todayGoals.filter((g) => g.completed).length /
+                      todayGoals.length) *
+                    100
+                  }
+                  className="mt-2"
                 />
               )}
             </CardContent>
@@ -284,14 +341,22 @@ export default function Dashboard() {
         >
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Current Streak
+              </CardTitle>
               <Zap className="h-5 w-5 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-orange-600">{streaks?.dailyStreak || 0}</div>
-              <p className="text-xs text-muted-foreground">days completing all goals</p>
+              <div className="text-3xl font-bold text-orange-600">
+                {streaks?.dailyStreak || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                days completing all goals
+              </p>
               <div className="flex items-center gap-1 mt-2">
-                {Array.from({ length: Math.min(streaks?.dailyStreak || 0, 7) }).map((_, i) => (
+                {Array.from({
+                  length: Math.min(streaks?.dailyStreak || 0, 7),
+                }).map((_, i) => (
                   <div key={i} className="w-2 h-2 bg-orange-500 rounded-full" />
                 ))}
               </div>
@@ -306,11 +371,15 @@ export default function Dashboard() {
         >
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Needs Attention</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Needs Attention
+              </CardTitle>
               <AlertCircle className="h-5 w-5 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-red-600">{overdueGoals.length}</div>
+              <div className="text-3xl font-bold text-red-600">
+                {overdueGoals.length}
+              </div>
               <p className="text-xs text-muted-foreground">overdue goals</p>
               {upcomingGoals.length > 0 && (
                 <p className="text-xs text-yellow-600 mt-1">
@@ -346,7 +415,9 @@ export default function Dashboard() {
                   <Timer className="w-5 h-5 text-blue-500" />
                   Today's Goals
                 </CardTitle>
-                <CardDescription>Goals due today that need your attention</CardDescription>
+                <CardDescription>
+                  Goals due today that need your attention
+                </CardDescription>
               </div>
               <Link to="/goals">
                 <Button variant="outline" size="sm" className="gap-2">
@@ -368,22 +439,30 @@ export default function Dashboard() {
                       whileHover={{ scale: 1.02 }}
                       className={`p-3 rounded-lg border transition-all cursor-pointer ${
                         goal.completed
-                          ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
-                          : 'bg-muted/50 border-border hover:border-primary/50'
+                          ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                          : "bg-muted/50 border-border hover:border-primary/50"
                       }`}
-                      onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
+                      onClick={() =>
+                        toggleGoalCompletion(goal.id, !goal.completed)
+                      }
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                            goal.completed
-                              ? 'bg-green-500 border-green-500'
-                              : 'border-muted-foreground hover:border-primary'
-                          }`}>
-                            {goal.completed && <CheckCircle2 className="w-3 h-3 text-white" />}
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              goal.completed
+                                ? "bg-green-500 border-green-500"
+                                : "border-muted-foreground hover:border-primary"
+                            }`}
+                          >
+                            {goal.completed && (
+                              <CheckCircle2 className="w-3 h-3 text-white" />
+                            )}
                           </div>
                           <div>
-                            <p className={`font-medium ${goal.completed ? 'line-through text-muted-foreground' : ''}`}>
+                            <p
+                              className={`font-medium ${goal.completed ? "line-through text-muted-foreground" : ""}`}
+                            >
                               {goal.title}
                             </p>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -431,7 +510,9 @@ export default function Dashboard() {
               {upcomingDeadlines.length === 0 ? (
                 <div className="text-center py-4 text-muted-foreground">
                   <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                  <p className="text-sm">No upcoming deadlines - you're all set! 🎉</p>
+                  <p className="text-sm">
+                    No upcoming deadlines - you're all set! 🎉
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -439,23 +520,25 @@ export default function Dashboard() {
                     const goalDate = new Date(goal.deadline);
                     const today = new Date();
                     const diffTime = goalDate.getTime() - today.getTime();
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const diffDays = Math.ceil(
+                      diffTime / (1000 * 60 * 60 * 24),
+                    );
 
-                    let urgencyColor = 'text-muted-foreground';
-                    let urgencyBg = 'bg-muted/20';
+                    let urgencyColor = "text-muted-foreground";
+                    let urgencyBg = "bg-muted/20";
                     let urgencyText = `${diffDays} days`;
 
                     if (diffDays === 0) {
-                      urgencyColor = 'text-red-600';
-                      urgencyBg = 'bg-red-50 dark:bg-red-950/20';
-                      urgencyText = 'Due today';
+                      urgencyColor = "text-red-600";
+                      urgencyBg = "bg-red-50 dark:bg-red-950/20";
+                      urgencyText = "Due today";
                     } else if (diffDays === 1) {
-                      urgencyColor = 'text-orange-600';
-                      urgencyBg = 'bg-orange-50 dark:bg-orange-950/20';
-                      urgencyText = 'Due tomorrow';
+                      urgencyColor = "text-orange-600";
+                      urgencyBg = "bg-orange-50 dark:bg-orange-950/20";
+                      urgencyText = "Due tomorrow";
                     } else if (diffDays <= 3) {
-                      urgencyColor = 'text-yellow-600';
-                      urgencyBg = 'bg-yellow-50 dark:bg-yellow-950/20';
+                      urgencyColor = "text-yellow-600";
+                      urgencyBg = "bg-yellow-50 dark:bg-yellow-950/20";
                     }
 
                     return (
@@ -467,7 +550,9 @@ export default function Dashboard() {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{goal.title}</p>
+                            <p className="font-medium text-sm truncate">
+                              {goal.title}
+                            </p>
                             <div className="flex items-center gap-2 text-xs mt-1">
                               <Clock className="w-3 h-3" />
                               <span>{goal.timeAllotted}m</span>
@@ -479,7 +564,9 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`text-xs font-medium ${urgencyColor}`}>
+                            <span
+                              className={`text-xs font-medium ${urgencyColor}`}
+                            >
                               {urgencyText}
                             </span>
                             <div className="w-5 h-5 rounded-full border-2 border-muted-foreground hover:border-primary flex items-center justify-center">
@@ -490,7 +577,9 @@ export default function Dashboard() {
                       </motion.div>
                     );
                   })}
-                  {goals.filter(g => !g.completed && new Date(g.deadline) > new Date()).length > upcomingDeadlines.length && (
+                  {goals.filter(
+                    (g) => !g.completed && new Date(g.deadline) > new Date(),
+                  ).length > upcomingDeadlines.length && (
                     <Link to="/goals">
                       <Button variant="ghost" className="w-full text-sm">
                         View all pending goals
@@ -543,15 +632,15 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-4">
               {/* Unlocked Achievements */}
-              {achievements.some(a => a.unlocked) && (
+              {achievements.some((a) => a.unlocked) && (
                 <div>
                   <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                     <Star className="w-4 h-4 text-yellow-500" />
-                    Unlocked ({achievements.filter(a => a.unlocked).length})
+                    Unlocked ({achievements.filter((a) => a.unlocked).length})
                   </h4>
                   <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
                     {achievements
-                      .filter(a => a.unlocked)
+                      .filter((a) => a.unlocked)
                       .map((achievement, index) => (
                         <motion.div
                           key={achievement.id}
@@ -559,7 +648,10 @@ export default function Dashboard() {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.1 * index }}
                         >
-                          <AchievementBadge achievement={achievement} size="sm" />
+                          <AchievementBadge
+                            achievement={achievement}
+                            size="sm"
+                          />
                         </motion.div>
                       ))}
                   </div>
@@ -567,15 +659,16 @@ export default function Dashboard() {
               )}
 
               {/* Next Achievements */}
-              {achievements.some(a => !a.unlocked) && (
+              {achievements.some((a) => !a.unlocked) && (
                 <div>
                   <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                     <Target className="w-4 h-4 text-muted-foreground" />
-                    Coming Next ({achievements.filter(a => !a.unlocked).length})
+                    Coming Next (
+                    {achievements.filter((a) => !a.unlocked).length})
                   </h4>
                   <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
                     {achievements
-                      .filter(a => !a.unlocked)
+                      .filter((a) => !a.unlocked)
                       .slice(0, 8)
                       .map((achievement, index) => (
                         <motion.div
@@ -584,7 +677,10 @@ export default function Dashboard() {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.1 * index }}
                         >
-                          <AchievementBadge achievement={achievement} size="sm" />
+                          <AchievementBadge
+                            achievement={achievement}
+                            size="sm"
+                          />
                         </motion.div>
                       ))}
                   </div>
@@ -617,7 +713,9 @@ export default function Dashboard() {
               <Input
                 id="title"
                 value={newGoal.title}
-                onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                onChange={(e) =>
+                  setNewGoal({ ...newGoal, title: e.target.value })
+                }
                 placeholder="Enter goal title"
               />
             </div>
@@ -626,7 +724,9 @@ export default function Dashboard() {
               <Textarea
                 id="description"
                 value={newGoal.description}
-                onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                onChange={(e) =>
+                  setNewGoal({ ...newGoal, description: e.target.value })
+                }
                 placeholder="Describe your goal"
               />
             </div>
@@ -636,13 +736,20 @@ export default function Dashboard() {
                 <Input
                   id="category"
                   value={newGoal.category}
-                  onChange={(e) => setNewGoal({...newGoal, category: e.target.value})}
+                  onChange={(e) =>
+                    setNewGoal({ ...newGoal, category: e.target.value })
+                  }
                   placeholder="e.g., Health, Work"
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="type">Type</Label>
-                <Select value={newGoal.type} onValueChange={(value: any) => setNewGoal({...newGoal, type: value})}>
+                <Select
+                  value={newGoal.type}
+                  onValueChange={(value: any) =>
+                    setNewGoal({ ...newGoal, type: value })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -661,7 +768,12 @@ export default function Dashboard() {
                   id="timeAllotted"
                   type="number"
                   value={newGoal.timeAllotted}
-                  onChange={(e) => setNewGoal({...newGoal, timeAllotted: parseInt(e.target.value)})}
+                  onChange={(e) =>
+                    setNewGoal({
+                      ...newGoal,
+                      timeAllotted: parseInt(e.target.value),
+                    })
+                  }
                 />
               </div>
               <div className="grid gap-2">
@@ -670,7 +782,9 @@ export default function Dashboard() {
                   id="deadline"
                   type="date"
                   value={newGoal.deadline}
-                  onChange={(e) => setNewGoal({...newGoal, deadline: e.target.value})}
+                  onChange={(e) =>
+                    setNewGoal({ ...newGoal, deadline: e.target.value })
+                  }
                 />
               </div>
             </div>

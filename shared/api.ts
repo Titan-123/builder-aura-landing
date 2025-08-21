@@ -13,7 +13,7 @@ export interface Goal {
   title: string;
   description: string;
   category: string;
-  type: 'daily' | 'weekly' | 'monthly';
+  type: "daily" | "weekly" | "monthly";
   timeAllotted: number; // in minutes
   deadline: Date;
   completed: boolean;
@@ -35,7 +35,7 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-  user: Omit<User, 'password'>;
+  user: Omit<User, "password">;
   accessToken: string;
   refreshToken: string;
 }
@@ -44,7 +44,7 @@ export interface CreateGoalRequest {
   title: string;
   description: string;
   category: string;
-  type: 'daily' | 'weekly' | 'monthly';
+  type: "daily" | "weekly" | "monthly";
   timeAllotted: number;
   deadline: string; // ISO date string
 }
