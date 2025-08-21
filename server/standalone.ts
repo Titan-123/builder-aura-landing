@@ -194,12 +194,10 @@ app.post("/api/auth/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({
-          error: "VALIDATION_ERROR",
-          message: "Email and password required",
-        });
+      return res.status(400).json({
+        error: "VALIDATION_ERROR",
+        message: "Email and password required",
+      });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -298,8 +296,15 @@ app.get("/api/goals", verifyToken, async (req: any, res) => {
 
 app.post("/api/goals", verifyToken, async (req: any, res) => {
   try {
-    const { title, description, category, type, priority, timeAllotted, deadline } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      type,
+      priority,
+      timeAllotted,
+      deadline,
+    } = req.body;
 
     if (
       !title ||
@@ -453,26 +458,31 @@ app.get("/api/streaks", verifyToken, async (req: any, res) => {
 
 app.get("/api/analytics", verifyToken, async (req: any, res) => {
   try {
-    const goals = await Goal.find({ userId: req.userId }).sort({ createdAt: -1 });
+    const goals = await Goal.find({ userId: req.userId }).sort({
+      createdAt: -1,
+    });
     const completedGoals = goals.filter((g) => g.completed);
-    const completionRate = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
+    const completionRate =
+      goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
 
     // Category breakdown
     const categoryMap = new Map();
-    goals.forEach(goal => {
-      const category = goal.category || 'Uncategorized';
+    goals.forEach((goal) => {
+      const category = goal.category || "Uncategorized";
       const current = categoryMap.get(category) || { completed: 0, total: 0 };
       current.total++;
       if (goal.completed) current.completed++;
       categoryMap.set(category, current);
     });
 
-    const categoryBreakdown = Array.from(categoryMap.entries()).map(([category, stats]) => ({
-      category,
-      completed: stats.completed,
-      total: stats.total,
-      percentage: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0
-    }));
+    const categoryBreakdown = Array.from(categoryMap.entries()).map(
+      ([category, stats]) => ({
+        category,
+        completed: stats.completed,
+        total: stats.total,
+        percentage: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0,
+      }),
+    );
 
     // Weekly trends (last 4 weeks)
     const now = new Date();
@@ -480,19 +490,19 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
 
     for (let i = 3; i >= 0; i--) {
       const weekStart = new Date(now);
-      weekStart.setDate(weekStart.getDate() - (i * 7) - now.getDay());
+      weekStart.setDate(weekStart.getDate() - i * 7 - now.getDay());
       weekStart.setHours(0, 0, 0, 0);
 
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() + 6);
       weekEnd.setHours(23, 59, 59, 999);
 
-      const weekGoals = goals.filter(g => {
+      const weekGoals = goals.filter((g) => {
         const goalDate = new Date(g.createdAt);
         return goalDate >= weekStart && goalDate <= weekEnd;
       });
 
-      const weekCompleted = weekGoals.filter(g => {
+      const weekCompleted = weekGoals.filter((g) => {
         if (!g.completed || !g.completedAt) return false;
         const completedDate = new Date(g.completedAt);
         return completedDate >= weekStart && completedDate <= weekEnd;
@@ -501,7 +511,7 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
       weeklyTrends.push({
         week: `Week ${4 - i}`,
         completed: weekCompleted.length,
-        total: weekGoals.length
+        total: weekGoals.length,
       });
     }
 
@@ -515,21 +525,24 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
       const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
       monthEnd.setHours(23, 59, 59, 999);
 
-      const monthGoals = goals.filter(g => {
+      const monthGoals = goals.filter((g) => {
         const goalDate = new Date(g.createdAt);
         return goalDate >= monthStart && goalDate <= monthEnd;
       });
 
-      const monthCompleted = monthGoals.filter(g => {
+      const monthCompleted = monthGoals.filter((g) => {
         if (!g.completed || !g.completedAt) return false;
         const completedDate = new Date(g.completedAt);
         return completedDate >= monthStart && completedDate <= monthEnd;
       });
 
       monthlyTrends.push({
-        month: monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        month: monthStart.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
         completed: monthCompleted.length,
-        total: monthGoals.length
+        total: monthGoals.length,
       });
     }
 
@@ -541,7 +554,7 @@ app.get("/api/analytics", verifyToken, async (req: any, res) => {
       totalGoals: goals.length,
       categoryBreakdown,
       weeklyTrends,
-      monthlyTrends
+      monthlyTrends,
     });
   } catch (error) {
     console.error("Get analytics error:", error);
