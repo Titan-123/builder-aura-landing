@@ -1,54 +1,76 @@
 import path from "path";
-import { createServer } from "./index.js";
 import express from "express";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-const app = createServer();
+// Manual server setup to avoid path-to-regexp issues
+const app = express();
 const port = process.env.PORT || 3000;
 
-// In production, serve the built SPA files
-const __dirname = import.meta.dirname;
+// Get directory path for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const distPath = path.join(__dirname, "../spa");
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(distPath));
 
-// API routes are already defined in createServer()
-// Add a health check route
+// Import and setup routes manually to avoid bundling issues
+import("./index.js").then(({ createServer }) => {
+  const serverApp = createServer();
+  
+  // Copy over the routes from the created server
+  serverApp._router.stack.forEach((layer) => {
+    if (layer.route) {
+      // Copy individual routes
+      const method = Object.keys(layer.route.methods)[0];
+      const path = layer.route.path;
+      app[method](path, layer.route.stack[0].handle);
+    }
+  });
+}).catch(console.error);
+
+// Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// SPA routes - serve index.html for specific routes
+// Manual API routes to ensure they work
+app.get("/api/ping", (req, res) => {
+  res.json({ message: process.env.PING_MESSAGE || "ping" });
+});
+
+// SPA fallback routes - explicitly define them to avoid wildcards
 const spaRoutes = [
   "/",
-  "/dashboard",
+  "/dashboard", 
   "/goals",
   "/calendar",
-  "/analytics",
+  "/analytics", 
   "/login",
-  "/register",
+  "/register"
 ];
 
-spaRoutes.forEach((route) => {
+// Handle SPA routes
+spaRoutes.forEach(route => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error("Server error:", err);
-  res.status(500).json({ error: "Internal server error" });
+// 404 handler for API routes
+app.use("/api/*", (req, res) => {
+  res.status(404).json({ error: "API endpoint not found" });
 });
 
-// Catch-all handler for remaining routes (must be last)
-app.use("*", (req, res) => {
-  // Don't serve index.html for API routes
-  if (req.originalUrl.startsWith("/api/")) {
-    return res.status(404).json({ error: "API endpoint not found" });
-  }
-
-  // Serve index.html for any other routes (SPA fallback)
+// Final SPA fallback for any other routes
+app.use((req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
