@@ -197,9 +197,11 @@ export const triggerMotivationalCelebration = ({
         position: 'top-center',
         icon: '🔥',
         style: {
-          background: 'linear-gradient(45deg, #FF6B35, #FF9F43)',
+          background: 'linear-gradient(45deg, #22c55e, #16a34a)',
           color: 'white',
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
+          boxShadow: '0 10px 25px rgba(34, 197, 94, 0.3)'
         }
       });
     }, 2000);
