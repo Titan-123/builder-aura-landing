@@ -395,6 +395,7 @@ app.put("/api/goals/:goalId", verifyToken, async (req: any, res) => {
       description: goal.description,
       category: goal.category,
       type: goal.type,
+      priority: goal.priority,
       timeAllotted: goal.timeAllotted,
       deadline: goal.deadline,
       completed: goal.completed,
