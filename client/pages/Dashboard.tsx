@@ -513,7 +513,7 @@ export default function Dashboard() {
         <MotivationalProgress
           completionRate={completionRate}
           totalGoals={goals.length}
-          streak={analytics?.currentStreak || 0}
+          streak={streaks?.dailyStreak || 0}
         />
       </motion.div>
 
