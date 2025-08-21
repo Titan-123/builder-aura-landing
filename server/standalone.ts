@@ -368,6 +368,7 @@ app.put("/api/goals/:goalId", verifyToken, async (req: any, res) => {
       goal.description = updates.description.trim();
     if (updates.category !== undefined) goal.category = updates.category.trim();
     if (updates.type !== undefined) goal.type = updates.type;
+    if (updates.priority !== undefined) goal.priority = updates.priority;
     if (updates.timeAllotted !== undefined)
       goal.timeAllotted = updates.timeAllotted;
     if (updates.deadline !== undefined)
