@@ -74,21 +74,21 @@ export const triggerMotivationalCelebration = ({
       title: "🎊 First Goal Complete!",
       message: "Welcome to the champions club! This is just the beginning of your amazing journey!",
       icon: Crown,
-      colors: ['#FFD700', '#FFA500', '#FF6B6B']
+      colors: ['#22c55e', '#16a34a', '#15803d']
     };
   } else if (streak >= 7) {
     celebration = {
       title: "🔥 Week Streak Master!",
       message: `${streak} days strong! You're absolutely unstoppable!`,
       icon: Zap,
-      colors: ['#FF9F43', '#FF6B35', '#E55039']
+      colors: ['#10b981', '#059669', '#047857']
     };
   } else if (streak >= 30) {
     celebration = {
       title: "👑 Month Streak Legend!",
       message: `${streak} days of pure excellence! You're a true champion!`,
       icon: Crown,
-      colors: ['#3742FA', '#5352ED', '#A4B0F7']
+      colors: ['#14b8a6', '#0d9488', '#0f766e']
     };
   } else {
     celebration = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
