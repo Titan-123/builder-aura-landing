@@ -58,8 +58,8 @@ type ViewMode = "grid" | "list" | "board";
 type Priority = "low" | "medium" | "high";
 
 export default function Goals() {
-  const [goals, setGoals] = useState<EnhancedGoal[]>([]);
-  const [filteredGoals, setFilteredGoals] = useState<EnhancedGoal[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [filteredGoals, setFilteredGoals] = useState<Goal[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
