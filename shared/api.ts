@@ -14,6 +14,7 @@ export interface Goal {
   description: string;
   category: string;
   type: "daily" | "weekly" | "monthly";
+  priority: "low" | "medium" | "high";
   timeAllotted: number; // in minutes
   deadline: Date;
   completed: boolean;
@@ -45,6 +46,7 @@ export interface CreateGoalRequest {
   description: string;
   category: string;
   type: "daily" | "weekly" | "monthly";
+  priority: "low" | "medium" | "high";
   timeAllotted: number;
   deadline: string; // ISO date string
 }
