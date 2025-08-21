@@ -277,6 +277,7 @@ export const handleCreateGoal: RequestHandler<
       description: description.trim(),
       category: category.trim(),
       type,
+      priority: priority || "medium", // Default to medium if not provided
       timeAllotted,
       deadline: new Date(deadline),
       completed: false,
