@@ -133,47 +133,52 @@ export const triggerMotivationalCelebration = ({
   toast.custom(
     (t) => (
       <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0, opacity: 0 }}
+        initial={{ scale: 0, opacity: 0, y: -50 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0, opacity: 0, y: -50 }}
         className={`
           ${t.visible ? 'animate-enter' : 'animate-leave'}
-          max-w-md w-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 
-          shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-white
-          transform transition-all duration-500
+          max-w-md w-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500
+          shadow-xl rounded-lg pointer-events-auto flex ring-1 ring-green-200 dark:ring-green-800 text-white
+          transform transition-all duration-500 border border-green-400/30
         `}
       >
         <div className="flex-1 w-0 p-4">
           <div className="flex items-start">
             <div className="flex-shrink-0">
               <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
+                animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
                 transition={{ duration: 0.6, repeat: 2 }}
-                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"
+                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30"
               >
                 <celebration.icon className="w-6 h-6" />
               </motion.div>
             </div>
             <div className="ml-3 flex-1">
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold leading-tight">
                 {celebration.title}
               </p>
-              <p className="mt-1 text-sm opacity-90">
+              <p className="mt-1 text-sm opacity-90 leading-relaxed">
                 {celebration.message}
               </p>
-              <p className="mt-1 text-xs opacity-75">
+              <p className="mt-2 text-xs opacity-75 bg-white/10 rounded px-2 py-1 inline-block">
                 Goal: "{goalTitle}"
               </p>
             </div>
           </div>
         </div>
         <div className="flex border-l border-white/20">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => toast.dismiss(t.id)}
-            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+            title="Close notification"
           >
-            ✨
-          </button>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </motion.button>
         </div>
       </motion.div>
     ),
