@@ -57,10 +57,6 @@ import { Goal, CreateGoalRequest } from "@shared/api";
 type ViewMode = "grid" | "list" | "board";
 type Priority = "low" | "medium" | "high";
 
-interface EnhancedGoal extends Goal {
-  priority?: Priority;
-}
-
 export default function Goals() {
   const [goals, setGoals] = useState<EnhancedGoal[]>([]);
   const [filteredGoals, setFilteredGoals] = useState<EnhancedGoal[]>([]);
