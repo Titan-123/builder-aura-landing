@@ -60,11 +60,6 @@ const GoalSchema = new Schema<IGoal>({
   },
   completedAt: {
     type: Date
-  },
-  streak: {
-    type: Number,
-    default: 0,
-    min: [0, 'Streak cannot be negative']
   }
 }, {
   timestamps: true
