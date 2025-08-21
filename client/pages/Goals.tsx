@@ -174,7 +174,7 @@ export default function Goals() {
         },
         body: JSON.stringify(newGoal)
       });
-      
+
       if (response.ok) {
         await fetchGoals();
         setIsCreateOpen(false);
@@ -187,12 +187,49 @@ export default function Goals() {
           deadline: new Date().toISOString().split('T')[0],
           priority: 'medium'
         });
-        
+
         toast.success('Goal created successfully! 🎯');
       }
     } catch (error) {
       console.error('Failed to create goal:', error);
       toast.error('Failed to create goal');
+    }
+  };
+
+  const updateGoal = async () => {
+    if (!editingGoal) return;
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`/api/goals/${editingGoal.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      if (response.ok) {
+        await fetchGoals();
+        setEditingGoal(null);
+        setEditForm({
+          title: '',
+          description: '',
+          category: '',
+          type: 'daily',
+          timeAllotted: 30,
+          deadline: new Date().toISOString().split('T')[0],
+          priority: 'medium'
+        });
+
+        toast.success('Goal updated successfully! ✨');
+      } else {
+        toast.error('Failed to update goal');
+      }
+    } catch (error) {
+      console.error('Failed to update goal:', error);
+      toast.error('Failed to update goal');
     }
   };
 
