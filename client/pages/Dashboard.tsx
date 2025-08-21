@@ -393,7 +393,7 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Recent Activity */}
+        {/* Upcoming Deadlines */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -402,35 +402,81 @@ export default function Dashboard() {
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-green-500" />
-                Recent Wins
+                <Calendar className="w-5 h-5 text-orange-500" />
+                Upcoming Deadlines
               </CardTitle>
-              <CardDescription>Your latest completed goals</CardDescription>
+              <CardDescription>Goals due in the next 7 days</CardDescription>
             </CardHeader>
             <CardContent>
-              {recentlyCompleted.length === 0 ? (
+              {upcomingDeadlines.length === 0 ? (
                 <div className="text-center py-4 text-muted-foreground">
-                  <Star className="w-8 h-8 mx-auto mb-2" />
-                  <p className="text-sm">Complete your first goal to see it here!</p>
+                  <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                  <p className="text-sm">No upcoming deadlines - you're all set! 🎉</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {recentlyCompleted.map((goal) => (
-                    <div key={goal.id} className="flex items-center gap-3 p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{goal.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {goal.completedAt && new Date(goal.completedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      {goal.category && (
-                        <Badge variant="outline" className="text-xs">
-                          {goal.category}
-                        </Badge>
-                      )}
-                    </div>
-                  ))}
+                  {upcomingDeadlines.map((goal) => {
+                    const goalDate = new Date(goal.deadline);
+                    const today = new Date();
+                    const diffTime = goalDate.getTime() - today.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    let urgencyColor = 'text-muted-foreground';
+                    let urgencyBg = 'bg-muted/20';
+                    let urgencyText = `${diffDays} days`;
+
+                    if (diffDays === 0) {
+                      urgencyColor = 'text-red-600';
+                      urgencyBg = 'bg-red-50 dark:bg-red-950/20';
+                      urgencyText = 'Due today';
+                    } else if (diffDays === 1) {
+                      urgencyColor = 'text-orange-600';
+                      urgencyBg = 'bg-orange-50 dark:bg-orange-950/20';
+                      urgencyText = 'Due tomorrow';
+                    } else if (diffDays <= 3) {
+                      urgencyColor = 'text-yellow-600';
+                      urgencyBg = 'bg-yellow-50 dark:bg-yellow-950/20';
+                    }
+
+                    return (
+                      <motion.div
+                        key={goal.id}
+                        whileHover={{ scale: 1.02 }}
+                        className={`p-3 rounded-lg border transition-all cursor-pointer ${urgencyBg} border-border hover:border-primary/50`}
+                        onClick={() => toggleGoalCompletion(goal.id, true)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{goal.title}</p>
+                            <div className="flex items-center gap-2 text-xs mt-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{goal.timeAllotted}m</span>
+                              {goal.category && (
+                                <Badge variant="outline" className="text-xs">
+                                  {goal.category}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-medium ${urgencyColor}`}>
+                              {urgencyText}
+                            </span>
+                            <div className="w-5 h-5 rounded-full border-2 border-muted-foreground hover:border-primary flex items-center justify-center">
+                              <CheckCircle2 className="w-3 h-3 opacity-0 hover:opacity-100 transition-opacity" />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                  {goals.filter(g => !g.completed && new Date(g.deadline) > new Date()).length > upcomingDeadlines.length && (
+                    <Link to="/goals">
+                      <Button variant="ghost" className="w-full text-sm">
+                        View all pending goals
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               )}
             </CardContent>
