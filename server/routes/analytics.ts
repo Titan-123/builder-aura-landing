@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import connectDB from '../database';
-import Goal from '../models/Goal';
+import connectDB from '../database.js';
+import Goal from '../models/Goal.js';
 import { AnalyticsResponse, ErrorResponse } from "@shared/api";
 
 export const handleGetAnalytics: RequestHandler<{}, AnalyticsResponse | ErrorResponse> = async (req: any, res) => {
