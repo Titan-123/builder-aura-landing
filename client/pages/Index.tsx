@@ -1,97 +1,130 @@
 import { Link } from 'react-router-dom';
-import { Target, CheckCircle2, Calendar, BarChart3, ArrowRight, Users, Zap, Star, Sparkles } from 'lucide-react';
+import { Target, CheckCircle2, Calendar, BarChart3, ArrowRight, Users, Zap, Star, Sparkles, Heart, Trophy, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MotivationalBackground from '@/components/MotivationalBackground';
 
 export default function Index() {
   const features = [
     {
       icon: Target,
       title: 'Smart Goal Setting',
-      description: 'Set daily, weekly, and monthly goals with detailed tracking and deadlines.',
-      color: 'from-blue-500 to-blue-600'
+      description: 'Transform your dreams into achievable milestones with our intelligent goal tracking system.',
+      color: 'from-blue-500 to-blue-600',
+      motivational: 'Turn dreams into reality!'
     },
     {
       icon: Calendar,
-      title: 'Calendar View',
-      description: 'Visualize your progress with an intuitive calendar showing completed goals and streaks.',
-      color: 'from-purple-500 to-purple-600'
+      title: 'Visual Progress',
+      description: 'Watch your success unfold day by day with beautiful calendar views and streak tracking.',
+      color: 'from-purple-500 to-purple-600',
+      motivational: 'See your growth!'
     },
     {
       icon: BarChart3,
-      title: 'Analytics Dashboard',
-      description: 'Track completion rates, streaks, and category breakdowns with beautiful charts.',
-      color: 'from-green-500 to-green-600'
+      title: 'Powerful Analytics',
+      description: 'Discover insights that fuel your motivation and guide your journey to greatness.',
+      color: 'from-green-500 to-green-600',
+      motivational: 'Data-driven success!'
     },
     {
       icon: CheckCircle2,
-      title: 'Progress Tracking',
-      description: 'Mark goals as complete and build momentum with streak tracking.',
-      color: 'from-orange-500 to-orange-600'
+      title: 'Achievement Tracking',
+      description: 'Celebrate every victory and build unstoppable momentum with our completion system.',
+      color: 'from-orange-500 to-orange-600',
+      motivational: 'Celebrate every win!'
     },
     {
       icon: Zap,
-      title: 'Motivating UI',
-      description: 'Stay motivated with a beautiful, modern interface designed for success.',
-      color: 'from-yellow-500 to-yellow-600'
+      title: 'Motivational Engine',
+      description: 'Stay inspired with dynamic quotes, celebrations, and motivational feedback.',
+      color: 'from-yellow-500 to-yellow-600',
+      motivational: 'Stay inspired daily!'
     },
     {
-      icon: Users,
-      title: 'Personal Dashboard',
-      description: 'Your personalized space to manage all your goals in one place.',
-      color: 'from-pink-500 to-pink-600'
+      icon: Trophy,
+      title: 'Achievement System',
+      description: 'Unlock badges and rewards as you conquer your goals and reach new heights.',
+      color: 'from-pink-500 to-pink-600',
+      motivational: 'Become a champion!'
     }
   ];
 
   const stats = [
-    { value: '100%', label: 'Free to use', icon: Star },
-    { value: '∞', label: 'Unlimited goals', icon: Target },
-    { value: '📊', label: 'Detailed analytics', icon: BarChart3 }
+    { 
+      value: '💪', 
+      label: 'Unlimited Potential', 
+      icon: Star,
+      description: 'No limits on your dreams'
+    },
+    { 
+      value: '🎯', 
+      label: 'Goal Mastery', 
+      icon: Target,
+      description: 'Track everything that matters'
+    },
+    { 
+      value: '🚀', 
+      label: 'Success Analytics', 
+      icon: BarChart3,
+      description: 'Insights that inspire growth'
+    }
+  ];
+
+  const motivationalMessages = [
+    "Your journey to greatness starts here!",
+    "Every expert was once a beginner!",
+    "Progress, not perfection!",
+    "Your only limit is you!",
+    "Dream big, achieve bigger!"
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950 dark:via-slate-900 dark:to-indigo-950 relative overflow-hidden">
+      {/* Enhanced Motivational Background */}
+      <MotivationalBackground variant="floating" intensity="medium" />
+      
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-20 w-6 h-6 bg-primary/20 rounded-full"
+          className="absolute top-20 left-20 w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
           animate={{
-            y: [0, -30, 0],
+            y: [0, -40, 0],
             opacity: [0.3, 0.8, 0.3],
-            scale: [1, 1.2, 1]
+            scale: [1, 1.3, 1]
           }}
           transition={{
-            duration: 4,
+            duration: 6,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
         <motion.div
-          className="absolute top-40 right-32 w-8 h-8 bg-accent/20 rounded-full"
+          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"
           animate={{
-            y: [0, 20, 0],
-            x: [0, 15, 0],
+            y: [0, 30, 0],
+            x: [0, 20, 0],
             opacity: [0.2, 0.7, 0.2],
-            scale: [1, 1.1, 1]
+            scale: [1, 1.2, 1]
           }}
           transition={{
-            duration: 5,
+            duration: 8,
             repeat: Infinity,
             ease: "easeInOut",
             delay: 1
           }}
         />
         <motion.div
-          className="absolute bottom-32 left-40 w-4 h-4 bg-success/30 rounded-full"
+          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-pink-400 to-red-400 rounded-full"
           animate={{
-            scale: [1, 1.5, 1],
+            scale: [1, 1.8, 1],
             opacity: [0.3, 0.9, 0.3],
             rotate: [0, 180, 360]
           }}
           transition={{
-            duration: 3,
+            duration: 4,
             repeat: Infinity,
             ease: "easeInOut",
             delay: 0.5
@@ -113,13 +146,20 @@ export default function Index() {
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-2xl"
+              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 text-white shadow-2xl"
             >
               <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ 
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
               >
-                <Target className="w-10 h-10" />
+                <Target className="w-12 h-12" />
               </motion.div>
             </motion.div>
             
@@ -130,21 +170,38 @@ export default function Index() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="space-y-6"
             >
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground leading-tight">
-                Track Your Goals,
-                <br />
-                <span className="bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
-                  Achieve Your Dreams
-                </span>
-              </h1>
+              <motion.div
+                animate={{ 
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                }}
+                transition={{ 
+                  duration: 8, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                className="inline-block"
+              >
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
+                  <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent bg-300% animate-gradient">
+                    Transform Your Dreams
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Into Reality
+                  </span>
+                </h1>
+              </motion.div>
+              
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+                className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
               >
-                Stay organized and motivated with our powerful goal tracking app. 
-                Set daily, weekly, and monthly goals, visualize your progress, and build lasting habits.
+                Unleash your potential with our revolutionary goal tracking system. 
+                <span className="font-semibold text-purple-600 dark:text-purple-400"> 
+                  {motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]}
+                </span>
               </motion.p>
             </motion.div>
 
@@ -156,24 +213,24 @@ export default function Index() {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <motion.div
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl hover:shadow-2xl">
+                <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 shadow-xl hover:shadow-2xl transform transition-all">
                   <Link to="/register" className="gap-2">
                     <Sparkles className="w-5 h-5" />
-                    Get Started Free
+                    Start Your Journey
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
               </motion.div>
               <motion.div
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 hover:bg-accent/10">
+                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:hover:bg-purple-950">
                   <Link to="/login">
-                    Sign In
+                    Continue Journey
                   </Link>
                 </Button>
               </motion.div>
@@ -191,11 +248,11 @@ export default function Index() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-4 mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
-            Everything you need to succeed
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Your Success Toolkit
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Powerful features designed to help you stay focused, motivated, and on track to achieve your goals.
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            Everything you need to conquer your goals and unlock your true potential.
           </p>
         </motion.div>
 
@@ -209,22 +266,30 @@ export default function Index() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -10, scale: 1.02 }}
                 className="group"
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full bg-card/50 backdrop-blur-sm">
+                <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 h-full bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
                   <CardHeader className="text-center space-y-4">
                     <motion.div
-                      className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} text-white mx-auto shadow-lg`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} text-white mx-auto shadow-lg group-hover:shadow-xl`}
+                      whileHover={{ scale: 1.15, rotate: 10 }}
                       transition={{ duration: 0.3 }}
                     >
                       <Icon className="w-8 h-8" />
                     </motion.div>
                     <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                    >
+                      {feature.motivational}
+                    </motion.div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-center text-base leading-relaxed">
+                    <CardDescription className="text-center text-base leading-relaxed text-slate-600 dark:text-slate-300">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
@@ -235,19 +300,34 @@ export default function Index() {
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* Enhanced Stats Section */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground py-20 relative overflow-hidden"
+        className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white py-20 relative overflow-hidden"
       >
-        <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"4\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"}></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="absolute inset-0 bg-black/20" />
+        <MotivationalBackground variant="success" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Join the Success Revolution
+            </h2>
+            <p className="text-lg opacity-90">
+              Thousands are already transforming their lives. Your turn!
+            </p>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             {stats.map((stat, index) => {
-              const Icon = stat.icon;
               return (
                 <motion.div
                   key={index}
@@ -255,24 +335,26 @@ export default function Index() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="space-y-3"
+                  whileHover={{ scale: 1.05 }}
+                  className="space-y-4"
                 >
                   <motion.div
                     animate={{ 
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0]
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, -10, 0]
                     }}
                     transition={{ 
-                      duration: 3, 
+                      duration: 4, 
                       repeat: Infinity, 
                       ease: "easeInOut",
                       delay: index * 0.5
                     }}
-                    className="text-5xl lg:text-6xl font-bold"
+                    className="text-6xl"
                   >
                     {stat.value}
                   </motion.div>
-                  <div className="text-lg lg:text-xl opacity-90 font-medium">{stat.label}</div>
+                  <div className="text-xl font-bold">{stat.label}</div>
+                  <div className="text-sm opacity-90">{stat.description}</div>
                 </motion.div>
               );
             })}
@@ -280,7 +362,7 @@ export default function Index() {
         </div>
       </motion.div>
 
-      {/* Final CTA */}
+      {/* Final Motivational CTA */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -290,23 +372,33 @@ export default function Index() {
           className="space-y-8"
         >
           <div className="space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
-              Ready to start achieving your goals?
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of people who are already using GoalTracker to build better habits and achieve their dreams.
+            <motion.h2 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent"
+              animate={{
+                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              Your Dreams Are Waiting
+            </motion.h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Every champion started with a single step. Make today the day you begin your extraordinary journey.
             </p>
           </div>
           
           <motion.div
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl hover:shadow-2xl">
-              <Link to="/register" className="gap-2">
-                <Sparkles className="w-5 h-5" />
-                Start Your Journey
-                <ArrowRight className="w-5 h-5" />
+            <Button asChild size="lg" className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 shadow-2xl hover:shadow-3xl transform transition-all">
+              <Link to="/register" className="gap-3">
+                <Flame className="w-6 h-6" />
+                Ignite Your Success
+                <Sparkles className="w-6 h-6" />
               </Link>
             </Button>
           </motion.div>
@@ -316,10 +408,11 @@ export default function Index() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
-            className="flex items-center justify-center gap-2 text-sm text-muted-foreground"
+            className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
-            <Sparkles className="w-4 h-4" />
-            No credit card required • Start tracking goals instantly
+            <Heart className="w-4 h-4 text-pink-500" />
+            Free forever • No limits • Start in seconds
+            <Heart className="w-4 h-4 text-pink-500" />
           </motion.div>
         </motion.div>
       </div>

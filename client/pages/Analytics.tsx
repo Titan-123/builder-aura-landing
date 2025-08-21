@@ -6,6 +6,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MotivationalQuote from '@/components/MotivationalQuote';
+import MotivationalBackground from '@/components/MotivationalBackground';
 import { AnalyticsResponse } from '@shared/api';
 
 export default function Analytics() {
@@ -94,6 +96,9 @@ export default function Analytics() {
 
   return (
     <div className="space-y-6 relative">
+      {/* Motivational Background */}
+      <MotivationalBackground variant="floating" intensity="low" />
+
       {/* Dark Mode Toggle */}
       <div className="absolute top-0 right-0 lg:hidden">
         <DarkModeToggle />
@@ -416,6 +421,15 @@ export default function Analytics() {
             )}
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* Motivational Quote */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+      >
+        <MotivationalQuote variant="compact" />
       </motion.div>
 
       {/* Insights */}

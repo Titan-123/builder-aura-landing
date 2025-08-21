@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MotivationalQuote from '@/components/MotivationalQuote';
+import MotivationalBackground from '@/components/MotivationalBackground';
 import { Goal } from '@shared/api';
 
 export default function Calendar() {
@@ -163,6 +165,9 @@ export default function Calendar() {
 
   return (
     <div className="space-y-6 relative">
+      {/* Motivational Background */}
+      <MotivationalBackground variant="particles" intensity="low" />
+
       {/* Dark Mode Toggle */}
       <div className="absolute top-0 right-0 lg:hidden">
         <DarkModeToggle />
@@ -181,6 +186,15 @@ export default function Calendar() {
           </h1>
           <p className="text-muted-foreground">Track your daily progress and streaks</p>
         </div>
+      </motion.div>
+
+      {/* Motivational Quote */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <MotivationalQuote variant="compact" />
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
