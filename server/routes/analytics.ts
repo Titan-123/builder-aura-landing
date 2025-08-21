@@ -59,14 +59,13 @@ export const handleGetAnalytics: RequestHandler<
             const date = new Date(goal.deadline);
             return date.toDateString();
           })
-      )].map(dateStr => new Date(dateStr)).sort((a, b) => a.getTime() - b.getTime());
+      )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
       if (datesWithDailyGoals.length === 0) {
         return 0;
       }
 
-      // Find the longest streak of consecutive completed days
-      let maxStreak = 0;
+      // Find the CURRENT streak starting from the most recent date and going backwards
       let currentStreak = 0;
 
       for (let i = 0; i < datesWithDailyGoals.length; i++) {
@@ -78,21 +77,21 @@ export const handleGetAnalytics: RequestHandler<
 
           // Check if this date is consecutive with the previous one (if any)
           if (i > 0) {
-            const prevDate = datesWithDailyGoals[i - 1];
-            const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+            const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+            const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
             if (daysDiff > 1) {
-              currentStreak = 1; // Start new streak from current day
+              // Gap found between this completed day and the next newer one, so streak ends here
+              break;
             }
           }
-
-          maxStreak = Math.max(maxStreak, currentStreak);
         } else {
-          currentStreak = 0;
+          // Day not completed, streak ends
+          break;
         }
       }
 
-      return maxStreak;
+      return currentStreak;
     };
 
     const currentStreak = calculateCurrentStreak();
