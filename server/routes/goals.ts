@@ -464,7 +464,7 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     };
 
     // Calculate daily streak (consecutive days with all daily goals completed)
-    // Find the range of dates with goals and count consecutive completed days
+    // Find the CURRENT streak from the most recent date backwards
 
     // Get all dates that have daily goals
     const datesWithDailyGoals = [...new Set(
@@ -474,9 +474,9 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
           const date = new Date(goal.deadline);
           return date.toDateString();
         })
-    )].map(dateStr => new Date(dateStr)).sort((a, b) => a.getTime() - b.getTime());
+    )].map(dateStr => new Date(dateStr)).sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
-    console.log("📊 Dates with daily goals:", datesWithDailyGoals.map(d => d.toDateString()));
+    console.log("📊 Dates with daily goals (newest first):", datesWithDailyGoals.map(d => d.toDateString()));
 
     if (datesWithDailyGoals.length === 0) {
       console.log("❌ No daily goals found");
@@ -485,11 +485,10 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       return res.json(streaks);
     }
 
-    // Find the longest streak of consecutive completed days
-    let maxStreak = 0;
+    // Find the CURRENT streak starting from the most recent date and going backwards
     let currentStreak = 0;
 
-    console.log("🔍 Checking consecutive completed days...");
+    console.log("🔍 Calculating current streak from most recent date backwards...");
 
     for (let i = 0; i < datesWithDailyGoals.length; i++) {
       const currentDate = datesWithDailyGoals[i];
@@ -503,26 +502,23 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
 
         // Check if this date is consecutive with the previous one (if any)
         if (i > 0) {
-          const prevDate = datesWithDailyGoals[i - 1];
-          const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+          const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+          const daysDiff = Math.floor((nextNewerDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
           if (daysDiff > 1) {
-            // Gap found, reset streak
-            console.log(`⚠️ Gap of ${daysDiff} days found, resetting streak`);
-            currentStreak = 1; // Start new streak from current day
+            // Gap found between this completed day and the next newer one, so streak ends here
+            console.log(`⚠️ Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextNewerDate.toDateString()}, streak ends`);
+            break;
           }
         }
-
-        maxStreak = Math.max(maxStreak, currentStreak);
-        console.log(`🎯 Max streak so far: ${maxStreak}`);
       } else {
-        // Day not completed, break current streak
-        console.log(`❌ Day not completed, resetting streak`);
-        currentStreak = 0;
+        // Day not completed, streak ends
+        console.log(`❌ Day not completed, streak ends`);
+        break;
       }
     }
 
-    const dailyStreak = maxStreak;
+    const dailyStreak = currentStreak;
 
     console.log(`🎯 Final daily streak: ${dailyStreak}`);
 
