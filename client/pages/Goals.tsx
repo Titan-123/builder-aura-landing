@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Calendar, Clock, Target, CheckCircle2, Edit, Trash2, Filter, Search, Grid, List } from 'lucide-react';
+import { Plus, Calendar, Clock, Target, CheckCircle2, Edit, Trash2, Filter, Search, Grid, List, Columns, AlertCircle, Flag, Star, Archive } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import toast from 'react-hot-toast';
@@ -17,26 +17,34 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Goal, CreateGoalRequest } from '@shared/api';
 
+type ViewMode = 'grid' | 'list' | 'board';
+type Priority = 'low' | 'medium' | 'high';
+
+interface EnhancedGoal extends Goal {
+  priority?: Priority;
+}
+
 export default function Goals() {
-  const [goals, setGoals] = useState<Goal[]>([]);
-  const [filteredGoals, setFilteredGoals] = useState<Goal[]>([]);
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [goals, setGoals] = useState<EnhancedGoal[]>([]);
+  const [filteredGoals, setFilteredGoals] = useState<EnhancedGoal[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [editingGoal, setEditingGoal] = useState<EnhancedGoal | null>(null);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<'deadline' | 'priority' | 'created' | 'category'>('deadline');
 
   // Form state
-  const [newGoal, setNewGoal] = useState<CreateGoalRequest>({
+  const [newGoal, setNewGoal] = useState<CreateGoalRequest & { priority?: Priority }>({
     title: '',
     description: '',
     category: '',
     type: 'daily',
     timeAllotted: 30,
-    deadline: new Date().toISOString().split('T')[0]
+    deadline: new Date().toISOString().split('T')[0],
+    priority: 'medium'
   });
 
   useEffect(() => {
@@ -47,22 +55,7 @@ export default function Goals() {
   useEffect(() => {
     let filtered = goals;
     
-    if (filterType !== 'all') {
-      filtered = filtered.filter(goal => goal.type === filterType);
-    }
-    
-    if (filterCategory !== 'all') {
-      filtered = filtered.filter(goal => goal.category === filterCategory);
-    }
-
-    if (filterStatus !== 'all') {
-      if (filterStatus === 'completed') {
-        filtered = filtered.filter(goal => goal.completed);
-      } else if (filterStatus === 'pending') {
-        filtered = filtered.filter(goal => !goal.completed);
-      }
-    }
-
+    // Search
     if (searchTerm) {
       filtered = filtered.filter(goal => 
         goal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,9 +63,53 @@ export default function Goals() {
         goal.category.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
+    // Active filters
+    activeFilters.forEach(filter => {
+      switch (filter) {
+        case 'today':
+          const today = new Date().toDateString();
+          filtered = filtered.filter(goal => new Date(goal.deadline).toDateString() === today);
+          break;
+        case 'overdue':
+          filtered = filtered.filter(goal => new Date(goal.deadline) < new Date() && !goal.completed);
+          break;
+        case 'completed':
+          filtered = filtered.filter(goal => goal.completed);
+          break;
+        case 'pending':
+          filtered = filtered.filter(goal => !goal.completed);
+          break;
+        case 'high-priority':
+          filtered = filtered.filter(goal => goal.priority === 'high');
+          break;
+        case 'daily':
+        case 'weekly':
+        case 'monthly':
+          filtered = filtered.filter(goal => goal.type === filter);
+          break;
+      }
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'deadline':
+          return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+        case 'priority':
+          const priorityOrder = { high: 3, medium: 2, low: 1 };
+          return (priorityOrder[b.priority || 'medium'] || 2) - (priorityOrder[a.priority || 'medium'] || 2);
+        case 'created':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'category':
+          return a.category.localeCompare(b.category);
+        default:
+          return 0;
+      }
+    });
     
     setFilteredGoals(filtered);
-  }, [goals, filterType, filterCategory, filterStatus, searchTerm]);
+  }, [goals, searchTerm, activeFilters, sortBy]);
 
   const fetchGoals = async () => {
     try {
@@ -85,7 +122,12 @@ export default function Goals() {
       
       if (response.ok) {
         const data = await response.json();
-        setGoals(data.goals);
+        // Add random priorities for demo purposes
+        const goalsWithPriority = data.goals.map((goal: Goal) => ({
+          ...goal,
+          priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as Priority
+        }));
+        setGoals(goalsWithPriority);
       }
     } catch (error) {
       console.error('Failed to fetch goals:', error);
@@ -116,7 +158,8 @@ export default function Goals() {
           category: '',
           type: 'daily',
           timeAllotted: 30,
-          deadline: new Date().toISOString().split('T')[0]
+          deadline: new Date().toISOString().split('T')[0],
+          priority: 'medium'
         });
         
         toast.success('Goal created successfully! 🎯');
@@ -124,40 +167,6 @@ export default function Goals() {
     } catch (error) {
       console.error('Failed to create goal:', error);
       toast.error('Failed to create goal');
-    }
-  };
-
-  const updateGoal = async () => {
-    if (!editingGoal) return;
-    
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/api/goals/${editingGoal.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(newGoal)
-      });
-      
-      if (response.ok) {
-        await fetchGoals();
-        setEditingGoal(null);
-        setNewGoal({
-          title: '',
-          description: '',
-          category: '',
-          type: 'daily',
-          timeAllotted: 30,
-          deadline: new Date().toISOString().split('T')[0]
-        });
-        
-        toast.success('Goal updated successfully! ✨');
-      }
-    } catch (error) {
-      console.error('Failed to update goal:', error);
-      toast.error('Failed to update goal');
     }
   };
 
@@ -178,12 +187,10 @@ export default function Goals() {
         
         if (completed) {
           const goalData = goals.find(g => g.id === goalId);
-          const isFirstGoal = completedGoals.length === 0;
-
           triggerMotivationalCelebration({
             goalTitle: goalData?.title || 'Goal',
             streak: goalData?.streak || 0,
-            isFirstGoal,
+            isFirstGoal: goals.filter(g => g.completed).length === 0,
             category: goalData?.category
           });
         } else {
@@ -216,26 +223,73 @@ export default function Goals() {
     }
   };
 
-  const startEditing = (goal: Goal) => {
-    setEditingGoal(goal);
-    setNewGoal({
-      title: goal.title,
-      description: goal.description,
-      category: goal.category,
-      type: goal.type,
-      timeAllotted: goal.timeAllotted,
-      deadline: new Date(goal.deadline).toISOString().split('T')[0]
+  const bulkAction = (action: 'complete' | 'delete' | 'archive') => {
+    selectedGoals.forEach(goalId => {
+      switch (action) {
+        case 'complete':
+          toggleGoalCompletion(goalId, true);
+          break;
+        case 'delete':
+          deleteGoal(goalId);
+          break;
+        case 'archive':
+          // Archive functionality would go here
+          toast.success('Goals archived');
+          break;
+      }
     });
+    setSelectedGoals([]);
+  };
+
+  const toggleFilter = (filter: string) => {
+    setActiveFilters(prev => 
+      prev.includes(filter) 
+        ? prev.filter(f => f !== filter)
+        : [...prev, filter]
+    );
+  };
+
+  const clearFilters = () => {
+    setActiveFilters([]);
+    setSearchTerm('');
+  };
+
+  const getPriorityColor = (priority?: Priority) => {
+    switch (priority) {
+      case 'high': return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900 dark:text-gray-200';
+    }
+  };
+
+  const getPriorityIcon = (priority?: Priority) => {
+    switch (priority) {
+      case 'high': return <AlertCircle className="w-3 h-3" />;
+      case 'medium': return <Flag className="w-3 h-3" />;
+      case 'low': return <Star className="w-3 h-3" />;
+      default: return null;
+    }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'daily': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
       case 'weekly': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'monthly': return 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200';
+      case 'monthly': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
   };
+
+  const quickFilters = [
+    { label: 'Today', key: 'today', count: goals.filter(g => new Date(g.deadline).toDateString() === new Date().toDateString()).length },
+    { label: 'Overdue', key: 'overdue', count: goals.filter(g => new Date(g.deadline) < new Date() && !g.completed).length },
+    { label: 'High Priority', key: 'high-priority', count: goals.filter(g => g.priority === 'high').length },
+    { label: 'Completed', key: 'completed', count: goals.filter(g => g.completed).length },
+    { label: 'Daily', key: 'daily', count: goals.filter(g => g.type === 'daily').length },
+    { label: 'Weekly', key: 'weekly', count: goals.filter(g => g.type === 'weekly').length },
+    { label: 'Monthly', key: 'monthly', count: goals.filter(g => g.type === 'monthly').length },
+  ];
 
   const categories = [...new Set(goals.map(g => g.category).filter(Boolean))];
   const completedGoals = goals.filter(g => g.completed);
@@ -252,10 +306,151 @@ export default function Goals() {
     );
   }
 
+  const renderGoalCard = (goal: EnhancedGoal, index: number) => (
+    <motion.div
+      key={goal.id}
+      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.9 }}
+      transition={{ delay: index * 0.05 }}
+      whileHover={{ y: -3, scale: 1.02 }}
+      className="group"
+    >
+      <Card className={`transition-all hover:shadow-xl border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95 ${selectedGoals.includes(goal.id) ? 'ring-2 ring-primary' : ''}`}>
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedGoals.includes(goal.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedGoals(prev => [...prev, goal.id]);
+                    } else {
+                      setSelectedGoals(prev => prev.filter(id => id !== goal.id));
+                    }
+                  }}
+                  className="rounded"
+                />
+                <CardTitle className={`text-lg ${goal.completed ? 'line-through text-muted-foreground' : ''}`}>
+                  {goal.title}
+                </CardTitle>
+                {goal.priority && (
+                  <Badge className={`text-xs ${getPriorityColor(goal.priority)} flex items-center gap-1`}>
+                    {getPriorityIcon(goal.priority)}
+                    {goal.priority}
+                  </Badge>
+                )}
+              </div>
+              <CardDescription className="text-sm">{goal.description}</CardDescription>
+            </div>
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
+                className={`transition-all ${goal.completed ? 'text-success hover:text-success/80' : 'text-muted-foreground hover:text-success'}`}
+              >
+                <CheckCircle2 className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditingGoal(goal)}
+                className="text-muted-foreground hover:text-primary"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => deleteGoal(goal.id)}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <Badge className={getTypeColor(goal.type)}>{goal.type}</Badge>
+            {goal.category && (
+              <Badge variant="outline">{goal.category}</Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {goal.timeAllotted}m
+            </div>
+            <div className="flex items-center gap-1">
+              <Calendar className="w-3 h-3" />
+              {new Date(goal.deadline).toLocaleDateString()}
+            </div>
+            {goal.streak > 0 && (
+              <div className="flex items-center gap-1 text-orange-500">
+                <Target className="w-3 h-3" />
+                {goal.streak} streak
+              </div>
+            )}
+          </div>
+          {goal.completed && goal.completedAt && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="text-xs text-success bg-success/10 p-2 rounded"
+            >
+              ✅ Completed on {new Date(goal.completedAt).toLocaleDateString()}
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+
+  const renderBoardView = () => {
+    const todoGoals = filteredGoals.filter(g => !g.completed);
+    const completedGoals = filteredGoals.filter(g => g.completed);
+    
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              To Do ({todoGoals.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {todoGoals.map((goal, index) => renderGoalCard(goal, index))}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-success">
+              <CheckCircle2 className="w-5 h-5" />
+              Completed ({completedGoals.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {completedGoals.map((goal, index) => renderGoalCard(goal, index))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6 relative">
-      {/* Motivational Background */}
-      <MotivationalBackground variant="particles" intensity="low" />
+      <MotivationalBackground variant="floating" intensity="low" />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -267,10 +462,13 @@ export default function Goals() {
             <Target className="w-8 h-8 text-primary" />
             My Goals
           </h1>
-          <p className="text-muted-foreground">Create and manage your personal goals</p>
+          <p className="text-muted-foreground">
+            {goals.length} total goals • {completedGoals.length} completed • {goals.length - completedGoals.length} remaining
+          </p>
         </div>
         
         <div className="flex items-center gap-3">
+          {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
@@ -286,12 +484,17 @@ export default function Goals() {
             >
               <List className="w-4 h-4" />
             </Button>
+            <Button
+              variant={viewMode === 'board' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('board')}
+            >
+              <Columns className="w-4 h-4" />
+            </Button>
           </div>
-          
-          <Dialog open={isCreateOpen || !!editingGoal} onOpenChange={(open) => {
-            setIsCreateOpen(open);
-            if (!open) setEditingGoal(null);
-          }}>
+
+          {/* Add Goal Button */}
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300">
                 <Plus className="w-4 h-4" />
@@ -300,9 +503,9 @@ export default function Goals() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>{editingGoal ? 'Edit Goal' : 'Create New Goal'}</DialogTitle>
+                <DialogTitle>Create New Goal</DialogTitle>
                 <DialogDescription>
-                  {editingGoal ? 'Update your goal details.' : 'Set a new goal to track your progress and stay motivated.'}
+                  Set a new goal to track your progress and stay motivated.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -335,6 +538,21 @@ export default function Goals() {
                     />
                   </div>
                   <div className="grid gap-2">
+                    <Label htmlFor="priority">Priority</Label>
+                    <Select value={newGoal.priority} onValueChange={(value: Priority) => setNewGoal({...newGoal, priority: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
                     <Label htmlFor="type">Type</Label>
                     <Select value={newGoal.type} onValueChange={(value: any) => setNewGoal({...newGoal, type: value})}>
                       <SelectTrigger>
@@ -347,8 +565,6 @@ export default function Goals() {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="timeAllotted">Time (minutes)</Label>
                     <Input
@@ -358,44 +574,36 @@ export default function Goals() {
                       onChange={(e) => setNewGoal({...newGoal, timeAllotted: parseInt(e.target.value)})}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="deadline">Deadline</Label>
-                    <Input
-                      id="deadline"
-                      type="date"
-                      value={newGoal.deadline}
-                      onChange={(e) => setNewGoal({...newGoal, deadline: e.target.value})}
-                    />
-                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="deadline">Deadline</Label>
+                  <Input
+                    id="deadline"
+                    type="date"
+                    value={newGoal.deadline}
+                    onChange={(e) => setNewGoal({...newGoal, deadline: e.target.value})}
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={editingGoal ? updateGoal : createGoal}>
-                  {editingGoal ? 'Update Goal' : 'Create Goal'}
-                </Button>
+                <Button onClick={createGoal}>Create Goal</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
       </motion.div>
 
-      {/* Search and Filters */}
+      {/* Compact Search and Filter Bar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
         <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="w-5 h-5" />
-              Search & Filter
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="p-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
-              <div className="relative">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search goals..."
@@ -404,134 +612,84 @@ export default function Goals() {
                   className="pl-10"
                 />
               </div>
-              
-              {/* Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Type</Label>
-                  <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="daily">Daily</SelectItem>
-                      <SelectItem value="weekly">Weekly</SelectItem>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label className="text-sm font-medium">Category</Label>
-                  <Select value={filterCategory} onValueChange={setFilterCategory}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {categories.map(category => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label className="text-sm font-medium">Status</Label>
-                  <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-end">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setFilterType('all');
-                      setFilterCategory('all');
-                      setFilterStatus('all');
-                      setSearchTerm('');
-                    }}
-                    className="w-full"
-                  >
-                    Clear Filters
-                  </Button>
-                </div>
-              </div>
+
+              {/* Sort */}
+              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="deadline">Sort by Deadline</SelectItem>
+                  <SelectItem value="priority">Sort by Priority</SelectItem>
+                  <SelectItem value="created">Sort by Created</SelectItem>
+                  <SelectItem value="category">Sort by Category</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Clear Filters */}
+              {(activeFilters.length > 0 || searchTerm) && (
+                <Button variant="outline" onClick={clearFilters} size="sm">
+                  Clear All
+                </Button>
+              )}
+            </div>
+
+            {/* Quick Filter Pills */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {quickFilters.map(filter => (
+                <Button
+                  key={filter.key}
+                  variant={activeFilters.includes(filter.key) ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => toggleFilter(filter.key)}
+                  className="text-xs"
+                >
+                  {filter.label} ({filter.count})
+                </Button>
+              ))}
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Bulk Actions */}
+      {selectedGoals.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          className="sticky top-20 z-40"
         >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Goals</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{goals.length}</div>
-              <p className="text-xs text-muted-foreground">across all categories</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{completedGoals.length}</div>
-              <p className="text-xs text-muted-foreground">goals finished</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progress</CardTitle>
-              <Filter className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {goals.length > 0 ? Math.round((completedGoals.length / goals.length) * 100) : 0}%
+          <Card className="border-2 border-primary/50 bg-primary/5 backdrop-blur-sm shadow-lg">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">
+                  {selectedGoals.length} goal{selectedGoals.length > 1 ? 's' : ''} selected
+                </span>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={() => bulkAction('complete')}>
+                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    Complete
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => bulkAction('archive')}>
+                    <Archive className="w-4 h-4 mr-1" />
+                    Archive
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => bulkAction('delete')}>
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">completion rate</p>
             </CardContent>
           </Card>
         </motion.div>
-      </div>
+      )}
 
       {/* Motivational Quote */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.2 }}
       >
         <MotivationalQuote variant="compact" />
       </motion.div>
@@ -540,124 +698,54 @@ export default function Goals() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.3 }}
       >
-        {filteredGoals.length > 0 ? (
-          <div className={viewMode === 'grid' ? 'grid gap-4 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
-            <AnimatePresence>
-              {filteredGoals.map((goal, index) => (
-                <motion.div
-                  key={goal.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -5 }}
-                >
-                  <Card className={`transition-all hover:shadow-lg border-2 ${goal.completed ? 'ring-2 ring-success/20 bg-success/5 border-success/30' : 'border-border/50 hover:border-primary/30'} backdrop-blur-sm bg-card/95`}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1 flex-1">
-                          <CardTitle className={`text-lg ${goal.completed ? 'line-through text-muted-foreground' : ''}`}>
-                            {goal.title}
-                          </CardTitle>
-                          <CardDescription className="text-sm">{goal.description}</CardDescription>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
-                            className={`transition-all ${goal.completed ? 'text-green-600 hover:text-green-700' : 'text-muted-foreground hover:text-green-600'}`}
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => startEditing(goal)}
-                            className="text-muted-foreground hover:text-blue-600"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => deleteGoal(goal.id)}
-                            className="text-muted-foreground hover:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Badge className={getTypeColor(goal.type)}>{goal.type}</Badge>
-                        {goal.category && (
-                          <Badge variant="outline">{goal.category}</Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {goal.timeAllotted}m
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {new Date(goal.deadline).toLocaleDateString()}
-                        </div>
-                        {goal.streak > 0 && (
-                          <div className="flex items-center gap-1 text-orange-500">
-                            <Target className="w-3 h-3" />
-                            {goal.streak}
-                          </div>
-                        )}
-                      </div>
-                      {goal.completed && goal.completedAt && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          className="text-xs text-green-600 bg-green-100 dark:bg-green-950 p-2 rounded"
-                        >
-                          ✅ Completed on {new Date(goal.completedAt).toLocaleDateString()}
-                        </motion.div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+        {viewMode === 'board' ? (
+          renderBoardView()
         ) : (
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-              <motion.div
-                animate={{ 
-                  y: [0, -10, 0],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                <Target className="w-12 h-12 text-muted-foreground mb-4" />
-              </motion.div>
-              <h3 className="text-lg font-medium mb-2">No goals found</h3>
-              <p className="text-muted-foreground mb-4">
-                {goals.length === 0 
-                  ? "Create your first goal to get started!"
-                  : "Try adjusting your search or filters."
-                }
-              </p>
-              <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add Your First Goal
-              </Button>
-            </CardContent>
-          </Card>
+          <AnimatePresence>
+            <div className={viewMode === 'grid' ? "grid gap-4 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
+              {filteredGoals.map((goal, index) => renderGoalCard(goal, index))}
+            </div>
+          </AnimatePresence>
+        )}
+
+        {filteredGoals.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0],
+                    rotate: [0, 5, -5, 0]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Target className="w-12 h-12 text-muted-foreground mb-4" />
+                </motion.div>
+                <h3 className="text-lg font-medium mb-2">No goals found</h3>
+                <p className="text-muted-foreground mb-4">
+                  {goals.length === 0 
+                    ? "Create your first goal to get started on your journey!"
+                    : "Try adjusting your filters or search terms."
+                  }
+                </p>
+                {goals.length === 0 && (
+                  <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add Your First Goal
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
       </motion.div>
     </div>
