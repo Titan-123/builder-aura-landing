@@ -339,6 +339,15 @@ export const handleUpdateGoal: RequestHandler<
       }
       goal.type = updates.type;
     }
+    if (updates.priority !== undefined) {
+      if (!["low", "medium", "high"].includes(updates.priority)) {
+        return res.status(400).json({
+          error: "VALIDATION_ERROR",
+          message: "Priority must be low, medium, or high",
+        });
+      }
+      goal.priority = updates.priority;
+    }
     if (updates.timeAllotted !== undefined) {
       if (updates.timeAllotted < 1 || updates.timeAllotted > 1440) {
         return res.status(400).json({
