@@ -34,6 +34,7 @@ export const handleGetAnalytics: RequestHandler<
 
     // Calculate current streak using the same logic as /api/streaks
     const calculateCurrentStreak = () => {
+      const today = new Date();
       const isDayFullyCompleted = (checkDate: Date) => {
         const allDailyGoals = goals.filter((goal) => {
           const goalDate = new Date(goal.deadline);
