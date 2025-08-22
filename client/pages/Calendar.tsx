@@ -351,7 +351,7 @@ export default function Calendar() {
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
         {/* Calendar */}
-        <div className="xl:col-span-3 order-2 xl:order-1">
+        <div className="xl:col-span-3">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
