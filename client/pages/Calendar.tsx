@@ -545,12 +545,12 @@ export default function Calendar() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
-                  <div className="flex items-center gap-2">
-                    <Flame className="w-5 h-5 text-orange-500" />
-                    <span className="text-sm font-medium">Best Streak</span>
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
+                    <span className="text-xs sm:text-sm font-medium">Best Streak</span>
                   </div>
-                  <span className="font-bold text-lg text-orange-600 dark:text-orange-400">
+                  <span className="font-bold text-base sm:text-lg text-orange-600 dark:text-orange-400">
                     {monthlyStats.bestStreak}
                   </span>
                 </div>
