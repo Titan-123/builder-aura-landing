@@ -134,11 +134,26 @@ export default function Dashboard() {
   const fetchAnalytics = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.warn("No access token found, cannot fetch analytics");
+        setAnalytics(null);
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch("/api/analytics", {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
@@ -153,10 +168,17 @@ export default function Dashboard() {
           analytics: data,
           streak: data.currentStreak,
         });
+      } else {
+        console.error("Failed to fetch analytics:", response.status, response.statusText);
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
+        setAnalytics(null);
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch analytics:", error);
-      // Set default streak values on error
+      setAnalytics(null);
       setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     }
   };
