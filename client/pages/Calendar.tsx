@@ -45,23 +45,63 @@ export default function Calendar() {
   const fetchGoals = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      // Check if user is authenticated
+      if (!token) {
+        console.warn("No access token found, cannot fetch goals");
+        setGoals([]);
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
+        setLoading(false);
+        return;
+      }
+
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch("/api/goals", {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
-        setGoals(data.goals);
+        setGoals(data.goals || []);
 
         // Calculate simple streak from goals data
-        const completedGoals = data.goals.filter((g: Goal) => g.completed);
+        const completedGoals = (data.goals || []).filter((g: Goal) => g.completed);
         const streak = completedGoals.length > 0 ? 1 : 0; // Simple calculation
         setStreaks({ dailyStreak: streak, weeklyStreak: 0, monthlyStreak: 0 });
+      } else {
+        console.error("Failed to fetch goals:", response.status, response.statusText);
+
+        // Handle authentication errors
+        if (response.status === 401) {
+          console.warn("Authentication failed, clearing token");
+          localStorage.removeItem("accessToken");
+        }
+
+        // Set empty state for failed requests
+        setGoals([]);
+        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch goals:", error);
+
+      // Handle different error types
+      if (error.name === 'AbortError') {
+        console.warn("Goals fetch request timed out");
+      } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.warn("Network error or API endpoint unavailable");
+      }
+
+      // Set empty state for errors
+      setGoals([]);
       setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     } finally {
       setLoading(false);
