@@ -114,7 +114,11 @@ export default function Dashboard() {
         const data = await response.json();
         setGoals(data.goals || []);
       } else {
-        console.error("Failed to fetch goals:", response.status, response.statusText);
+        console.error(
+          "Failed to fetch goals:",
+          response.status,
+          response.statusText,
+        );
         if (response.status === 401) {
           localStorage.removeItem("accessToken");
         }
@@ -122,7 +126,7 @@ export default function Dashboard() {
       }
     } catch (error: any) {
       console.error("Failed to fetch goals:", error);
-      if (error.name !== 'AbortError') {
+      if (error.name !== "AbortError") {
         toast.error("Failed to load goals");
       }
       setGoals([]);
@@ -169,7 +173,11 @@ export default function Dashboard() {
           streak: data.currentStreak,
         });
       } else {
-        console.error("Failed to fetch analytics:", response.status, response.statusText);
+        console.error(
+          "Failed to fetch analytics:",
+          response.status,
+          response.statusText,
+        );
         if (response.status === 401) {
           localStorage.removeItem("accessToken");
         }

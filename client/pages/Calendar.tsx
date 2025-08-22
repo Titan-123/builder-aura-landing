@@ -87,11 +87,17 @@ export default function Calendar() {
         setGoals(data.goals || []);
 
         // Calculate simple streak from goals data
-        const completedGoals = (data.goals || []).filter((g: Goal) => g.completed);
+        const completedGoals = (data.goals || []).filter(
+          (g: Goal) => g.completed,
+        );
         const streak = completedGoals.length > 0 ? 1 : 0; // Simple calculation
         setStreaks({ dailyStreak: streak, weeklyStreak: 0, monthlyStreak: 0 });
       } else {
-        console.error("Failed to fetch goals:", response.status, response.statusText);
+        console.error(
+          "Failed to fetch goals:",
+          response.status,
+          response.statusText,
+        );
 
         // Handle authentication errors
         if (response.status === 401) {
@@ -107,9 +113,12 @@ export default function Calendar() {
       console.error("Failed to fetch goals:", error);
 
       // Handle different error types
-      if (error.name === 'AbortError') {
+      if (error.name === "AbortError") {
         console.warn("Goals fetch request timed out");
-      } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      } else if (
+        error.name === "TypeError" &&
+        error.message.includes("fetch")
+      ) {
         console.warn("Network error or API endpoint unavailable");
       }
 
@@ -508,7 +517,9 @@ export default function Calendar() {
                                   }`}
                                 >
                                   <span>{stats.completed}</span>
-                                  <span className="text-xs sm:text-sm opacity-70">/</span>
+                                  <span className="text-xs sm:text-sm opacity-70">
+                                    /
+                                  </span>
                                   <span>{stats.total}</span>
                                 </motion.div>
                               </div>
@@ -601,7 +612,9 @@ export default function Calendar() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-                    <span className="text-xs sm:text-sm font-medium">Best Streak</span>
+                    <span className="text-xs sm:text-sm font-medium">
+                      Best Streak
+                    </span>
                   </div>
                   <span className="font-bold text-base sm:text-lg text-orange-600 dark:text-orange-400">
                     {monthlyStats.bestStreak}
@@ -631,7 +644,9 @@ export default function Calendar() {
                       3/3
                     </span>
                   </div>
-                  <span className="text-xs sm:text-sm">All goals completed</span>
+                  <span className="text-xs sm:text-sm">
+                    All goals completed
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-yellow-200 border border-2 border-yellow-400 flex-shrink-0 flex items-center justify-center">
@@ -639,7 +654,9 @@ export default function Calendar() {
                       1/3
                     </span>
                   </div>
-                  <span className="text-xs sm:text-sm">Partially completed</span>
+                  <span className="text-xs sm:text-sm">
+                    Partially completed
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-red-200 border border-2 border-red-400 flex-shrink-0 flex items-center justify-center">
@@ -654,9 +671,13 @@ export default function Calendar() {
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
                     <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500" />
-                    <span className="text-xs font-medium hidden sm:inline">✓</span>
+                    <span className="text-xs font-medium hidden sm:inline">
+                      ✓
+                    </span>
                   </div>
-                  <span className="text-xs sm:text-sm">All daily goals completed</span>
+                  <span className="text-xs sm:text-sm">
+                    All daily goals completed
+                  </span>
                 </div>
               </CardContent>
             </Card>

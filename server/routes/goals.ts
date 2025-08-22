@@ -571,7 +571,9 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       } else if (isToday) {
         // Today is not completed yet, but day is still in progress
         // Don't break the streak, just skip today and continue with previous days
-        console.log(`⏳ Today is incomplete but still in progress, continuing streak calculation...`);
+        console.log(
+          `⏳ Today is incomplete but still in progress, continuing streak calculation...`,
+        );
         continue;
       } else {
         // Past day not completed, streak ends
