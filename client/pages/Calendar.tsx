@@ -394,10 +394,10 @@ export default function Calendar() {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setSelectedDate(date)}
                           className={`
-                            relative min-h-[100px] p-3 border-2 rounded-xl transition-all duration-300 cursor-pointer
+                            relative min-h-[60px] sm:min-h-[80px] lg:min-h-[100px] p-2 sm:p-3 border border-2 rounded-lg sm:rounded-xl transition-all duration-300 cursor-pointer
                             ${isCurrentMonth ? "bg-background hover:bg-accent/50" : "bg-muted/30 hover:bg-muted/50"}
-                            ${isToday(date) ? "ring-2 ring-primary shadow-lg bg-primary/5" : ""}
-                            ${isSelected(date) ? "ring-2 ring-accent shadow-lg bg-accent/20" : ""}
+                            ${isToday(date) ? "ring-1 sm:ring-2 ring-primary shadow-lg bg-primary/5" : ""}
+                            ${isSelected(date) ? "ring-1 sm:ring-2 ring-accent shadow-lg bg-accent/20" : ""}
                             ${
                               hasGoals
                                 ? stats.completed === stats.total
