@@ -39,7 +39,20 @@ export default function Calendar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchGoals();
+    let isMounted = true;
+
+    const loadGoals = async () => {
+      if (isMounted) {
+        await fetchGoals();
+      }
+    };
+
+    loadGoals();
+
+    // Cleanup function to prevent state updates if component unmounts
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const fetchGoals = async () => {
