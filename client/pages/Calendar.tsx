@@ -572,38 +572,38 @@ export default function Calendar() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 sm:space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded bg-green-200 border-2 border-green-400 flex-shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-green-200 border border-2 border-green-400 flex-shrink-0 flex items-center justify-center">
                     <span className="text-xs font-bold text-green-800">
                       3/3
                     </span>
                   </div>
-                  <span className="text-sm">All goals completed</span>
+                  <span className="text-xs sm:text-sm">All goals completed</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded bg-yellow-200 border-2 border-yellow-400 flex-shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-yellow-200 border border-2 border-yellow-400 flex-shrink-0 flex items-center justify-center">
                     <span className="text-xs font-bold text-yellow-800">
                       1/3
                     </span>
                   </div>
-                  <span className="text-sm">Partially completed</span>
+                  <span className="text-xs sm:text-sm">Partially completed</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded bg-red-200 border-2 border-red-400 flex-shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-red-200 border border-2 border-red-400 flex-shrink-0 flex items-center justify-center">
                     <span className="text-xs font-bold text-red-800">0/3</span>
                   </div>
-                  <span className="text-sm">No goals completed</span>
+                  <span className="text-xs sm:text-sm">No goals completed</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded ring-2 ring-primary flex-shrink-0"></div>
-                  <span className="text-sm">Today</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded ring-1 sm:ring-2 ring-primary flex-shrink-0"></div>
+                  <span className="text-xs sm:text-sm">Today</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full">
-                    <CheckCircle2 className="w-3 h-3 text-green-500" />
-                    <span className="text-xs font-medium">✓</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
+                    <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500" />
+                    <span className="text-xs font-medium hidden sm:inline">✓</span>
                   </div>
-                  <span className="text-sm">All daily goals completed</span>
+                  <span className="text-xs sm:text-sm">All daily goals completed</span>
                 </div>
               </CardContent>
             </Card>
