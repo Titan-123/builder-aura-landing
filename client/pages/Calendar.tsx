@@ -360,15 +360,15 @@ export default function Calendar() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-6">
                 {/* Day headers */}
-                <div className="grid grid-cols-7 gap-1 mb-4">
+                <div className="grid grid-cols-7 gap-1 mb-2 sm:mb-4">
                   {dayNames.map((day) => (
                     <motion.div
                       key={day}
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-3 text-center text-sm font-semibold text-muted-foreground"
+                      className="p-1 sm:p-3 text-center text-xs sm:text-sm font-semibold text-muted-foreground"
                     >
                       {day}
                     </motion.div>
@@ -376,7 +376,7 @@ export default function Calendar() {
                 </div>
 
                 {/* Calendar grid */}
-                <div className="grid grid-cols-7 gap-2">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
                   <AnimatePresence>
                     {calendarDays.map(({ date, isCurrentMonth }, index) => {
                       const stats = getGoalStatsForDate(date);
