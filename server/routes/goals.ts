@@ -468,6 +468,7 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     await connectDB();
 
     const goals = await Goal.find({ userId: req.userId });
+    const today = new Date();
     console.log("📊 Found", goals.length, "goals for user");
 
     // Log all goals for debugging
