@@ -439,14 +439,14 @@ export default function Calendar() {
                             <motion.div
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="space-y-2"
+                              className="space-y-1 sm:space-y-2"
                             >
                               {/* Fraction Display */}
                               <div className="text-center">
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg font-bold text-lg shadow-sm ${
+                                  className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-3 py-1 sm:py-2 rounded sm:rounded-lg font-bold text-xs sm:text-lg shadow-sm ${
                                     stats.completed === stats.total
                                       ? "bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"
                                       : stats.completed > 0
@@ -455,20 +455,20 @@ export default function Calendar() {
                                   }`}
                                 >
                                   <span>{stats.completed}</span>
-                                  <span className="text-sm opacity-70">/</span>
+                                  <span className="text-xs sm:text-sm opacity-70">/</span>
                                   <span>{stats.total}</span>
                                 </motion.div>
                               </div>
 
                               {/* Progress Bar */}
-                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 sm:h-2 hidden sm:block">
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{
                                     width: `${stats.completionRate}%`,
                                   }}
                                   transition={{ duration: 0.5, delay: 0.2 }}
-                                  className={`h-2 rounded-full ${
+                                  className={`h-1 sm:h-2 rounded-full ${
                                     stats.completed === stats.total
                                       ? "bg-green-500"
                                       : stats.completed > 0
