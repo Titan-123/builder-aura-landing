@@ -54,9 +54,15 @@ export default function Calendar() {
       if (response.ok) {
         const data = await response.json();
         setGoals(data.goals);
+
+        // Calculate simple streak from goals data
+        const completedGoals = data.goals.filter((g: Goal) => g.completed);
+        const streak = completedGoals.length > 0 ? 1 : 0; // Simple calculation
+        setStreaks({ dailyStreak: streak, weeklyStreak: 0, monthlyStreak: 0 });
       }
     } catch (error) {
       console.error("Failed to fetch goals:", error);
+      setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     } finally {
       setLoading(false);
     }
