@@ -443,6 +443,7 @@ app.delete("/api/goals/:goalId", verifyToken, async (req: any, res) => {
 app.get("/api/streaks", verifyToken, async (req: any, res) => {
   try {
     const goals = await Goal.find({ userId: req.userId });
+    const today = new Date();
 
     // Helper function to check if all daily goals are completed for a specific date
     // This matches exactly how the calendar determines completion
