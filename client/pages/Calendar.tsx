@@ -513,30 +513,30 @@ export default function Calendar() {
                   Monthly Summary
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 pt-6">
-                <div className="space-y-3">
+              <CardContent className="space-y-3 sm:space-y-4 pt-4 sm:pt-6">
+                <div className="space-y-2 sm:space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                       Completion Rate
                     </span>
-                    <span className="font-bold text-lg text-primary">
+                    <span className="font-bold text-base sm:text-lg text-primary">
                       {completionRate.toFixed(1)}%
                     </span>
                   </div>
-                  <Progress value={completionRate} className="h-3" />
+                  <Progress value={completionRate} className="h-2 sm:h-3" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 rounded-lg bg-primary/10">
-                    <div className="text-2xl font-bold text-primary">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                  <div className="text-center p-2 sm:p-3 rounded-lg bg-primary/10">
+                    <div className="text-lg sm:text-2xl font-bold text-primary">
                       {monthlyStats.completedGoals}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       Completed
                     </div>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-accent/10">
-                    <div className="text-2xl font-bold text-accent-foreground">
+                  <div className="text-center p-2 sm:p-3 rounded-lg bg-accent/10">
+                    <div className="text-lg sm:text-2xl font-bold text-accent-foreground">
                       {monthlyStats.activeDays}
                     </div>
                     <div className="text-xs text-muted-foreground">
