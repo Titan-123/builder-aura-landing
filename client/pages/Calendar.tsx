@@ -565,13 +565,13 @@ export default function Calendar() {
             transition={{ delay: 0.3 }}
           >
             <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-accent" />
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                   Legend
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-2 sm:space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded bg-green-200 border-2 border-green-400 flex-shrink-0 flex items-center justify-center">
                     <span className="text-xs font-bold text-green-800">
