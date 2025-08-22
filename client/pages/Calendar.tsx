@@ -349,9 +349,9 @@ export default function Calendar() {
         <MotivationalQuote variant="compact" />
       </motion.div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
         {/* Calendar */}
-        <div className="xl:col-span-3">
+        <div className="lg:col-span-3">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
