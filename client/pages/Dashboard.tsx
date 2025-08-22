@@ -119,9 +119,18 @@ export default function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setAnalytics(data);
+        // Extract streaks from analytics response instead of separate API call
+        setStreaks({
+          dailyStreak: data.currentStreak || 0,
+          weeklyStreak: 0,
+          monthlyStreak: 0
+        });
+        console.log("✅ Analytics and streaks data received:", { analytics: data, streak: data.currentStreak });
       }
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
+      // Set default streak values on error
+      setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     }
   };
 
