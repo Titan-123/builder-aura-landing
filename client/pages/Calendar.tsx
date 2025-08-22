@@ -552,7 +552,7 @@ export default function Calendar() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-4 lg:space-y-6 order-1 xl:order-2">
+        <div className="space-y-4 lg:space-y-6">
           {/* Monthly Summary */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
