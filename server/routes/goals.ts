@@ -541,8 +541,11 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       const currentDate = datesWithDailyGoals[i];
       const dayCompletion = isDayFullyCompleted(currentDate);
 
+      // Check if this is today
+      const isToday = currentDate.toDateString() === today.toDateString();
+
       console.log(
-        `📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`,
+        `📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isToday = ${isToday}`,
       );
 
       if (dayCompletion === true) {
@@ -565,9 +568,14 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
             break;
           }
         }
+      } else if (isToday) {
+        // Today is not completed yet, but day is still in progress
+        // Don't break the streak, just skip today and continue with previous days
+        console.log(`⏳ Today is incomplete but still in progress, continuing streak calculation...`);
+        continue;
       } else {
-        // Day not completed, streak ends
-        console.log(`❌ Day not completed, streak ends`);
+        // Past day not completed, streak ends
+        console.log(`❌ Past day not completed, streak ends`);
         break;
       }
     }
