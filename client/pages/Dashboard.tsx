@@ -123,9 +123,12 @@ export default function Dashboard() {
         setStreaks({
           dailyStreak: data.currentStreak || 0,
           weeklyStreak: 0,
-          monthlyStreak: 0
+          monthlyStreak: 0,
         });
-        console.log("✅ Analytics and streaks data received:", { analytics: data, streak: data.currentStreak });
+        console.log("✅ Analytics and streaks data received:", {
+          analytics: data,
+          streak: data.currentStreak,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
@@ -133,7 +136,6 @@ export default function Dashboard() {
       setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
     }
   };
-
 
   const createGoal = async () => {
     try {
