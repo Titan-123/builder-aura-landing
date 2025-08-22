@@ -410,9 +410,9 @@ export default function Calendar() {
                           `}
                         >
                           {/* Date and Status */}
-                          <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-start justify-between mb-1 sm:mb-3">
                             <span
-                              className={`text-lg font-bold ${
+                              className={`text-sm sm:text-lg font-bold ${
                                 isCurrentMonth
                                   ? "text-foreground"
                                   : "text-muted-foreground"
@@ -424,10 +424,10 @@ export default function Calendar() {
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full shadow-sm"
+                                className="flex items-center gap-1 bg-green-100 dark:bg-green-900 px-1 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-sm"
                               >
-                                <CheckCircle2 className="w-3 h-3 text-green-500" />
-                                <span className="text-xs text-green-600 dark:text-green-400 font-bold">
+                                <CheckCircle2 className="w-2 h-2 sm:w-3 sm:h-3 text-green-500" />
+                                <span className="text-xs text-green-600 dark:text-green-400 font-bold hidden sm:inline">
                                   ✓
                                 </span>
                               </motion.div>
