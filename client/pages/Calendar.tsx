@@ -485,7 +485,7 @@ export default function Calendar() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-background"
+                              className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full border border-2 border-background"
                             />
                           )}
                         </motion.div>
