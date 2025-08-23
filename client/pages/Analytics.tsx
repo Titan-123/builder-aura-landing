@@ -551,14 +551,19 @@ export default function Analytics() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <Card className="h-full">
-            <CardHeader className="bg-gradient-to-r from-accent/5 to-success/5">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-accent-foreground" />
+          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-emerald-300/50">
+            <CardHeader className="bg-gradient-to-r from-emerald-50/50 via-emerald-50/30 to-blue-50/50 dark:from-emerald-950/30 dark:via-emerald-950/20 dark:to-blue-950/30 border-b border-border/50">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Calendar className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                </motion.div>
                 Weekly Progress
               </CardTitle>
-              <CardDescription>
-                Your goal completion over the last 4 weeks
+              <CardDescription className="text-muted-foreground/80">
+                Goal completion trends from your recent weeks
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
@@ -629,14 +634,19 @@ export default function Analytics() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
       >
-        <Card>
-          <CardHeader className="bg-gradient-to-r from-success/5 to-primary/5">
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-success" />
+        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-blue-300/50">
+          <CardHeader className="bg-gradient-to-r from-blue-50/50 via-blue-50/30 to-violet-50/50 dark:from-blue-950/30 dark:via-blue-950/20 dark:to-violet-950/30 border-b border-border/50">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </motion.div>
               Monthly Trends
             </CardTitle>
-            <CardDescription>
-              Goal completion trends over the last 6 months
+            <CardDescription className="text-muted-foreground/80">
+              Long-term goal completion patterns and growth
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
