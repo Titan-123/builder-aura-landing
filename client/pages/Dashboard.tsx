@@ -531,8 +531,9 @@ export default function Dashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
+          whileHover={{ scale: 1.005 }}
         >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
+          <Card className="border-2 border-border/50 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-md shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2">
