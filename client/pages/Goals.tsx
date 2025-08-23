@@ -908,17 +908,15 @@ export default function Goals() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-category">Category</Label>
-                    <Input
-                      id="edit-category"
-                      value={editForm.category}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, category: e.target.value })
-                      }
-                      placeholder="e.g., Health, Work"
-                    />
-                  </div>
+                  <CategorySelect
+                    id="edit-category"
+                    value={editForm.category}
+                    onChange={(value) =>
+                      setEditForm({ ...editForm, category: value })
+                    }
+                    existingCategories={categories}
+                    placeholder="Select or create category"
+                  />
                   <div className="grid gap-2">
                     <Label htmlFor="edit-priority">Priority</Label>
                     <Select
