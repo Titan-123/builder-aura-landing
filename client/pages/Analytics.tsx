@@ -108,9 +108,9 @@ export default function Analytics() {
     );
   }
 
-  // Chart colors (expanded to support more predefined categories)
+  // Enhanced chart colors with better contrast and accessibility
   const COLORS = [
-    "#22c55e", // Green
+    "#10b981", // Emerald
     "#3b82f6", // Blue
     "#f59e0b", // Amber
     "#ef4444", // Red
@@ -122,21 +122,74 @@ export default function Analytics() {
     "#6366f1", // Indigo
   ];
 
-  // Custom tooltip for charts
+  // Gradient definitions for better visual appeal
+  const GRADIENTS = [
+    { from: "#10b981", to: "#059669" }, // Emerald gradient
+    { from: "#3b82f6", to: "#2563eb" }, // Blue gradient
+    { from: "#f59e0b", to: "#d97706" }, // Amber gradient
+    { from: "#ef4444", to: "#dc2626" }, // Red gradient
+    { from: "#8b5cf6", to: "#7c3aed" }, // Violet gradient
+    { from: "#06b6d4", to: "#0891b2" }, // Cyan gradient
+    { from: "#ec4899", to: "#db2777" }, // Pink gradient
+    { from: "#84cc16", to: "#65a30d" }, // Lime gradient
+    { from: "#f97316", to: "#ea580c" }, // Orange gradient
+    { from: "#6366f1", to: "#4f46e5" }, // Indigo gradient
+  ];
+
+  // Enhanced custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.name}: {entry.value}
-            </p>
-          ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-card/95 backdrop-blur-sm border border-border rounded-xl p-4 shadow-2xl"
+        >
+          <p className="font-semibold text-foreground mb-2">{label}</p>
+          <div className="space-y-1">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span className="text-sm">
+                  <span className="font-medium">{entry.name}:</span>
+                  <span className="ml-1 font-bold" style={{ color: entry.color }}>
+                    {entry.value}
+                  </span>
+                  {entry.name.includes('Rate') || entry.name.includes('Percentage') ? '%' : ''}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       );
     }
     return null;
+  };
+
+  // Custom label function for pie chart
+  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    if (percent < 0.05) return null; // Hide labels for slices smaller than 5%
+
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        className="text-xs font-semibold drop-shadow-lg"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
   };
 
   return (
@@ -303,27 +356,37 @@ export default function Analytics() {
             <CardContent className="pt-6">
               {analytics.categoryBreakdown.length > 0 ? (
                 <div className="space-y-6">
-                  <div className="h-64">
+                  <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
+                        <defs>
+                          {GRADIENTS.map((gradient, index) => (
+                            <linearGradient key={index} id={`gradient-${index}`} x1="0" y1="0" x2="1" y2="1">
+                              <stop offset="0%" stopColor={gradient.from} />
+                              <stop offset="100%" stopColor={gradient.to} />
+                            </linearGradient>
+                          ))}
+                        </defs>
                         <Pie
                           data={analytics.categoryBreakdown}
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={({ name, percentage }) =>
-                            `${name} (${percentage.toFixed(1)}%)`
-                          }
-                          outerRadius={80}
+                          label={renderCustomLabel}
+                          outerRadius={100}
+                          innerRadius={30}
                           fill="#8884d8"
                           dataKey="completed"
                           animationBegin={0}
-                          animationDuration={800}
+                          animationDuration={1200}
+                          animationEasing="ease-out"
                         >
                           {analytics.categoryBreakdown.map((entry, index) => (
                             <Cell
                               key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
+                              fill={`url(#gradient-${index % GRADIENTS.length})`}
+                              stroke={COLORS[index % COLORS.length]}
+                              strokeWidth={2}
                             />
                           ))}
                         </Pie>
@@ -394,29 +457,49 @@ export default function Analytics() {
             </CardHeader>
             <CardContent className="pt-6">
               {analytics.weeklyTrends.length > 0 ? (
-                <div className="h-64">
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={analytics.weeklyTrends}>
+                    <BarChart data={analytics.weeklyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <defs>
+                        <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#10b981" stopOpacity={1} />
+                          <stop offset="100%" stopColor="#059669" stopOpacity={0.8} />
+                        </linearGradient>
+                        <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#e5e7eb" stopOpacity={0.8} />
+                          <stop offset="100%" stopColor="#d1d5db" stopOpacity={0.6} />
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid
                         strokeDasharray="3 3"
-                        className="opacity-30"
+                        stroke="hsl(var(--border))"
+                        opacity={0.3}
                       />
-                      <XAxis dataKey="week" />
-                      <YAxis />
+                      <XAxis
+                        dataKey="week"
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={{ stroke: 'hsl(var(--border))' }}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={{ stroke: 'hsl(var(--border))' }}
+                      />
                       <Tooltip content={<CustomTooltip />} />
                       <Bar
-                        dataKey="completed"
-                        fill="#22c55e"
-                        name="Completed"
-                        radius={[4, 4, 0, 0]}
-                        animationDuration={800}
+                        dataKey="total"
+                        fill="url(#totalGradient)"
+                        name="Total Goals"
+                        radius={[6, 6, 0, 0]}
+                        animationDuration={1000}
+                        animationEasing="ease-out"
                       />
                       <Bar
-                        dataKey="total"
-                        fill="#e5e7eb"
-                        name="Total"
-                        radius={[4, 4, 0, 0]}
-                        animationDuration={800}
+                        dataKey="completed"
+                        fill="url(#completedGradient)"
+                        name="Completed Goals"
+                        radius={[6, 6, 0, 0]}
+                        animationDuration={1200}
+                        animationEasing="ease-out"
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -452,35 +535,56 @@ export default function Analytics() {
           </CardHeader>
           <CardContent className="pt-6">
             {analytics.monthlyTrends.length > 0 ? (
-              <div className="h-80">
+              <div className="h-96">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={analytics.monthlyTrends}>
+                  <AreaChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <defs>
+                      <linearGradient id="totalAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05} />
+                      </linearGradient>
+                      <linearGradient id="completedAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity={0.1} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      className="opacity-30"
+                      stroke="hsl(var(--border))"
+                      opacity={0.3}
                     />
-                    <XAxis dataKey="month" />
-                    <YAxis />
+                    <XAxis
+                      dataKey="month"
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      tickLine={{ stroke: 'hsl(var(--border))' }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      tickLine={{ stroke: 'hsl(var(--border))' }}
+                    />
                     <Tooltip content={<CustomTooltip />} />
                     <Area
                       type="monotone"
                       dataKey="total"
-                      stackId="1"
                       stroke="#3b82f6"
-                      fill="#3b82f6"
-                      fillOpacity={0.1}
+                      strokeWidth={3}
+                      fill="url(#totalAreaGradient)"
                       name="Total Goals"
-                      animationDuration={1000}
+                      animationDuration={1500}
+                      animationEasing="ease-in-out"
                     />
                     <Area
                       type="monotone"
                       dataKey="completed"
-                      stackId="2"
-                      stroke="#22c55e"
-                      fill="#22c55e"
-                      fillOpacity={0.3}
+                      stroke="#10b981"
+                      strokeWidth={3}
+                      fill="url(#completedAreaGradient)"
                       name="Completed Goals"
-                      animationDuration={1000}
+                      animationDuration={1800}
+                      animationEasing="ease-in-out"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
