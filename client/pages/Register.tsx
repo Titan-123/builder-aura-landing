@@ -436,7 +436,7 @@ export default function Register() {
                     to="/login"
                     className="font-medium text-primary hover:text-primary/80 transition-colors"
                   >
-                    Sign in
+                    Log in
                   </Link>
                 </motion.div>
               </CardContent>

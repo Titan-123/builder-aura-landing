@@ -28,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate('/');
   };
 
   const navigation = [
