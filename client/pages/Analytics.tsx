@@ -412,14 +412,19 @@ export default function Analytics() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card className="h-full">
-            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30">
+            <CardHeader className="bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border-b border-border/50">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <BarChart3 className="w-6 h-6 text-primary" />
+                </motion.div>
                 Goals by Category
               </CardTitle>
-              <CardDescription>
-                See how you're progressing across different areas
+              <CardDescription className="text-muted-foreground/80">
+                Track your progress across different goal categories
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
