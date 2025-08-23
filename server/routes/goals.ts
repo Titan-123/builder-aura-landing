@@ -286,7 +286,8 @@ export const handleCreateGoal: RequestHandler<
       type,
       priority: priority || "medium", // Default to medium if not provided
       timeAllotted: timeAllotted || 30, // Default to 30 minutes if not provided
-      deadline: new Date(deadline),
+      // Parse date as local midnight to avoid timezone issues
+      deadline: new Date(`${deadline}T00:00:00`),
       completed: false,
     });
 
@@ -365,7 +366,8 @@ export const handleUpdateGoal: RequestHandler<
       goal.timeAllotted = updates.timeAllotted;
     }
     if (updates.deadline !== undefined) {
-      goal.deadline = new Date(updates.deadline);
+      // Parse date as local midnight to avoid timezone issues
+      goal.deadline = new Date(`${updates.deadline}T00:00:00`);
     }
 
     // Handle completion status
