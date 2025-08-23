@@ -32,9 +32,19 @@ export const handleGetAnalytics: RequestHandler<
     const completedGoals = goals.filter((g) => g.completed);
     const completionRate = (completedGoals.length / goals.length) * 100;
 
-    // Calculate current streak using the same logic as /api/streaks
+    // Calculate current streak using improved logic
     const calculateCurrentStreak = () => {
       const today = new Date();
+
+      // Helper function to normalize date to start of day for comparison
+      const normalizeDate = (date: Date) => {
+        const normalized = new Date(date);
+        normalized.setHours(0, 0, 0, 0);
+        return normalized;
+      };
+
+      const todayNormalized = normalizeDate(today);
+
       const isDayFullyCompleted = (checkDate: Date) => {
         const allDailyGoals = goals.filter((goal) => {
           const goalDate = new Date(goal.deadline);
@@ -47,7 +57,7 @@ export const handleGetAnalytics: RequestHandler<
         });
 
         if (allDailyGoals.length === 0) {
-          return null;
+          return null; // No goals for this day
         }
 
         const completedDailyGoals = allDailyGoals.filter(
@@ -56,14 +66,14 @@ export const handleGetAnalytics: RequestHandler<
         return completedDailyGoals.length === allDailyGoals.length;
       };
 
-      // Get all dates that have daily goals
+      // Get all dates that have daily goals, sorted newest first
       const datesWithDailyGoals = [
         ...new Set(
           goals
             .filter((goal) => goal.type === "daily")
             .map((goal) => {
               const date = new Date(goal.deadline);
-              return date.toDateString();
+              return normalizeDate(date).toDateString();
             }),
         ),
       ]
@@ -74,38 +84,42 @@ export const handleGetAnalytics: RequestHandler<
         return 0;
       }
 
-      // Find the CURRENT streak starting from the most recent date and going backwards
+      // Find consecutive completed days working backwards from most recent completed day
       let currentStreak = 0;
+      let startIndex = 0;
 
-      for (let i = 0; i < datesWithDailyGoals.length; i++) {
+      // If the most recent date is today and it's incomplete, start from yesterday
+      const mostRecentDate = datesWithDailyGoals[0];
+      const isMostRecentToday = normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
+
+      if (isMostRecentToday && isDayFullyCompleted(mostRecentDate) !== true) {
+        // Today exists but is incomplete, start counting from yesterday
+        startIndex = 1;
+      }
+
+      // Count consecutive completed days
+      for (let i = startIndex; i < datesWithDailyGoals.length; i++) {
         const currentDate = datesWithDailyGoals[i];
         const dayCompletion = isDayFullyCompleted(currentDate);
-
-        // Check if this is today
-        const isToday = currentDate.toDateString() === today.toDateString();
 
         if (dayCompletion === true) {
           currentStreak++;
 
           // Check if this date is consecutive with the previous one (if any)
           if (i > 0) {
-            const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+            const nextNewerDate = datesWithDailyGoals[i - 1];
             const daysDiff = Math.floor(
               (nextNewerDate.getTime() - currentDate.getTime()) /
                 (1000 * 60 * 60 * 24),
             );
 
             if (daysDiff > 1) {
-              // Gap found between this completed day and the next newer one, so streak ends here
+              // Gap found, streak ends here
               break;
             }
           }
-        } else if (isToday) {
-          // Today is not completed yet, but day is still in progress
-          // Don't break the streak, just skip today and continue with previous days
-          continue;
         } else {
-          // Past day not completed, streak ends
+          // Incomplete day found, streak ends
           break;
         }
       }
