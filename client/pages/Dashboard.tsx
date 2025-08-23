@@ -81,6 +81,7 @@ export default function Dashboard() {
   });
 
   const achievements = useAchievements(goals, analytics);
+  const categories = [...new Set(goals.map((g) => g.category).filter(Boolean))];
 
   useEffect(() => {
     fetchGoals();
