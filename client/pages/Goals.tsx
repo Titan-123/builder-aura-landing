@@ -292,11 +292,19 @@ export default function Goals() {
     try {
       const token = localStorage.getItem("accessToken");
 
+      if (!token) {
+        toast.error("Authentication required");
+        return;
+      }
+
       // Prepare goal data, only include timeAllotted if it's provided
       const goalData = {
         ...newGoal,
         timeAllotted: newGoal.timeAllotted || undefined,
       };
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch("/api/goals", {
         method: "POST",
@@ -305,7 +313,10 @@ export default function Goals() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(goalData),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         await fetchGoals();
@@ -324,20 +335,34 @@ export default function Goals() {
         toast.success("Goal created successfully! 🎯");
 
         // Trigger celebration for first goal or achievement
-        const goalData = await response.json();
-        triggerMotivationalCelebration({
-          type: "goalCreated",
-          message: "New goal created! 🎯",
-          isFirstGoal: goals.filter((g) => g.completed).length === 0,
-          category: goalData?.category,
-        });
+        try {
+          const goalData = await response.json();
+          triggerMotivationalCelebration({
+            type: "goalCreated",
+            message: "New goal created! 🎯",
+            isFirstGoal: goals.filter((g) => g.completed).length === 0,
+            category: goalData?.category,
+          });
+        } catch (celebrationError) {
+          // Celebration error shouldn't break the flow
+          console.warn("Celebration trigger failed:", celebrationError);
+        }
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to create goal");
+        try {
+          const errorData = await response.json();
+          toast.error(errorData.message || "Failed to create goal");
+        } catch {
+          toast.error("Failed to create goal");
+        }
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create goal:", error);
-      toast.error("Failed to create goal");
+      if (error.name !== "AbortError") {
+        toast.error("Failed to create goal");
+      }
     }
   };
 
@@ -346,6 +371,15 @@ export default function Goals() {
 
     try {
       const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        toast.error("Authentication required");
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(`/api/goals/${editingGoal.id}`, {
         method: "PUT",
         headers: {
@@ -353,7 +387,10 @@ export default function Goals() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(editForm),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         await fetchGoals();
@@ -370,17 +407,36 @@ export default function Goals() {
 
         toast.success("Goal updated successfully! ✨");
       } else {
+        try {
+          const errorData = await response.json();
+          toast.error(errorData.message || "Failed to update goal");
+        } catch {
+          toast.error("Failed to update goal");
+        }
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
+      }
+    } catch (error: any) {
+      console.error("Failed to update goal:", error);
+      if (error.name !== "AbortError") {
         toast.error("Failed to update goal");
       }
-    } catch (error) {
-      console.error("Failed to update goal:", error);
-      toast.error("Failed to update goal");
     }
   };
 
   const toggleGoalCompletion = async (goalId: string, completed: boolean) => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        toast.error("Authentication required");
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const response = await fetch(`/api/goals/${goalId}`, {
         method: "PUT",
         headers: {
@@ -388,46 +444,90 @@ export default function Goals() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ completed }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         await fetchGoals();
 
         if (completed) {
           const goalData = goals.find((g) => g.id === goalId);
-          triggerMotivationalCelebration({
-            goalTitle: goalData?.title || "Goal",
-            streak: 0,
-            isFirstGoal: goals.filter((g) => g.completed).length === 0,
-            category: goalData?.category,
-          });
+          try {
+            triggerMotivationalCelebration({
+              goalTitle: goalData?.title || "Goal",
+              streak: 0,
+              isFirstGoal: goals.filter((g) => g.completed).length === 0,
+              category: goalData?.category,
+            });
+          } catch (celebrationError) {
+            console.warn("Celebration trigger failed:", celebrationError);
+          }
         } else {
           toast.success("Goal marked as incomplete");
         }
+      } else {
+        try {
+          const errorData = await response.json();
+          toast.error(errorData.message || "Failed to update goal");
+        } catch {
+          toast.error("Failed to update goal");
+        }
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to update goal:", error);
-      toast.error("Failed to update goal");
+      if (error.name !== "AbortError") {
+        toast.error("Failed to update goal");
+      }
     }
   };
 
   const deleteGoal = async (goalId: string) => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        toast.error("Authentication required");
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const response = await fetch(`/api/goals/${goalId}`, {
         method: "DELETE",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         await fetchGoals();
         toast.success("Goal deleted");
+      } else {
+        try {
+          const errorData = await response.json();
+          toast.error(errorData.message || "Failed to delete goal");
+        } catch {
+          toast.error("Failed to delete goal");
+        }
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to delete goal:", error);
-      toast.error("Failed to delete goal");
+      if (error.name !== "AbortError") {
+        toast.error("Failed to delete goal");
+      }
     }
   };
 
