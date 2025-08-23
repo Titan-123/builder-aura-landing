@@ -1068,18 +1068,22 @@ export default function Goals() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-timeAllotted">Time (minutes)</Label>
+                    <Label htmlFor="edit-timeAllotted" className="text-sm font-medium">
+                      Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                    </Label>
                     <Input
                       id="edit-timeAllotted"
                       type="number"
-                      value={editForm.timeAllotted}
+                      min="1"
+                      max="1440"
+                      value={editForm.timeAllotted || ""}
                       onChange={(e) =>
                         setEditForm({
                           ...editForm,
-                          timeAllotted: parseInt(e.target.value) || 0,
+                          timeAllotted: e.target.value ? parseInt(e.target.value) : 0,
                         })
                       }
-                      min="1"
+                      placeholder="e.g., 30"
                     />
                   </div>
                 </div>
