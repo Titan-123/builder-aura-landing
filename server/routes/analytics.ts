@@ -97,8 +97,11 @@ export const handleGetAnalytics: RequestHandler<
         .sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
       if (datesWithDailyGoals.length === 0) {
+        console.log("📊 Analytics - No daily goals found for streak calculation");
         return 0;
       }
+
+      console.log("📊 Analytics - Dates with daily goals:", datesWithDailyGoals.map(d => d.toDateString()));
 
       // Find consecutive completed days working backwards from most recent completed day
       let currentStreak = 0;
@@ -108,8 +111,11 @@ export const handleGetAnalytics: RequestHandler<
       const mostRecentDate = datesWithDailyGoals[0];
       const isMostRecentToday = normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
 
+      console.log(`📊 Analytics - Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`);
+      console.log(`📊 Analytics - Today normalized: ${todayNormalized.toDateString()}`);
+
       if (isMostRecentToday && isDayFullyCompleted(mostRecentDate) !== true) {
-        // Today exists but is incomplete, start counting from yesterday
+        console.log("📊 Analytics - Today exists but is incomplete, starting from yesterday");
         startIndex = 1;
       }
 
@@ -118,8 +124,11 @@ export const handleGetAnalytics: RequestHandler<
         const currentDate = datesWithDailyGoals[i];
         const dayCompletion = isDayFullyCompleted(currentDate);
 
+        console.log(`📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`);
+
         if (dayCompletion === true) {
           currentStreak++;
+          console.log(`📊 Analytics - Day completed! Current streak: ${currentStreak}`);
 
           // Check if this date is consecutive with the previous one (if any)
           if (i > 0) {
@@ -130,12 +139,12 @@ export const handleGetAnalytics: RequestHandler<
             );
 
             if (daysDiff > 1) {
-              // Gap found, streak ends here
+              console.log(`📊 Analytics - Gap of ${daysDiff} days found, streak ends`);
               break;
             }
           }
         } else {
-          // Incomplete day found, streak ends
+          console.log(`📊 Analytics - Day not completed, streak ends`);
           break;
         }
       }
