@@ -459,7 +459,7 @@ export default function Analytics() {
                           outerRadius={90}
                           fill="#8884d8"
                           dataKey="completed"
-                          label={({ name, percentage }) => percentage > 5 ? `${name}` : ''}
+                          label={({ name, percentage }) => percentage > 8 ? name : ''}
                           labelLine={false}
                           animationBegin={0}
                           animationDuration={800}
