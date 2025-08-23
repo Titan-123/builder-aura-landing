@@ -242,10 +242,47 @@ export default function Analytics() {
               </motion.div>
             </CardHeader>
             <CardContent className="relative z-10">
-              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-3">
-                {analytics.completionRate.toFixed(1)}%
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-2">
+                    {analytics.completionRate.toFixed(1)}%
+                  </div>
+                  <Progress value={analytics.completionRate} className="h-3" />
+                </div>
+                {/* Simple Gauge Visual */}
+                <div className="relative w-16 h-16">
+                  <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      className="text-muted/30"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      fill="transparent"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <motion.path
+                      stroke="url(#primaryGradient)"
+                      strokeWidth="3"
+                      fill="transparent"
+                      strokeLinecap="round"
+                      initial={{ strokeDasharray: "0 100" }}
+                      animate={{ strokeDasharray: `${analytics.completionRate} 100` }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <defs>
+                      <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-primary">
+                      {Math.round(analytics.completionRate)}%
+                    </span>
+                  </div>
+                </div>
               </div>
-              <Progress value={analytics.completionRate} className="mt-2 h-3" />
               <p className="text-xs text-muted-foreground mt-2 group-hover:text-muted-foreground/80 transition-colors">
                 {analytics.goalsCompleted} of {analytics.totalGoals} goals completed
               </p>
