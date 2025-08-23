@@ -17,7 +17,9 @@ export const handleGetAnalytics: RequestHandler<
 
     console.log("🔍 Analytics Debug - User ID:", userId);
     console.log("🔍 Total goals found:", goals.length);
-    console.log("🔍 Goals structure:");
+    console.log("🔍 Current server date/time:", new Date());
+    console.log("🔍 Current server year:", new Date().getFullYear());
+    console.log("�� Goals structure:");
     goals.forEach((goal, index) => {
       console.log(`Goal ${index + 1}:`, {
         id: goal._id,
