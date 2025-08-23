@@ -463,13 +463,25 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
 
     const goals = await Goal.find({ userId: req.userId });
     const today = new Date();
-    console.log("📊 Found", goals.length, "goals for user");
+    console.log("📊 Found", goals.length, "goals for user:", req.userId);
+    console.log("📅 Today is:", today.toDateString());
 
-    // Log all goals for debugging
+    // Log all goals for debugging with more detail
+    console.log("🔍 All Goals Details:");
     goals.forEach((goal, index) => {
       const goalDate = new Date(goal.deadline);
       console.log(
         `Goal ${index + 1}: "${goal.title}" | Type: ${goal.type} | Deadline: ${goalDate.toDateString()} | Completed: ${goal.completed} | CompletedAt: ${goal.completedAt ? new Date(goal.completedAt).toDateString() : "null"}`,
+      );
+    });
+
+    // Filter and show only daily goals
+    const dailyGoals = goals.filter(goal => goal.type === "daily");
+    console.log("🔍 Daily Goals Only:", dailyGoals.length);
+    dailyGoals.forEach((goal, index) => {
+      const goalDate = new Date(goal.deadline);
+      console.log(
+        `Daily Goal ${index + 1}: "${goal.title}" | Deadline: ${goalDate.toDateString()} | Completed: ${goal.completed}`,
       );
     });
 
