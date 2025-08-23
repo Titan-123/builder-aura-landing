@@ -413,26 +413,49 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="group"
         >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative border-2 border-border/50 bg-gradient-to-br from-orange-50/50 to-card/80 dark:from-orange-950/30 dark:to-card/80 backdrop-blur-md shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:border-orange-300/50 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Current Streak
               </CardTitle>
-              <Zap className="h-5 w-5 text-orange-500" />
+              <motion.div
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+                animate={{
+                  rotate: [0, 5, -5, 0],
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 3
+                }}
+              >
+                <Zap className="h-5 w-5 text-orange-500" />
+              </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-orange-600">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
                 {streaks?.dailyStreak || 0}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
                 days completing all goals
               </p>
               <div className="flex items-center gap-1 mt-2">
                 {Array.from({
                   length: Math.min(streaks?.dailyStreak || 0, 7),
                 }).map((_, i) => (
-                  <div key={i} className="w-2 h-2 bg-orange-500 rounded-full" />
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                    className="w-2 h-2 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full shadow-sm"
+                  />
                 ))}
               </div>
             </CardContent>
