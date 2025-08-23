@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 import { triggerMotivationalCelebration } from "@/components/MotivationalCelebration";
 import MotivationalQuote from "@/components/MotivationalQuote";
 import MotivationalBackground from "@/components/MotivationalBackground";
+import CategorySelect from "@/components/CategorySelect";
 import { Button } from "@/components/ui/button";
 import {
   Card,
