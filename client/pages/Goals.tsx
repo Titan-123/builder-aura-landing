@@ -98,6 +98,15 @@ export default function Goals() {
     priority: "medium",
   });
 
+  // Form validation state
+  const [formErrors, setFormErrors] = useState<{
+    title?: string;
+    description?: string;
+    category?: string;
+    deadline?: string;
+    timeAllotted?: string;
+  }>({});
+
   useEffect(() => {
     fetchGoals();
   }, []);
@@ -211,15 +220,27 @@ export default function Goals() {
   };
 
   const createGoal = async () => {
+    if (!validateForm()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
+
+      // Prepare goal data, only include timeAllotted if it's provided
+      const goalData = {
+        ...newGoal,
+        timeAllotted: newGoal.timeAllotted || undefined,
+      };
+
       const response = await fetch("/api/goals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newGoal),
+        body: JSON.stringify(goalData),
       });
 
       if (response.ok) {
@@ -230,12 +251,25 @@ export default function Goals() {
           description: "",
           category: "",
           type: "daily",
-          timeAllotted: 30,
+          timeAllotted: 0, // Reset to 0 for optional field
           deadline: new Date().toISOString().split("T")[0],
           priority: "medium",
         });
+        setFormErrors({});
 
         toast.success("Goal created successfully! 🎯");
+
+        // Trigger celebration for first goal or achievement
+        const goalData = await response.json();
+        triggerMotivationalCelebration({
+          type: "goalCreated",
+          message: "New goal created! 🎯",
+          isFirstGoal: goals.filter((g) => g.completed).length === 0,
+          category: goalData?.category,
+        });
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Failed to create goal");
       }
     } catch (error) {
       console.error("Failed to create goal:", error);
