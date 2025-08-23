@@ -15,6 +15,20 @@ export const handleGetAnalytics: RequestHandler<
     // Get all user goals
     const goals = await Goal.find({ userId }).sort({ createdAt: -1 });
 
+    console.log("🔍 Analytics Debug - User ID:", userId);
+    console.log("🔍 Total goals found:", goals.length);
+    console.log("🔍 Goals structure:");
+    goals.forEach((goal, index) => {
+      console.log(`Goal ${index + 1}:`, {
+        id: goal._id,
+        title: goal.title,
+        type: goal.type,
+        deadline: goal.deadline ? new Date(goal.deadline).toDateString() : "No deadline",
+        completed: goal.completed,
+        completedAt: goal.completedAt ? new Date(goal.completedAt).toDateString() : "Not completed"
+      });
+    });
+
     if (goals.length === 0) {
       return res.json({
         completionRate: 0,
