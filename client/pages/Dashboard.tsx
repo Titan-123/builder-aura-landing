@@ -780,17 +780,15 @@ export default function Dashboard() {
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="category">Category</Label>
-                <Input
-                  id="category"
-                  value={newGoal.category}
-                  onChange={(e) =>
-                    setNewGoal({ ...newGoal, category: e.target.value })
-                  }
-                  placeholder="e.g., Health, Work"
-                />
-              </div>
+              <CategorySelect
+                id="category"
+                value={newGoal.category}
+                onChange={(value) =>
+                  setNewGoal({ ...newGoal, category: value })
+                }
+                existingCategories={categories}
+                placeholder="Select or create category"
+              />
               <div className="grid gap-2">
                 <Label htmlFor="type">Type</Label>
                 <Select
