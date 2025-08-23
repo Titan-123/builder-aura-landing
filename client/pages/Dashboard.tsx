@@ -344,20 +344,28 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="group"
         >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative border-2 border-border/50 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-md shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:border-primary/30 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Overall Progress
               </CardTitle>
-              <Target className="h-5 w-5 text-primary" />
+              <motion.div
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Target className="h-5 w-5 text-primary" />
+              </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-primary">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 {completionRate.toFixed(0)}%
               </div>
-              <Progress value={completionRate} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-2">
+              <Progress value={completionRate} className="mt-2 h-2" />
+              <p className="text-xs text-muted-foreground mt-2 group-hover:text-muted-foreground/80 transition-colors">
                 {completedGoals.length} of {goals.length} goals completed
               </p>
             </CardContent>
