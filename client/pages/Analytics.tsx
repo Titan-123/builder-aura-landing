@@ -225,25 +225,31 @@ export default function Analytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          whileHover={{ scale: 1.02, y: -4 }}
+          className="group"
         >
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/5 border-2 border-primary/20 hover:border-primary/40 shadow-lg hover:shadow-2xl transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Completion Rate
               </CardTitle>
               <motion.div
-                whileHover={{ scale: 1.1, rotate: 10 }}
-                className="p-2 bg-primary/10 rounded-lg"
+                whileHover={{ scale: 1.2, rotate: 15 }}
+                className="p-3 bg-primary/20 rounded-xl group-hover:bg-primary/30 transition-colors"
               >
-                <Target className="h-4 w-4 text-primary" />
+                <Target className="h-5 w-5 text-primary" />
               </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-3">
                 {analytics.completionRate.toFixed(1)}%
               </div>
-              <Progress value={analytics.completionRate} className="mt-2" />
-              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-full -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors" />
+              <Progress value={analytics.completionRate} className="mt-2 h-3" />
+              <p className="text-xs text-muted-foreground mt-2 group-hover:text-muted-foreground/80 transition-colors">
+                {analytics.goalsCompleted} of {analytics.totalGoals} goals completed
+              </p>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors duration-500" />
             </CardContent>
           </Card>
         </motion.div>
@@ -252,29 +258,47 @@ export default function Analytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          whileHover={{ scale: 1.02, y: -4 }}
+          className="group"
         >
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-orange-50/50 via-card to-orange-50/50 dark:from-orange-950/20 dark:via-card dark:to-orange-950/20 border-2 border-orange-200/50 dark:border-orange-800/50 hover:border-orange-300 dark:hover:border-orange-600 shadow-lg hover:shadow-2xl transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Current Streak
               </CardTitle>
               <motion.div
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.2 }}
                 animate={{
-                  rotate: analytics.currentStreak > 0 ? [0, 5, -5, 0] : 0,
+                  rotate: analytics.currentStreak > 0 ? [0, 8, -8, 0] : 0,
+                  scale: analytics.currentStreak > 0 ? [1, 1.05, 1] : 1,
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg"
+                className="p-3 bg-orange-100 dark:bg-orange-900/50 rounded-xl group-hover:bg-orange-200 dark:group-hover:bg-orange-800/50 transition-colors"
               >
-                <Activity className="h-4 w-4 text-orange-500" />
+                <Activity className="h-5 w-5 text-orange-500" />
               </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-500">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent mb-1">
                 {analytics.currentStreak}
               </div>
-              <p className="text-xs text-muted-foreground">days in a row</p>
-              <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-colors" />
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">consecutive days</p>
+              <div className="flex items-center gap-1 mt-2">
+                {Array.from({ length: Math.min(analytics.currentStreak, 7) }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.1 * i, type: "spring", bounce: 0.4 }}
+                    className="w-2 h-2 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full shadow-sm"
+                  />
+                ))}
+                {analytics.currentStreak > 7 && (
+                  <span className="text-xs text-orange-500 ml-1 font-medium">+{analytics.currentStreak - 7}</span>
+                )}
+              </div>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-orange-500/10 transition-colors duration-500" />
             </CardContent>
           </Card>
         </motion.div>
@@ -283,27 +307,48 @@ export default function Analytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          whileHover={{ scale: 1.02, y: -4 }}
+          className="group"
         >
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-50/50 via-card to-emerald-50/50 dark:from-emerald-950/20 dark:via-card dark:to-emerald-950/20 border-2 border-emerald-200/50 dark:border-emerald-800/50 hover:border-emerald-300 dark:hover:border-emerald-600 shadow-lg hover:shadow-2xl transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Goals Completed
               </CardTitle>
               <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="p-2 bg-success/10 rounded-lg"
+                whileHover={{ scale: 1.2, rotate: 10 }}
+                animate={analytics.goalsCompleted > 0 ? {
+                  y: [0, -2, 0],
+                  rotate: [0, 5, -5, 0]
+                } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="p-3 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl group-hover:bg-emerald-200 dark:group-hover:bg-emerald-800/50 transition-colors"
               >
-                <Award className="h-4 w-4 text-success" />
+                <Award className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-success">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent mb-1">
                 {analytics.goalsCompleted}
               </div>
-              <p className="text-xs text-muted-foreground">
-                out of {analytics.totalGoals} total
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
+                out of {analytics.totalGoals} total goals
               </p>
-              <div className="absolute top-0 right-0 w-20 h-20 bg-success/5 rounded-full -mr-10 -mt-10 group-hover:bg-success/10 transition-colors" />
+              <div className="flex items-center mt-2">
+                <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-emerald-500 to-green-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${analytics.totalGoals > 0 ? (analytics.goalsCompleted / analytics.totalGoals) * 100 : 0}%` }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                  />
+                </div>
+                <span className="ml-2 text-xs font-medium text-emerald-600">
+                  {analytics.totalGoals > 0 ? Math.round((analytics.goalsCompleted / analytics.totalGoals) * 100) : 0}%
+                </span>
+              </div>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-emerald-500/10 transition-colors duration-500" />
             </CardContent>
           </Card>
         </motion.div>
@@ -312,25 +357,49 @@ export default function Analytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          whileHover={{ scale: 1.02, y: -4 }}
+          className="group"
         >
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-violet-50/50 via-card to-violet-50/50 dark:from-violet-950/20 dark:via-card dark:to-violet-950/20 border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-300 dark:hover:border-violet-600 shadow-lg hover:shadow-2xl transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Longest Streak
               </CardTitle>
               <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="p-2 bg-accent/10 rounded-lg"
+                whileHover={{ scale: 1.2 }}
+                animate={analytics.longestStreak > 0 ? {
+                  y: [0, -3, 0],
+                  scale: [1, 1.05, 1]
+                } : {}}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="p-3 bg-violet-100 dark:bg-violet-900/50 rounded-xl group-hover:bg-violet-200 dark:group-hover:bg-violet-800/50 transition-colors"
               >
-                <TrendingUp className="h-4 w-4 text-accent-foreground" />
+                <TrendingUp className="h-5 w-5 text-violet-600 dark:text-violet-400" />
               </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-accent-foreground">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-1">
                 {analytics.longestStreak}
               </div>
-              <p className="text-xs text-muted-foreground">personal best</p>
-              <div className="absolute top-0 right-0 w-20 h-20 bg-accent/5 rounded-full -mr-10 -mt-10 group-hover:bg-accent/10 transition-colors" />
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
+                {analytics.longestStreak === analytics.currentStreak && analytics.currentStreak > 0 ?
+                  "current best!" : "personal record"}
+              </p>
+              {analytics.longestStreak > 0 && (
+                <div className="mt-2 flex items-center gap-1">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Sparkles className="w-4 h-4 text-violet-500" />
+                  </motion.div>
+                  <span className="text-xs text-violet-600 dark:text-violet-400 font-medium">
+                    Achievement unlocked!
+                  </span>
+                </div>
+              )}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-violet-500/10 transition-colors duration-500" />
             </CardContent>
           </Card>
         </motion.div>
