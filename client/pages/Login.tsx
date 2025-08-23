@@ -164,7 +164,7 @@ export default function Login() {
                 className="text-muted-foreground flex items-center justify-center gap-1"
               >
                 <Sparkles className="w-4 h-4" />
-                Sign in to your account
+                Log in to your account
               </motion.p>
             </div>
           </motion.div>
@@ -289,7 +289,7 @@ export default function Login() {
                         />
                       ) : (
                         <>
-                          Sign In
+                          Log In
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </>
                       )}
