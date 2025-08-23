@@ -253,12 +253,11 @@ export const handleCreateGoal: RequestHandler<
       !description ||
       !category ||
       !type ||
-      !timeAllotted ||
       !deadline
     ) {
       return res.status(400).json({
         error: "VALIDATION_ERROR",
-        message: "All fields are required",
+        message: "Title, description, category, type, and deadline are required",
       });
     }
 
@@ -276,7 +275,7 @@ export const handleCreateGoal: RequestHandler<
       });
     }
 
-    if (timeAllotted < 1 || timeAllotted > 1440) {
+    if (timeAllotted && (timeAllotted < 1 || timeAllotted > 1440)) {
       return res.status(400).json({
         error: "VALIDATION_ERROR",
         message: "Time allotted must be between 1 and 1440 minutes",
@@ -291,7 +290,7 @@ export const handleCreateGoal: RequestHandler<
       category: category.trim(),
       type,
       priority: priority || "medium", // Default to medium if not provided
-      timeAllotted,
+      timeAllotted: timeAllotted || 30, // Default to 30 minutes if not provided
       deadline: new Date(deadline),
       completed: false,
     });
