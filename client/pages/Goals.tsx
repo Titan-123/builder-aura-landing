@@ -198,6 +198,41 @@ export default function Goals() {
     setFilteredGoals(filtered);
   }, [goals, searchTerm, activeFilters, sortBy]);
 
+  // Form validation function
+  const validateForm = () => {
+    const errors: typeof formErrors = {};
+
+    if (!newGoal.title.trim()) {
+      errors.title = "Title is required";
+    }
+
+    if (!newGoal.description.trim()) {
+      errors.description = "Description is required";
+    }
+
+    if (!newGoal.category.trim()) {
+      errors.category = "Category is required";
+    }
+
+    if (!newGoal.deadline) {
+      errors.deadline = "Deadline is required";
+    } else {
+      const selectedDate = new Date(newGoal.deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        errors.deadline = "Deadline cannot be in the past";
+      }
+    }
+
+    if (newGoal.timeAllotted && (newGoal.timeAllotted < 1 || newGoal.timeAllotted > 1440)) {
+      errors.timeAllotted = "Time must be between 1 and 1440 minutes";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const fetchGoals = async () => {
     try {
       const token = localStorage.getItem("accessToken");
