@@ -94,7 +94,7 @@ export default function Goals() {
     description: "",
     category: "",
     type: "daily",
-    timeAllotted: 30,
+    timeAllotted: 0,
     deadline: new Date().toISOString().split("T")[0],
     priority: "medium",
   });
