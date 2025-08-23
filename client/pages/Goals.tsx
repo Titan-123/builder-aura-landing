@@ -237,19 +237,47 @@ export default function Goals() {
   const fetchGoals = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.warn("No access token found, cannot fetch goals");
+        setGoals([]);
+        setLoading(false);
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch("/api/goals", {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
-        setGoals(data.goals);
+        setGoals(data.goals || []);
+      } else {
+        console.error(
+          "Failed to fetch goals:",
+          response.status,
+          response.statusText,
+        );
+        if (response.status === 401) {
+          localStorage.removeItem("accessToken");
+        }
+        setGoals([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch goals:", error);
-      toast.error("Failed to load goals");
+      if (error.name !== "AbortError") {
+        toast.error("Failed to load goals");
+      }
+      setGoals([]);
     } finally {
       setLoading(false);
     }
