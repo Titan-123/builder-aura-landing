@@ -466,23 +466,44 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="group"
         >
-          <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="relative border-2 border-border/50 bg-gradient-to-br from-red-50/50 to-card/80 dark:from-red-950/30 dark:to-card/80 backdrop-blur-md shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:border-red-300/50 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
                 Needs Attention
               </CardTitle>
-              <AlertCircle className="h-5 w-5 text-red-500" />
+              <motion.div
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+                animate={overdueGoals.length > 0 ? {
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                } : {}}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  repeatDelay: 2
+                }}
+              >
+                <AlertCircle className="h-5 w-5 text-red-500" />
+              </motion.div>
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-red-600">
+            <CardContent className="relative z-10">
+              <div className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                 {overdueGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground">overdue goals</p>
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">overdue goals</p>
               {upcomingGoals.length > 0 && (
-                <p className="text-xs text-yellow-600 mt-1">
-                  + {upcomingGoals.length} due soon
-                </p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-xs text-yellow-600 mt-1 font-medium"
+                >
+                  + {upcomingGoals.length} due soon ⚠️
+                </motion.p>
               )}
             </CardContent>
           </Card>
