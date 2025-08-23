@@ -838,26 +838,48 @@ export default function Goals() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
+                {/* Show validation errors */}
+                {Object.keys(formErrors).length > 0 && (
+                  <Alert variant="destructive">
+                    <AlertDescription>
+                      Please fix the following errors:
+                      <ul className="list-disc list-inside mt-2">
+                        {Object.entries(formErrors).map(([field, error]) => (
+                          <li key={field}>{error}</li>
+                        ))}
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="grid gap-2">
-                  <Label htmlFor="title">Title</Label>
+                  <Label htmlFor="title">Title *</Label>
                   <Input
                     id="title"
                     value={newGoal.title}
-                    onChange={(e) =>
-                      setNewGoal({ ...newGoal, title: e.target.value })
-                    }
+                    onChange={(e) => {
+                      setNewGoal({ ...newGoal, title: e.target.value });
+                      if (formErrors.title) {
+                        setFormErrors({ ...formErrors, title: undefined });
+                      }
+                    }}
                     placeholder="Enter goal title"
+                    className={formErrors.title ? "border-red-500" : ""}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Description *</Label>
                   <Textarea
                     id="description"
                     value={newGoal.description}
-                    onChange={(e) =>
-                      setNewGoal({ ...newGoal, description: e.target.value })
-                    }
+                    onChange={(e) => {
+                      setNewGoal({ ...newGoal, description: e.target.value });
+                      if (formErrors.description) {
+                        setFormErrors({ ...formErrors, description: undefined });
+                      }
+                    }}
                     placeholder="Describe your goal"
+                    className={`min-h-[80px] ${formErrors.description ? "border-red-500" : ""}`}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
