@@ -56,6 +56,7 @@ import {
   MotivationalProgress,
 } from "@/components/MotivationalCelebration";
 import MotivationalBackground from "@/components/MotivationalBackground";
+import CategorySelect from "@/components/CategorySelect";
 import { Goal, CreateGoalRequest, AnalyticsResponse } from "@shared/api";
 
 export default function Dashboard() {
