@@ -861,15 +861,21 @@ export default function Goals() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <CategorySelect
-                    id="category"
-                    value={newGoal.category}
-                    onChange={(value) =>
-                      setNewGoal({ ...newGoal, category: value })
-                    }
-                    existingCategories={categories}
-                    placeholder="Select or create category"
-                  />
+                  <div className={formErrors.category ? "border-red-500 rounded" : ""}>
+                    <CategorySelect
+                      id="category"
+                      label="Category *"
+                      value={newGoal.category}
+                      onChange={(value) => {
+                        setNewGoal({ ...newGoal, category: value });
+                        if (formErrors.category) {
+                          setFormErrors({ ...formErrors, category: undefined });
+                        }
+                      }}
+                      existingCategories={categories}
+                      placeholder="Select or create category"
+                    />
+                  </div>
                   <div className="grid gap-2">
                     <Label htmlFor="priority">Priority</Label>
                     <Select
@@ -909,29 +915,43 @@ export default function Goals() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="timeAllotted">Time (minutes)</Label>
+                    <Label htmlFor="timeAllotted" className="text-sm font-medium">
+                      Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                    </Label>
                     <Input
                       id="timeAllotted"
                       type="number"
-                      value={newGoal.timeAllotted}
-                      onChange={(e) =>
+                      min="1"
+                      max="1440"
+                      value={newGoal.timeAllotted || ""}
+                      onChange={(e) => {
+                        const value = e.target.value ? parseInt(e.target.value) : 0;
                         setNewGoal({
                           ...newGoal,
-                          timeAllotted: parseInt(e.target.value),
-                        })
-                      }
+                          timeAllotted: value,
+                        });
+                        if (formErrors.timeAllotted) {
+                          setFormErrors({ ...formErrors, timeAllotted: undefined });
+                        }
+                      }}
+                      placeholder="e.g., 30"
+                      className={formErrors.timeAllotted ? "border-red-500" : ""}
                     />
                   </div>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="deadline">Deadline</Label>
+                  <Label htmlFor="deadline">Deadline *</Label>
                   <Input
                     id="deadline"
                     type="date"
                     value={newGoal.deadline}
-                    onChange={(e) =>
-                      setNewGoal({ ...newGoal, deadline: e.target.value })
-                    }
+                    onChange={(e) => {
+                      setNewGoal({ ...newGoal, deadline: e.target.value });
+                      if (formErrors.deadline) {
+                        setFormErrors({ ...formErrors, deadline: undefined });
+                      }
+                    }}
+                    className={formErrors.deadline ? "border-red-500" : ""}
                   />
                 </div>
               </div>
