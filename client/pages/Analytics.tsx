@@ -136,34 +136,18 @@ export default function Analytics() {
     { from: "#6366f1", to: "#4f46e5" }, // Indigo gradient
   ];
 
-  // Enhanced custom tooltip for charts
+  // Clean custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-card/95 backdrop-blur-sm border border-border rounded-xl p-4 shadow-2xl"
-        >
-          <p className="font-semibold text-foreground mb-2">{label}</p>
-          <div className="space-y-1">
-            {payload.map((entry: any, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: entry.color }}
-                />
-                <span className="text-sm">
-                  <span className="font-medium">{entry.name}:</span>
-                  <span className="ml-1 font-bold" style={{ color: entry.color }}>
-                    {entry.value}
-                  </span>
-                  {entry.name.includes('Rate') || entry.name.includes('Percentage') ? '%' : ''}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+          <p className="font-medium text-foreground mb-1">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} className="text-sm" style={{ color: entry.color }}>
+              {entry.name}: <span className="font-semibold">{entry.value}</span>
+            </p>
+          ))}
+        </div>
       );
     }
     return null;
