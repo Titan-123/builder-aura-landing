@@ -509,17 +509,23 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       return completedDailyGoals.length === allDailyGoals.length;
     };
 
-    // Calculate daily streak (consecutive days with all daily goals completed)
-    // Find the CURRENT streak from the most recent date backwards
+    // Helper function to normalize date to start of day for comparison
+    const normalizeDate = (date: Date) => {
+      const normalized = new Date(date);
+      normalized.setHours(0, 0, 0, 0);
+      return normalized;
+    };
 
-    // Get all dates that have daily goals
+    const todayNormalized = normalizeDate(today);
+
+    // Get all dates that have daily goals, sorted newest first
     const datesWithDailyGoals = [
       ...new Set(
         goals
           .filter((goal) => goal.type === "daily")
           .map((goal) => {
             const date = new Date(goal.deadline);
-            return date.toDateString();
+            return normalizeDate(date).toDateString();
           }),
       ),
     ]
@@ -538,22 +544,32 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
       return res.json(streaks);
     }
 
-    // Find the CURRENT streak starting from the most recent date and going backwards
+    // Find consecutive completed days working backwards from most recent completed day
     let currentStreak = 0;
+    let startIndex = 0;
+
+    console.log("🔍 Calculating current streak with improved logic...");
+
+    // If the most recent date is today and it's incomplete, start from yesterday
+    const mostRecentDate = datesWithDailyGoals[0];
+    const isMostRecentToday = normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
 
     console.log(
-      "🔍 Calculating current streak from most recent date backwards...",
+      `📅 Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`,
     );
 
-    for (let i = 0; i < datesWithDailyGoals.length; i++) {
+    if (isMostRecentToday && isDayFullyCompleted(mostRecentDate) !== true) {
+      console.log("⏳ Today exists but is incomplete, starting from yesterday");
+      startIndex = 1;
+    }
+
+    // Count consecutive completed days
+    for (let i = startIndex; i < datesWithDailyGoals.length; i++) {
       const currentDate = datesWithDailyGoals[i];
       const dayCompletion = isDayFullyCompleted(currentDate);
 
-      // Check if this is today
-      const isToday = currentDate.toDateString() === today.toDateString();
-
       console.log(
-        `📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isToday = ${isToday}`,
+        `📅 Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}`,
       );
 
       if (dayCompletion === true) {
@@ -562,30 +578,21 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
 
         // Check if this date is consecutive with the previous one (if any)
         if (i > 0) {
-          const nextNewerDate = datesWithDailyGoals[i - 1]; // Next newer date in our list
+          const nextNewerDate = datesWithDailyGoals[i - 1];
           const daysDiff = Math.floor(
             (nextNewerDate.getTime() - currentDate.getTime()) /
               (1000 * 60 * 60 * 24),
           );
 
           if (daysDiff > 1) {
-            // Gap found between this completed day and the next newer one, so streak ends here
             console.log(
               `⚠️ Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextNewerDate.toDateString()}, streak ends`,
             );
             break;
           }
         }
-      } else if (isToday) {
-        // Today is not completed yet, but day is still in progress
-        // Don't break the streak, just skip today and continue with previous days
-        console.log(
-          `⏳ Today is incomplete but still in progress, continuing streak calculation...`,
-        );
-        continue;
       } else {
-        // Past day not completed, streak ends
-        console.log(`❌ Past day not completed, streak ends`);
+        console.log(`❌ Day not completed, streak ends`);
         break;
       }
     }
