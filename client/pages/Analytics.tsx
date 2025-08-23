@@ -486,68 +486,34 @@ export default function Analytics() {
             <CardContent className="pt-6">
               {analytics.categoryBreakdown.length > 0 ? (
                 <div className="space-y-6">
-                  {/* Simple Horizontal Bar Chart - Much easier to read */}
-                  <div className="space-y-4">
-                    <div className="text-center mb-4">
-                      <h3 className="text-lg font-semibold text-foreground">Category Completion Rates</h3>
-                      <p className="text-sm text-muted-foreground">Compare your progress across different areas</p>
-                    </div>
-                    {analytics.categoryBreakdown
-                      .sort((a, b) => b.percentage - a.percentage)
-                      .map((category, index) => {
-                        const maxValue = Math.max(...analytics.categoryBreakdown.map(c => c.total));
-                        const completionWidth = (category.completed / category.total) * 100;
-
-                        return (
-                          <motion.div
-                            key={category.category}
-                            initial={{ opacity: 0, x: -50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1, type: "spring", bounce: 0.3 }}
-                            className="group"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className="w-4 h-4 rounded-full"
-                                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                                />
-                                <span className="font-medium text-foreground">{category.category}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-bold" style={{ color: COLORS[index % COLORS.length] }}>
-                                  {category.percentage.toFixed(0)}%
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  ({category.completed}/{category.total})
-                                </span>
-                              </div>
-                            </div>
-                            <div className="relative h-8 bg-muted/30 rounded-lg overflow-hidden group-hover:bg-muted/40 transition-colors">
-                              <motion.div
-                                className="absolute top-0 left-0 h-full rounded-lg flex items-center justify-end pr-3"
-                                style={{
-                                  background: `linear-gradient(90deg, ${COLORS[index % COLORS.length]}E6, ${COLORS[index % COLORS.length]}B3)`,
-                                }}
-                                initial={{ width: 0 }}
-                                animate={{ width: `${completionWidth}%` }}
-                                transition={{ duration: 1.2, delay: index * 0.1, ease: "easeOut" }}
-                              >
-                                {completionWidth > 20 && (
-                                  <span className="text-white text-sm font-semibold drop-shadow-sm">
-                                    {category.completed} completed
-                                  </span>
-                                )}
-                              </motion.div>
-                              {category.total - category.completed > 0 && (
-                                <div className="absolute top-1/2 right-3 transform -translate-y-1/2 text-xs text-muted-foreground">
-                                  {category.total - category.completed} remaining
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        );
-                      })}
+                  {/* Clean Pie Chart - Better visual representation */}
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={analytics.categoryBreakdown}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={90}
+                          fill="#8884d8"
+                          dataKey="completed"
+                          label={({ name, percentage }) => percentage > 5 ? `${name}` : ''}
+                          labelLine={false}
+                          animationBegin={0}
+                          animationDuration={800}
+                        >
+                          {analytics.categoryBreakdown.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                              stroke="#ffffff"
+                              strokeWidth={2}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<CustomTooltip />} />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
 
                   <div className="space-y-3">
@@ -649,107 +615,38 @@ export default function Analytics() {
             </CardHeader>
             <CardContent className="pt-6">
               {analytics.weeklyTrends.length > 0 ? (
-                <div className="space-y-4">
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold text-foreground">Weekly Progress Cards</h3>
-                    <p className="text-sm text-muted-foreground">Your goal completion over recent weeks</p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {analytics.weeklyTrends.map((week, index) => {
-                      const completionRate = week.total > 0 ? (week.completed / week.total) * 100 : 0;
-                      const isCurrentWeek = index === analytics.weeklyTrends.length - 1;
-
-                      return (
-                        <motion.div
-                          key={week.week}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1, type: "spring" }}
-                          whileHover={{ scale: 1.02 }}
-                          className={`group relative p-4 rounded-xl border-2 transition-all duration-300 ${
-                            isCurrentWeek
-                              ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 border-emerald-300 dark:border-emerald-700'
-                              : 'bg-gradient-to-br from-muted/30 to-muted/10 border-border hover:border-emerald-200 dark:hover:border-emerald-800'
-                          }`}
-                        >
-                          {isCurrentWeek && (
-                            <div className="absolute -top-2 -right-2">
-                              <motion.div
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full font-semibold"
-                              >
-                                Current
-                              </motion.div>
-                            </div>
-                          )}
-
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-semibold text-foreground">{week.week}</h4>
-                                <p className="text-sm text-muted-foreground">
-                                  {week.completed} of {week.total} goals
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <div className={`text-2xl font-bold ${
-                                  completionRate >= 80 ? 'text-emerald-600' :
-                                  completionRate >= 60 ? 'text-yellow-600' :
-                                  'text-red-500'
-                                }`}>
-                                  {completionRate.toFixed(0)}%
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>Progress</span>
-                                <span>{week.completed}/{week.total}</span>
-                              </div>
-                              <div className="h-3 bg-muted/50 rounded-full overflow-hidden">
-                                <motion.div
-                                  className={`h-full rounded-full ${
-                                    completionRate >= 80 ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
-                                    completionRate >= 60 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-                                    'bg-gradient-to-r from-red-400 to-red-600'
-                                  }`}
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${completionRate}%` }}
-                                  transition={{ duration: 1, delay: index * 0.1 }}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Achievement indicators */}
-                            <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                              <div className="flex items-center gap-2">
-                                {completionRate === 100 && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 1 + index * 0.1, type: "spring", bounce: 0.5 }}
-                                  >
-                                    <Award className="w-4 h-4 text-emerald-600" />
-                                  </motion.div>
-                                )}
-                                {completionRate >= 80 && completionRate < 100 && (
-                                  <Target className="w-4 h-4 text-yellow-600" />
-                                )}
-                                <span className="text-xs font-medium">
-                                  {completionRate === 100 ? 'Perfect Week!' :
-                                   completionRate >= 80 ? 'Great Progress' :
-                                   completionRate >= 60 ? 'Good Effort' :
-                                   'Room for Improvement'}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analytics.weeklyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                        opacity={0.2}
+                      />
+                      <XAxis
+                        dataKey="week"
+                        tick={{ fontSize: 13, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        content={<CustomTooltip />}
+                        cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                      />
+                      <Bar
+                        dataKey="completed"
+                        fill="#22c55e"
+                        name="Completed"
+                        radius={[4, 4, 0, 0]}
+                        animationDuration={800}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -787,85 +684,51 @@ export default function Analytics() {
           </CardHeader>
           <CardContent className="pt-6">
             {analytics.monthlyTrends.length > 0 ? (
-              <div className="space-y-6">
-                {/* Simple Line Chart with Clear Data Points */}
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        tickLine={{ stroke: 'hsl(var(--border))' }}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        tickLine={{ stroke: 'hsl(var(--border))' }}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Line
-                        type="monotone"
-                        dataKey="completed"
-                        stroke="#10b981"
-                        strokeWidth={4}
-                        dot={{ fill: '#10b981', strokeWidth: 2, r: 6 }}
-                        activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 2, fill: '#ffffff' }}
-                        name="Completed Goals"
-                        animationDuration={1500}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="total"
-                        stroke="#6b7280"
-                        strokeWidth={2}
-                        strokeDasharray="5 5"
-                        dot={{ fill: '#6b7280', strokeWidth: 2, r: 4 }}
-                        name="Total Goals"
-                        animationDuration={1200}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* Monthly Summary Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {analytics.monthlyTrends.slice(-3).map((month, index) => {
-                    const completionRate = month.total > 0 ? (month.completed / month.total) * 100 : 0;
-                    const isCurrentMonth = index === analytics.monthlyTrends.length - 1;
-
-                    return (
-                      <motion.div
-                        key={month.month}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                          isCurrentMonth
-                            ? 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-300 dark:border-blue-700'
-                            : 'bg-muted/20 border-border hover:border-blue-200 dark:hover:border-blue-800'
-                        }`}
-                      >
-                        <div className="text-center space-y-2">
-                          <h4 className="font-semibold text-foreground">{month.month}</h4>
-                          <div className="text-3xl font-bold text-blue-600">
-                            {completionRate.toFixed(0)}%
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {month.completed}/{month.total} completed
-                          </p>
-                          <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
-                            <motion.div
-                              className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
-                              initial={{ width: 0 }}
-                              animate={{ width: `${completionRate}%` }}
-                              transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                            />
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="hsl(var(--border))"
+                      opacity={0.2}
+                    />
+                    <XAxis
+                      dataKey="month"
+                      tick={{ fontSize: 13, fill: 'hsl(var(--muted-foreground))' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="completed"
+                      stroke="#22c55e"
+                      strokeWidth={3}
+                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
+                      activeDot={{ r: 7, stroke: '#22c55e', strokeWidth: 2, fill: '#ffffff' }}
+                      name="Completed Goals"
+                      animationDuration={1200}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="total"
+                      stroke="#94a3b8"
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={{ fill: '#94a3b8', strokeWidth: 1, r: 3 }}
+                      name="Total Goals"
+                      animationDuration={1000}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             ) : (
               <div className="flex items-center justify-center h-80 text-muted-foreground">
