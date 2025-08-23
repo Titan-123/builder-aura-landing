@@ -82,7 +82,7 @@ export const handleGetAnalytics: RequestHandler<
         return completedDailyGoals.length === allDailyGoals.length;
       };
 
-      // Get all dates that have daily goals, filtered to exclude future dates and sorted newest first
+      // Get all dates that have daily goals, sorted newest first
       const datesWithDailyGoals = [
         ...new Set(
           goals
@@ -94,10 +94,6 @@ export const handleGetAnalytics: RequestHandler<
         ),
       ]
         .map((dateStr) => new Date(dateStr))
-        .filter((date) => {
-          // Only include dates <= today (exclude future dates from streak calculation)
-          return normalizeDate(date).getTime() <= todayNormalized.getTime();
-        })
         .sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
       if (datesWithDailyGoals.length === 0) {
