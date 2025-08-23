@@ -514,9 +514,14 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.5, type: "spring", bounce: 0.3 }}
+        whileHover={{ scale: 1.01 }}
+        className="relative"
       >
-        <MotivationalQuote variant="banner" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-lg blur-xl opacity-50" />
+        <div className="relative">
+          <MotivationalQuote variant="banner" />
+        </div>
       </motion.div>
 
       {/* Today's Priority Section */}
