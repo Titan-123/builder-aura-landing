@@ -579,6 +579,7 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     const dailyStreak = currentStreak;
 
     console.log(`🎯 Final daily streak: ${dailyStreak}`);
+    console.log(`📊 Streak calculation summary: startIndex=${startIndex}, totalDates=${datesWithDailyGoals.length}`);
 
     // Weekly and monthly streaks (simplified for now)
     let weeklyStreak = 0;
