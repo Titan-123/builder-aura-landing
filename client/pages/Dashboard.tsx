@@ -315,14 +315,27 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-2"
+        className="text-center space-y-4 relative"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Welcome Back! 👋
-        </h1>
-        <p className="text-muted-foreground text-lg">
+        <div className="relative">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, type: "spring", bounce: 0.4 }}
+            className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full"
+          />
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent pt-4">
+            Welcome Back! 👋
+          </h1>
+        </div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-muted-foreground text-lg max-w-2xl mx-auto"
+        >
           Here's your goal progress overview for today
-        </p>
+        </motion.p>
       </motion.div>
 
       {/* Key Metrics Cards */}
