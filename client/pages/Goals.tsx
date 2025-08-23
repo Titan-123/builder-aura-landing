@@ -55,6 +55,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Goal, CreateGoalRequest } from "@shared/api";
+import { getLocalDateString } from "@/lib/date";
 
 type ViewMode = "grid" | "list" | "board";
 type Priority = "low" | "medium" | "high";
