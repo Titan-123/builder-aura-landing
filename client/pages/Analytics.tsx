@@ -321,18 +321,37 @@ export default function Analytics() {
                 {analytics.currentStreak}
               </div>
               <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">consecutive days</p>
-              <div className="flex items-center gap-1 mt-2">
-                {Array.from({ length: Math.min(analytics.currentStreak, 7) }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.1 * i, type: "spring", bounce: 0.4 }}
-                    className="w-2 h-2 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full shadow-sm"
-                  />
-                ))}
-                {analytics.currentStreak > 7 && (
-                  <span className="text-xs text-orange-500 ml-1 font-medium">+{analytics.currentStreak - 7}</span>
+              <div className="space-y-2 mt-3">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(analytics.currentStreak, 7) }).map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.1 * i, type: "spring", bounce: 0.4 }}
+                      className="w-3 h-3 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full shadow-sm"
+                    />
+                  ))}
+                  {analytics.currentStreak > 7 && (
+                    <span className="text-xs text-orange-500 ml-1 font-medium">+{analytics.currentStreak - 7}</span>
+                  )}
+                </div>
+                {analytics.currentStreak > 0 && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <motion.div
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="text-orange-500"
+                    >
+                      →
+                    </motion.div>
+                    <span className="text-muted-foreground">
+                      {analytics.currentStreak === 1 ? 'Keep it up!' :
+                       analytics.currentStreak < 7 ? 'Building momentum' :
+                       analytics.currentStreak < 14 ? 'Great consistency!' :
+                       'Incredible dedication!'}
+                    </span>
+                  </div>
                 )}
               </div>
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-orange-500/10 transition-colors duration-500" />
