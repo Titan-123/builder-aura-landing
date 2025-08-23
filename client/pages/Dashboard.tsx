@@ -58,6 +58,7 @@ import {
 import MotivationalBackground from "@/components/MotivationalBackground";
 import CategorySelect from "@/components/CategorySelect";
 import { Goal, CreateGoalRequest, AnalyticsResponse } from "@shared/api";
+import { getLocalDateString } from "@/lib/date";
 
 export default function Dashboard() {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -77,7 +78,7 @@ export default function Dashboard() {
     category: "",
     type: "daily",
     timeAllotted: 0, // Optional field, starts as 0
-    deadline: new Date().toISOString().split("T")[0],
+    deadline: getLocalDateString(),
   });
 
   const achievements = useAchievements(goals, analytics);
@@ -215,7 +216,7 @@ export default function Dashboard() {
           category: "",
           type: "daily",
           timeAllotted: 0,
-          deadline: new Date().toISOString().split("T")[0],
+          deadline: getLocalDateString(),
         });
 
         toast.success("Goal created successfully! 🎯");
