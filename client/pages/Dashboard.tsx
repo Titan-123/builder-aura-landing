@@ -214,7 +214,7 @@ export default function Dashboard() {
           description: "",
           category: "",
           type: "daily",
-          timeAllotted: 30,
+          timeAllotted: 0,
           deadline: new Date().toISOString().split("T")[0],
         });
 
@@ -810,17 +810,22 @@ export default function Dashboard() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="timeAllotted">Time (minutes)</Label>
+                <Label htmlFor="timeAllotted" className="text-sm font-medium">
+                  Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                </Label>
                 <Input
                   id="timeAllotted"
                   type="number"
-                  value={newGoal.timeAllotted}
+                  min="1"
+                  max="1440"
+                  value={newGoal.timeAllotted || ""}
                   onChange={(e) =>
                     setNewGoal({
                       ...newGoal,
-                      timeAllotted: parseInt(e.target.value),
+                      timeAllotted: e.target.value ? parseInt(e.target.value) : 0,
                     })
                   }
+                  placeholder="e.g., 30"
                 />
               </div>
               <div className="grid gap-2">
