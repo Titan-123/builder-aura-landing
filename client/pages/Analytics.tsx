@@ -471,26 +471,58 @@ export default function Analytics() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 * index }}
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        className="group relative p-4 rounded-xl bg-gradient-to-r from-muted/20 to-muted/10 hover:from-muted/40 hover:to-muted/20 border border-border/50 hover:border-border transition-all duration-300 cursor-pointer overflow-hidden"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <div
-                            className="w-4 h-4 rounded-full"
-                            style={{
-                              backgroundColor: COLORS[index % COLORS.length],
-                            }}
+                            className="absolute inset-0 opacity-5"
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
                           />
-                          <span className="font-medium">
-                            {category.category}
-                          </span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <Badge variant="outline" className="font-mono">
-                            {category.completed}/{category.total}
-                          </Badge>
-                          <span className="text-sm text-muted-foreground min-w-[3rem] text-right">
-                            {category.percentage.toFixed(1)}%
-                          </span>
+                        <div className="relative z-10 flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <motion.div
+                              className="relative"
+                              whileHover={{ scale: 1.2 }}
+                            >
+                              <div
+                                className="w-5 h-5 rounded-full shadow-md border-2 border-white dark:border-gray-800"
+                                style={{
+                                  backgroundColor: COLORS[index % COLORS.length],
+                                }}
+                              />
+                            </motion.div>
+                            <div>
+                              <span className="font-semibold text-foreground">
+                                {category.category}
+                              </span>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {category.completed} completed of {category.total} total
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="text-right">
+                              <div
+                                className="text-lg font-bold"
+                                style={{ color: COLORS[index % COLORS.length] }}
+                              >
+                                {category.percentage.toFixed(1)}%
+                              </div>
+                              <Progress
+                                value={category.percentage}
+                                className="w-16 h-1.5 mt-1"
+                              />
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className="font-mono text-xs border-2"
+                              style={{ borderColor: COLORS[index % COLORS.length] + '40' }}
+                            >
+                              {category.completed}/{category.total}
+                            </Badge>
+                          </div>
                         </div>
                       </motion.div>
                     ))}
