@@ -312,12 +312,11 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       !category ||
       !type ||
       !priority ||
-      !timeAllotted ||
       !deadline
     ) {
       return res
         .status(400)
-        .json({ error: "VALIDATION_ERROR", message: "All fields required" });
+        .json({ error: "VALIDATION_ERROR", message: "Title, description, category, type, priority, and deadline are required" });
     }
 
     const goal = new Goal({
@@ -327,7 +326,7 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
       category: category.trim(),
       type,
       priority,
-      timeAllotted,
+      timeAllotted: timeAllotted || 30,
       deadline: new Date(deadline),
       completed: false,
     });
