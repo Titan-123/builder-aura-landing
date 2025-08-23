@@ -8,6 +8,12 @@ import {
   Activity,
   Sparkles,
   Zap,
+  Flame,
+  Star,
+  Clock,
+  Users,
+  Brain,
+  Eye,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -34,6 +40,10 @@ import {
   Line,
   Area,
   AreaChart,
+  RadialBarChart,
+  RadialBar,
+  ComposedChart,
+  Scatter,
 } from "recharts";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
@@ -122,6 +132,20 @@ export default function Analytics() {
     "#6366f1", // Indigo
   ];
 
+  // Vibrant gradient color palette for better visual appeal
+  const CHART_GRADIENTS = [
+    { id: 'emerald', start: '#10b981', end: '#059669' },
+    { id: 'blue', start: '#3b82f6', end: '#1d4ed8' },
+    { id: 'amber', start: '#f59e0b', end: '#d97706' },
+    { id: 'red', start: '#ef4444', end: '#dc2626' },
+    { id: 'violet', start: '#8b5cf6', end: '#7c3aed' },
+    { id: 'cyan', start: '#06b6d4', end: '#0891b2' },
+    { id: 'pink', start: '#ec4899', end: '#db2777' },
+    { id: 'lime', start: '#84cc16', end: '#65a30d' },
+    { id: 'orange', start: '#f97316', end: '#ea580c' },
+    { id: 'indigo', start: '#6366f1', end: '#4f46e5' },
+  ];
+
   // Gradient definitions for better visual appeal
   const GRADIENTS = [
     { from: "#10b981", to: "#059669" }, // Emerald gradient
@@ -136,21 +160,58 @@ export default function Analytics() {
     { from: "#6366f1", to: "#4f46e5" }, // Indigo gradient
   ];
 
-  // Clean custom tooltip for charts
+  // Enhanced custom tooltip for charts with better styling
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium text-foreground mb-1">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: <span className="font-semibold">{entry.value}</span>
-            </p>
-          ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-card/95 backdrop-blur-sm border border-border rounded-xl p-4 shadow-2xl max-w-xs"
+        >
+          <p className="font-semibold text-foreground mb-2 text-center">{label}</p>
+          <div className="space-y-2">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="text-sm text-muted-foreground">{entry.name}:</span>
+                </div>
+                <span className="font-bold text-foreground" style={{ color: entry.color }}>
+                  {entry.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       );
     }
     return null;
+  };
+
+  // Custom label function for pie chart
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    if (percent < 0.05) return null; // Hide labels for slices smaller than 5%
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        className="text-xs font-bold drop-shadow-lg"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
   };
 
 
@@ -424,91 +485,143 @@ export default function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Category Breakdown */}
+        {/* Enhanced Category Breakdown with Donut Chart */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30">
+          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 bg-gradient-to-br from-background via-background to-primary/5">
             <CardHeader className="bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border-b border-border/50">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <BarChart3 className="w-6 h-6 text-primary" />
+                  <Eye className="w-6 h-6 text-primary" />
                 </motion.div>
-                Goals by Category
+                Category Performance
               </CardTitle>
               <CardDescription className="text-muted-foreground/80">
-                Track your progress across different goal categories
+                Visual breakdown of your goal categories
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
               {analytics.categoryBreakdown.length > 0 ? (
                 <div className="space-y-6">
-                  {/* Clean Pie Chart - Better visual representation */}
-                  <div className="h-80">
+                  {/* Enhanced Donut Chart with Center Statistics */}
+                  <div className="relative h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
+                        <defs>
+                          {CHART_GRADIENTS.map((gradient) => (
+                            <linearGradient key={gradient.id} id={gradient.id} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor={gradient.start} stopOpacity={0.9}/>
+                              <stop offset="95%" stopColor={gradient.end} stopOpacity={0.7}/>
+                            </linearGradient>
+                          ))}
+                        </defs>
                         <Pie
                           data={analytics.categoryBreakdown}
                           cx="50%"
                           cy="50%"
-                          outerRadius={90}
+                          labelLine={false}
+                          label={renderCustomizedLabel}
+                          outerRadius={110}
+                          innerRadius={60}
                           fill="#8884d8"
                           dataKey="completed"
-                          label={({ name, percentage }) => percentage > 8 ? name : ''}
-                          labelLine={false}
                           animationBegin={0}
-                          animationDuration={800}
+                          animationDuration={1200}
                         >
                           {analytics.categoryBreakdown.map((entry, index) => (
                             <Cell
                               key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                              stroke="#ffffff"
-                              strokeWidth={2}
+                              fill={`url(#${CHART_GRADIENTS[index % CHART_GRADIENTS.length].id})`}
+                              stroke="rgba(255,255,255,0.2)"
+                              strokeWidth={3}
                             />
                           ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} />
                       </PieChart>
                     </ResponsiveContainer>
+
+                    {/* Center Stats */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="text-center bg-background/80 backdrop-blur-sm rounded-full w-20 h-20 flex flex-col items-center justify-center border-2 border-primary/20">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 1, type: "spring", bounce: 0.6 }}
+                          className="text-lg font-bold text-primary"
+                        >
+                          {analytics.categoryBreakdown.length}
+                        </motion.div>
+                        <div className="text-xs text-muted-foreground font-medium">categories</div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Simple category list with key information */}
-                  <div className="space-y-3">
+                  {/* Enhanced category list with progress bars */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <Brain className="w-4 h-4 text-primary" />
+                      Category Details
+                    </h4>
                     {analytics.categoryBreakdown.map((category, index) => (
                       <motion.div
                         key={category.category}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 * index }}
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors"
+                        whileHover={{ scale: 1.02, x: 4 }}
+                        className="group p-4 rounded-xl bg-gradient-to-r from-muted/20 to-muted/10 hover:from-muted/30 hover:to-muted/20 transition-all duration-300 border border-border/50 hover:border-primary/30"
                       >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-4 h-4 rounded-full"
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <motion.div
+                              whileHover={{ scale: 1.2, rotate: 180 }}
+                              className="w-5 h-5 rounded-full shadow-lg"
+                              style={{
+                                background: `linear-gradient(135deg, ${CHART_GRADIENTS[index % CHART_GRADIENTS.length].start}, ${CHART_GRADIENTS[index % CHART_GRADIENTS.length].end})`,
+                              }}
+                            />
+                            <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {category.category}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Badge
+                              variant="outline"
+                              className="font-mono text-xs px-2 py-1"
+                              style={{
+                                borderColor: CHART_GRADIENTS[index % CHART_GRADIENTS.length].start,
+                                color: CHART_GRADIENTS[index % CHART_GRADIENTS.length].start,
+                              }}
+                            >
+                              {category.completed}/{category.total}
+                            </Badge>
+                            <span
+                              className="font-bold text-lg"
+                              style={{ color: CHART_GRADIENTS[index % CHART_GRADIENTS.length].start }}
+                            >
+                              {category.percentage.toFixed(0)}%
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Progress bar with gradient */}
+                        <div className="w-full bg-muted/30 rounded-full h-2.5 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${category.percentage}%` }}
+                            transition={{ duration: 1.5, delay: 0.2 * index, ease: "easeOut" }}
+                            className="h-full rounded-full shadow-sm"
                             style={{
-                              backgroundColor: COLORS[index % COLORS.length],
+                              background: `linear-gradient(90deg, ${CHART_GRADIENTS[index % CHART_GRADIENTS.length].start}, ${CHART_GRADIENTS[index % CHART_GRADIENTS.length].end})`,
                             }}
                           />
-                          <span className="font-medium text-foreground">
-                            {category.category}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3 text-sm">
-                          <span
-                            className="font-bold"
-                            style={{ color: COLORS[index % COLORS.length] }}
-                          >
-                            {category.percentage.toFixed(1)}%
-                          </span>
-                          <Badge variant="outline" className="font-mono text-xs">
-                            {category.completed}/{category.total}
-                          </Badge>
                         </div>
                       </motion.div>
                     ))}
@@ -516,9 +629,17 @@ export default function Analytics() {
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center space-y-2">
-                    <BarChart3 className="w-12 h-12 mx-auto opacity-50" />
-                    <p>No category data available</p>
+                  <div className="text-center space-y-4">
+                    <motion.div
+                      animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Eye className="w-16 h-16 mx-auto opacity-50" />
+                    </motion.div>
+                    <div>
+                      <p className="text-lg font-medium">No categories yet</p>
+                      <p className="text-sm">Create goals to see category breakdown</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -526,67 +647,138 @@ export default function Analytics() {
           </Card>
         </motion.div>
 
-        {/* Weekly Trends */}
+        {/* Enhanced Weekly Progress with Gradient Area Chart */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-emerald-300/50">
+          <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-emerald-300/50 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/20">
             <CardHeader className="bg-gradient-to-r from-emerald-50/50 via-emerald-50/30 to-blue-50/50 dark:from-emerald-950/30 dark:via-emerald-950/20 dark:to-blue-950/30 border-b border-border/50">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.3 }}
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
                   <Calendar className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                 </motion.div>
-                Weekly Progress
+                Weekly Momentum
               </CardTitle>
               <CardDescription className="text-muted-foreground/80">
-                Goal completion trends from your recent weeks
+                Your consistency journey over recent weeks
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
               {analytics.weeklyTrends.length > 0 ? (
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={analytics.weeklyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="hsl(var(--border))"
-                        opacity={0.2}
-                      />
-                      <XAxis
-                        dataKey="week"
-                        tick={{ fontSize: 13, fill: 'hsl(var(--muted-foreground))' }}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        content={<CustomTooltip />}
-                        cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                      />
-                      <Bar
-                        dataKey="completed"
-                        fill="#22c55e"
-                        name="Completed"
-                        radius={[4, 4, 0, 0]}
-                        animationDuration={800}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="space-y-6">
+                  {/* Enhanced Area Chart */}
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ComposedChart data={analytics.weeklyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <defs>
+                          <linearGradient id="weeklyGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                          </linearGradient>
+                          <linearGradient id="weeklyBarGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#22c55e" stopOpacity={0.9}/>
+                            <stop offset="95%" stopColor="#059669" stopOpacity={0.7}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="hsl(var(--border))"
+                          opacity={0.3}
+                          horizontal={true}
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="week"
+                          tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area
+                          type="monotone"
+                          dataKey="completed"
+                          stroke="#10b981"
+                          strokeWidth={3}
+                          fill="url(#weeklyGradient)"
+                          name="Completed Goals"
+                          animationDuration={1000}
+                        />
+                        <Bar
+                          dataKey="completed"
+                          fill="url(#weeklyBarGradient)"
+                          name="Weekly Goals"
+                          radius={[8, 8, 0, 0]}
+                          opacity={0.6}
+                          animationDuration={1200}
+                        />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Weekly Summary Cards */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {analytics.weeklyTrends.slice(-4).map((week, index) => {
+                      const isCurrentWeek = index === analytics.weeklyTrends.length - 1;
+                      return (
+                        <motion.div
+                          key={week.week}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 * index, type: "spring" }}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          className={`p-3 rounded-lg border-2 transition-all duration-300 ${
+                            isCurrentWeek
+                              ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 border-emerald-300 dark:border-emerald-700'
+                              : 'bg-gradient-to-br from-muted/30 to-muted/10 border-border hover:border-emerald-200 dark:hover:border-emerald-800'
+                          }`}
+                        >
+                          <div className="text-center space-y-2">
+                            <div className="text-xs font-medium text-muted-foreground">
+                              {week.week}
+                              {isCurrentWeek && (
+                                <motion.span
+                                  animate={{ opacity: [0.5, 1, 0.5] }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                  className="ml-1 text-emerald-600"
+                                >
+                                  •
+                                </motion.span>
+                              )}
+                            </div>
+                            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                              {week.completed}
+                            </div>
+                            <div className="text-xs text-muted-foreground">goals completed</div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center space-y-2">
-                    <Calendar className="w-12 h-12 mx-auto opacity-50" />
-                    <p>No weekly data available</p>
+                  <div className="text-center space-y-4">
+                    <motion.div
+                      animate={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <Calendar className="w-16 h-16 mx-auto opacity-50" />
+                    </motion.div>
+                    <div>
+                      <p className="text-lg font-medium">No weekly data yet</p>
+                      <p className="text-sm">Complete goals to see weekly trends</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -595,80 +787,200 @@ export default function Analytics() {
         </motion.div>
       </div>
 
-      {/* Monthly Trends */}
+      {/* Enhanced Monthly Trends with Growth Visualization */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
       >
-        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-blue-300/50">
+        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-blue-300/50 bg-gradient-to-br from-background via-background to-blue-50/20 dark:to-blue-950/20">
           <CardHeader className="bg-gradient-to-r from-blue-50/50 via-blue-50/30 to-violet-50/50 dark:from-blue-950/30 dark:via-blue-950/20 dark:to-violet-950/30 border-b border-border/50">
             <CardTitle className="flex items-center gap-2 text-lg">
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.3 }}
+                animate={{ y: [0, -2, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
                 <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </motion.div>
-              Monthly Trends
+              Growth Journey
             </CardTitle>
             <CardDescription className="text-muted-foreground/80">
-              Long-term goal completion patterns and growth
+              Your long-term progress and achievement patterns
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             {analytics.monthlyTrends.length > 0 ? (
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="hsl(var(--border))"
-                      opacity={0.2}
-                    />
-                    <XAxis
-                      dataKey="month"
-                      tick={{ fontSize: 13, fill: 'hsl(var(--muted-foreground))' }}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip
-                      content={<CustomTooltip />}
-                      cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="completed"
-                      stroke="#22c55e"
-                      strokeWidth={3}
-                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
-                      activeDot={{ r: 7, stroke: '#22c55e', strokeWidth: 2, fill: '#ffffff' }}
-                      name="Completed Goals"
-                      animationDuration={1200}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="total"
-                      stroke="#94a3b8"
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      dot={{ fill: '#94a3b8', strokeWidth: 1, r: 3 }}
-                      name="Total Goals"
-                      animationDuration={1000}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+              <div className="space-y-6">
+                {/* Enhanced Multi-line Chart with Area Fill */}
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <defs>
+                        <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05}/>
+                        </linearGradient>
+                        <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4}/>
+                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0.05}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                        opacity={0.3}
+                        horizontal={true}
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="month"
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+
+                      {/* Background area for total goals */}
+                      <Area
+                        type="monotone"
+                        dataKey="total"
+                        stroke="#94a3b8"
+                        strokeWidth={2}
+                        fill="url(#monthlyGradient)"
+                        name="Total Goals Set"
+                        animationDuration={800}
+                      />
+
+                      {/* Foreground area for completed goals */}
+                      <Area
+                        type="monotone"
+                        dataKey="completed"
+                        stroke="#22c55e"
+                        strokeWidth={3}
+                        fill="url(#completedGradient)"
+                        name="Goals Completed"
+                        animationDuration={1200}
+                      />
+
+                      {/* Accent line for completed goals */}
+                      <Line
+                        type="monotone"
+                        dataKey="completed"
+                        stroke="#059669"
+                        strokeWidth={4}
+                        dot={{ fill: '#22c55e', strokeWidth: 3, r: 6, stroke: '#ffffff' }}
+                        activeDot={{ r: 9, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff', boxShadow: '0 0 20px rgba(34, 197, 94, 0.6)' }}
+                        name="Completed"
+                        animationDuration={1500}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Monthly Summary Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Best Month */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                    className="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 border-2 border-emerald-200 dark:border-emerald-800"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Star className="w-5 h-5 text-emerald-600" />
+                      </motion.div>
+                      <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">Best Month</span>
+                    </div>
+                    <div className="text-xl font-bold text-emerald-700 dark:text-emerald-300">
+                      {analytics.monthlyTrends.reduce((max, month) =>
+                        month.completed > max.completed ? month : max
+                      ).month}
+                    </div>
+                    <div className="text-sm text-emerald-600 dark:text-emerald-400">
+                      {Math.max(...analytics.monthlyTrends.map(m => m.completed))} goals completed
+                    </div>
+                  </motion.div>
+
+                  {/* Average Performance */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.9 }}
+                    className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-2 border-blue-200 dark:border-blue-800"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <motion.div
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <Target className="w-5 h-5 text-blue-600" />
+                      </motion.div>
+                      <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Monthly Average</span>
+                    </div>
+                    <div className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                      {(analytics.monthlyTrends.reduce((sum, month) => sum + month.completed, 0) / analytics.monthlyTrends.length).toFixed(1)}
+                    </div>
+                    <div className="text-sm text-blue-600 dark:text-blue-400">
+                      goals per month
+                    </div>
+                  </motion.div>
+
+                  {/* Growth Trend */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.0 }}
+                    className="p-4 rounded-xl bg-gradient-to-br from-violet-50 to-violet-100 dark:from-violet-950 dark:to-violet-900 border-2 border-violet-200 dark:border-violet-800"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <motion.div
+                        animate={{ y: [0, -3, 0], rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      >
+                        <TrendingUp className="w-5 h-5 text-violet-600" />
+                      </motion.div>
+                      <span className="text-sm font-medium text-violet-800 dark:text-violet-200">Growth Trend</span>
+                    </div>
+                    <div className="text-xl font-bold text-violet-700 dark:text-violet-300">
+                      {analytics.monthlyTrends.length >= 2
+                        ? analytics.monthlyTrends[analytics.monthlyTrends.length - 1].completed >
+                          analytics.monthlyTrends[analytics.monthlyTrends.length - 2].completed
+                          ? '+' + (analytics.monthlyTrends[analytics.monthlyTrends.length - 1].completed -
+                                   analytics.monthlyTrends[analytics.monthlyTrends.length - 2].completed)
+                          : (analytics.monthlyTrends[analytics.monthlyTrends.length - 1].completed -
+                             analytics.monthlyTrends[analytics.monthlyTrends.length - 2].completed)
+                        : '0'
+                      }
+                    </div>
+                    <div className="text-sm text-violet-600 dark:text-violet-400">
+                      vs last month
+                    </div>
+                  </motion.div>
+                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-80 text-muted-foreground">
-                <div className="text-center space-y-2">
-                  <TrendingUp className="w-12 h-12 mx-auto opacity-50" />
-                  <p>No monthly data available</p>
+                <div className="text-center space-y-4">
+                  <motion.div
+                    animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    <TrendingUp className="w-16 h-16 mx-auto opacity-50" />
+                  </motion.div>
+                  <div>
+                    <p className="text-lg font-medium">No monthly data yet</p>
+                    <p className="text-sm">Complete goals over time to see growth trends</p>
+                  </div>
                 </div>
               </div>
             )}
