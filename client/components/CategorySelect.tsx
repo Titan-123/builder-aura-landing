@@ -49,7 +49,7 @@ export default function CategorySelect({
   const allCategories = [
     ...PREDEFINED_CATEGORIES,
     ...existingCategories.filter(
-      (cat) => cat && !PREDEFINED_CATEGORIES.includes(cat as any)
+      (cat) => cat && !PREDEFINED_CATEGORIES.includes(cat as any),
     ),
   ];
 
@@ -130,16 +130,18 @@ export default function CategorySelect({
                 {category}
               </SelectItem>
             ))}
-            
+
             {/* Existing user categories that aren't predefined */}
             {existingCategories
-              .filter((cat) => cat && !PREDEFINED_CATEGORIES.includes(cat as any))
+              .filter(
+                (cat) => cat && !PREDEFINED_CATEGORIES.includes(cat as any),
+              )
               .map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
                 </SelectItem>
               ))}
-            
+
             {/* Custom option */}
             <SelectItem value="__custom__" className="text-primary font-medium">
               <div className="flex items-center gap-2">

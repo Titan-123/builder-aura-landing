@@ -1,12 +1,28 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Target, BarChart3, Calendar, Home, LogOut, User, Sparkles, Plus } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import DarkModeToggle from '@/components/DarkModeToggle';
-import MotivationalBackground from '@/components/MotivationalBackground';
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Target,
+  BarChart3,
+  Calendar,
+  Home,
+  LogOut,
+  User,
+  Sparkles,
+  Plus,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import MotivationalBackground from "@/components/MotivationalBackground";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,24 +34,24 @@ export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Goals', href: '/goals', icon: Target },
-    { name: 'Calendar', href: '/calendar', icon: Calendar },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Goals", href: "/goals", icon: Target },
+    { name: "Calendar", href: "/calendar", icon: Calendar },
+    { name: "Analytics", href: "/analytics", icon: BarChart3 },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -80,8 +96,8 @@ export default function Layout({ children }: LayoutProps) {
                       to={item.href}
                       className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -91,7 +107,11 @@ export default function Layout({ children }: LayoutProps) {
                           layoutId="activeTab"
                           className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-lg -z-10"
                           initial={false}
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          transition={{
+                            type: "spring",
+                            bounce: 0.2,
+                            duration: 0.6,
+                          }}
                         />
                       )}
                     </Link>
@@ -103,14 +123,21 @@ export default function Layout({ children }: LayoutProps) {
             {/* Right side - User menu and dark mode */}
             <div className="flex items-center gap-3">
               <DarkModeToggle />
-              
+
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:ring-2 hover:ring-green-500/20 transition-all">
+                    <Button
+                      variant="ghost"
+                      className="relative h-10 w-10 rounded-full hover:ring-2 hover:ring-green-500/20 transition-all"
+                    >
                       <Avatar className="h-10 w-10">
                         <AvatarFallback className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white font-semibold">
-                          {user.name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || 'U'}
+                          {user.name
+                            ?.split(" ")
+                            .map((n: string) => n[0])
+                            .join("")
+                            .toUpperCase() || "U"}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
@@ -118,12 +145,19 @@ export default function Layout({ children }: LayoutProps) {
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user.name}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                        <p className="text-sm font-medium leading-none">
+                          {user.name}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 dark:text-red-400">
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="text-red-600 focus:text-red-600 dark:text-red-400"
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       Log out
                     </DropdownMenuItem>
@@ -136,8 +170,18 @@ export default function Layout({ children }: LayoutProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
                       </svg>
                     </Button>
                   </DropdownMenuTrigger>
@@ -149,7 +193,9 @@ export default function Layout({ children }: LayoutProps) {
                           <Link
                             to={item.href}
                             className={`flex items-center gap-2 ${
-                              isActive(item.href) ? 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950' : ''
+                              isActive(item.href)
+                                ? "text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950"
+                                : ""
                             }`}
                           >
                             <Icon className="w-4 h-4" />

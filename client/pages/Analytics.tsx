@@ -1,14 +1,44 @@
-import { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, Target, Calendar, Award, Activity, Sparkles, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
-import DarkModeToggle from '@/components/DarkModeToggle';
-import MotivationalQuote from '@/components/MotivationalQuote';
-import MotivationalBackground from '@/components/MotivationalBackground';
-import { AnalyticsResponse } from '@shared/api';
+import { useState, useEffect } from "react";
+import {
+  BarChart3,
+  TrendingUp,
+  Target,
+  Calendar,
+  Award,
+  Activity,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  Area,
+  AreaChart,
+} from "recharts";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import MotivationalQuote from "@/components/MotivationalQuote";
+import MotivationalBackground from "@/components/MotivationalBackground";
+import { AnalyticsResponse } from "@shared/api";
 
 export default function Analytics() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
@@ -20,19 +50,19 @@ export default function Analytics() {
 
   const fetchAnalytics = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/analytics', {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch("/api/analytics", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setAnalytics(data);
       }
     } catch (error) {
-      console.error('Failed to fetch analytics:', error);
+      console.error("Failed to fetch analytics:", error);
     } finally {
       setLoading(false);
     }
@@ -55,20 +85,24 @@ export default function Analytics() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center space-y-4">
           <motion.div
-            animate={{ 
+            animate={{
               y: [0, -10, 0],
-              rotate: [0, 5, -5, 0]
+              rotate: [0, 5, -5, 0],
             }}
-            transition={{ 
+            transition={{
               duration: 2,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           >
             <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto" />
           </motion.div>
-          <div className="text-lg text-muted-foreground">No analytics data available</div>
-          <p className="text-sm text-muted-foreground">Create some goals to see your progress!</p>
+          <div className="text-lg text-muted-foreground">
+            No analytics data available
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Create some goals to see your progress!
+          </p>
         </div>
       </div>
     );
@@ -76,16 +110,16 @@ export default function Analytics() {
 
   // Chart colors (expanded to support more predefined categories)
   const COLORS = [
-    '#22c55e', // Green
-    '#3b82f6', // Blue
-    '#f59e0b', // Amber
-    '#ef4444', // Red
-    '#8b5cf6', // Violet
-    '#06b6d4', // Cyan
-    '#ec4899', // Pink
-    '#84cc16', // Lime
-    '#f97316', // Orange
-    '#6366f1', // Indigo
+    "#22c55e", // Green
+    "#3b82f6", // Blue
+    "#f59e0b", // Amber
+    "#ef4444", // Red
+    "#8b5cf6", // Violet
+    "#06b6d4", // Cyan
+    "#ec4899", // Pink
+    "#84cc16", // Lime
+    "#f97316", // Orange
+    "#6366f1", // Indigo
   ];
 
   // Custom tooltip for charts
@@ -126,7 +160,9 @@ export default function Analytics() {
             <BarChart3 className="w-8 h-8 text-primary" />
             Analytics Dashboard
           </h1>
-          <p className="text-muted-foreground">Track your progress and analyze your goal completion patterns</p>
+          <p className="text-muted-foreground">
+            Track your progress and analyze your goal completion patterns
+          </p>
         </div>
       </motion.div>
 
@@ -139,7 +175,9 @@ export default function Analytics() {
         >
           <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Completion Rate
+              </CardTitle>
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 10 }}
                 className="p-2 bg-primary/10 rounded-lg"
@@ -148,7 +186,9 @@ export default function Analytics() {
               </motion.div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">{analytics.completionRate.toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-primary">
+                {analytics.completionRate.toFixed(1)}%
+              </div>
               <Progress value={analytics.completionRate} className="mt-2" />
               <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-full -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors" />
             </CardContent>
@@ -162,10 +202,12 @@ export default function Analytics() {
         >
           <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Current Streak
+              </CardTitle>
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                animate={{ 
+                animate={{
                   rotate: analytics.currentStreak > 0 ? [0, 5, -5, 0] : 0,
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -175,10 +217,10 @@ export default function Analytics() {
               </motion.div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-500">{analytics.currentStreak}</div>
-              <p className="text-xs text-muted-foreground">
-                days in a row
-              </p>
+              <div className="text-2xl font-bold text-orange-500">
+                {analytics.currentStreak}
+              </div>
+              <p className="text-xs text-muted-foreground">days in a row</p>
               <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-colors" />
             </CardContent>
           </Card>
@@ -191,7 +233,9 @@ export default function Analytics() {
         >
           <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Goals Completed</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Goals Completed
+              </CardTitle>
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 className="p-2 bg-success/10 rounded-lg"
@@ -200,7 +244,9 @@ export default function Analytics() {
               </motion.div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-success">{analytics.goalsCompleted}</div>
+              <div className="text-2xl font-bold text-success">
+                {analytics.goalsCompleted}
+              </div>
               <p className="text-xs text-muted-foreground">
                 out of {analytics.totalGoals} total
               </p>
@@ -216,7 +262,9 @@ export default function Analytics() {
         >
           <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Longest Streak</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Longest Streak
+              </CardTitle>
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 className="p-2 bg-accent/10 rounded-lg"
@@ -225,10 +273,10 @@ export default function Analytics() {
               </motion.div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-accent-foreground">{analytics.longestStreak}</div>
-              <p className="text-xs text-muted-foreground">
-                personal best
-              </p>
+              <div className="text-2xl font-bold text-accent-foreground">
+                {analytics.longestStreak}
+              </div>
+              <p className="text-xs text-muted-foreground">personal best</p>
               <div className="absolute top-0 right-0 w-20 h-20 bg-accent/5 rounded-full -mr-10 -mt-10 group-hover:bg-accent/10 transition-colors" />
             </CardContent>
           </Card>
@@ -263,7 +311,9 @@ export default function Analytics() {
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={({ name, percentage }) => `${name} (${percentage.toFixed(1)}%)`}
+                          label={({ name, percentage }) =>
+                            `${name} (${percentage.toFixed(1)}%)`
+                          }
                           outerRadius={80}
                           fill="#8884d8"
                           dataKey="completed"
@@ -271,14 +321,17 @@ export default function Analytics() {
                           animationDuration={800}
                         >
                           {analytics.categoryBreakdown.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
                           ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {analytics.categoryBreakdown.map((category, index) => (
                       <motion.div
@@ -289,11 +342,15 @@ export default function Analytics() {
                         className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <div 
-                            className="w-4 h-4 rounded-full" 
-                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{
+                              backgroundColor: COLORS[index % COLORS.length],
+                            }}
                           />
-                          <span className="font-medium">{category.category}</span>
+                          <span className="font-medium">
+                            {category.category}
+                          </span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Badge variant="outline" className="font-mono">
@@ -340,20 +397,23 @@ export default function Analytics() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics.weeklyTrends}>
-                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="opacity-30"
+                      />
                       <XAxis dataKey="week" />
                       <YAxis />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar 
-                        dataKey="completed" 
-                        fill="#22c55e" 
+                      <Bar
+                        dataKey="completed"
+                        fill="#22c55e"
                         name="Completed"
                         radius={[4, 4, 0, 0]}
                         animationDuration={800}
                       />
-                      <Bar 
-                        dataKey="total" 
-                        fill="#e5e7eb" 
+                      <Bar
+                        dataKey="total"
+                        fill="#e5e7eb"
                         name="Total"
                         radius={[4, 4, 0, 0]}
                         animationDuration={800}
@@ -395,7 +455,10 @@ export default function Analytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={analytics.monthlyTrends}>
-                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="opacity-30"
+                    />
                     <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip content={<CustomTooltip />} />
@@ -476,14 +539,17 @@ export default function Analytics() {
                       <Award className="w-5 h-5 text-success mt-0.5" />
                     </motion.div>
                     <div>
-                      <h4 className="font-medium text-success-foreground">Excellent Progress!</h4>
+                      <h4 className="font-medium text-success-foreground">
+                        Excellent Progress!
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        You're completing over 80% of your goals. Keep up the great work!
+                        You're completing over 80% of your goals. Keep up the
+                        great work!
                       </p>
                     </div>
                   </motion.div>
                 )}
-                
+
                 {analytics.currentStreak >= 7 && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
@@ -498,9 +564,12 @@ export default function Analytics() {
                       <Zap className="w-5 h-5 text-orange-500 mt-0.5" />
                     </motion.div>
                     <div>
-                      <h4 className="font-medium text-orange-800 dark:text-orange-200">Amazing Streak!</h4>
+                      <h4 className="font-medium text-orange-800 dark:text-orange-200">
+                        Amazing Streak!
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        You've maintained a {analytics.currentStreak}-day streak. Consistency is key to success!
+                        You've maintained a {analytics.currentStreak}-day
+                        streak. Consistency is key to success!
                       </p>
                     </div>
                   </motion.div>
@@ -515,9 +584,12 @@ export default function Analytics() {
                   >
                     <Target className="w-5 h-5 text-blue-500 mt-0.5" />
                     <div>
-                      <h4 className="font-medium text-blue-800 dark:text-blue-200">Room for Improvement</h4>
+                      <h4 className="font-medium text-blue-800 dark:text-blue-200">
+                        Room for Improvement
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        Consider setting fewer, more achievable goals to build momentum and confidence.
+                        Consider setting fewer, more achievable goals to build
+                        momentum and confidence.
                       </p>
                     </div>
                   </motion.div>
@@ -531,22 +603,25 @@ export default function Analytics() {
                     className="flex items-start gap-3 p-4 rounded-lg bg-accent/10 border border-accent/20"
                   >
                     <motion.div
-                      animate={{ 
+                      animate={{
                         y: [0, -5, 0],
-                        rotate: [0, 5, -5, 0]
+                        rotate: [0, 5, -5, 0],
                       }}
-                      transition={{ 
+                      transition={{
                         duration: 2,
                         repeat: Infinity,
-                        ease: "easeInOut"
+                        ease: "easeInOut",
                       }}
                     >
                       <Calendar className="w-5 h-5 text-accent-foreground mt-0.5" />
                     </motion.div>
                     <div>
-                      <h4 className="font-medium text-accent-foreground">Get Started!</h4>
+                      <h4 className="font-medium text-accent-foreground">
+                        Get Started!
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        Start by creating your first goal to see your progress analytics here.
+                        Start by creating your first goal to see your progress
+                        analytics here.
                       </p>
                     </div>
                   </motion.div>

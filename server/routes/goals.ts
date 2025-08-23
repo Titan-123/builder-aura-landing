@@ -248,16 +248,11 @@ export const handleCreateGoal: RequestHandler<
     } = req.body;
 
     // Validate input
-    if (
-      !title ||
-      !description ||
-      !category ||
-      !type ||
-      !deadline
-    ) {
+    if (!title || !description || !category || !type || !deadline) {
       return res.status(400).json({
         error: "VALIDATION_ERROR",
-        message: "Title, description, category, type, and deadline are required",
+        message:
+          "Title, description, category, type, and deadline are required",
       });
     }
 

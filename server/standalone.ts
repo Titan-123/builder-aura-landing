@@ -316,7 +316,11 @@ app.post("/api/goals", verifyToken, async (req: any, res) => {
     ) {
       return res
         .status(400)
-        .json({ error: "VALIDATION_ERROR", message: "Title, description, category, type, priority, and deadline are required" });
+        .json({
+          error: "VALIDATION_ERROR",
+          message:
+            "Title, description, category, type, priority, and deadline are required",
+        });
     }
 
     const goal = new Goal({

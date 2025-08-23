@@ -811,7 +811,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="timeAllotted" className="text-sm font-medium">
-                  Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                  Time (minutes){" "}
+                  <span className="text-muted-foreground">(optional)</span>
                 </Label>
                 <Input
                   id="timeAllotted"
@@ -822,7 +823,9 @@ export default function Dashboard() {
                   onChange={(e) =>
                     setNewGoal({
                       ...newGoal,
-                      timeAllotted: e.target.value ? parseInt(e.target.value) : 0,
+                      timeAllotted: e.target.value
+                        ? parseInt(e.target.value)
+                        : 0,
                     })
                   }
                   placeholder="e.g., 30"

@@ -226,7 +226,10 @@ export default function Goals() {
       }
     }
 
-    if (newGoal.timeAllotted && (newGoal.timeAllotted < 1 || newGoal.timeAllotted > 1440)) {
+    if (
+      newGoal.timeAllotted &&
+      (newGoal.timeAllotted < 1 || newGoal.timeAllotted > 1440)
+    ) {
       errors.timeAllotted = "Time must be between 1 and 1440 minutes";
     }
 
@@ -1003,7 +1006,10 @@ export default function Goals() {
                     onChange={(e) => {
                       setNewGoal({ ...newGoal, description: e.target.value });
                       if (formErrors.description) {
-                        setFormErrors({ ...formErrors, description: undefined });
+                        setFormErrors({
+                          ...formErrors,
+                          description: undefined,
+                        });
                       }
                     }}
                     placeholder="Describe your goal"
@@ -1011,7 +1017,11 @@ export default function Goals() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className={formErrors.category ? "border-red-500 rounded" : ""}>
+                  <div
+                    className={
+                      formErrors.category ? "border-red-500 rounded" : ""
+                    }
+                  >
                     <CategorySelect
                       id="category"
                       label="Category *"
@@ -1065,8 +1075,12 @@ export default function Goals() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="timeAllotted" className="text-sm font-medium">
-                      Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                    <Label
+                      htmlFor="timeAllotted"
+                      className="text-sm font-medium"
+                    >
+                      Time (minutes){" "}
+                      <span className="text-muted-foreground">(optional)</span>
                     </Label>
                     <Input
                       id="timeAllotted"
@@ -1075,17 +1089,24 @@ export default function Goals() {
                       max="1440"
                       value={newGoal.timeAllotted || ""}
                       onChange={(e) => {
-                        const value = e.target.value ? parseInt(e.target.value) : 0;
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : 0;
                         setNewGoal({
                           ...newGoal,
                           timeAllotted: value,
                         });
                         if (formErrors.timeAllotted) {
-                          setFormErrors({ ...formErrors, timeAllotted: undefined });
+                          setFormErrors({
+                            ...formErrors,
+                            timeAllotted: undefined,
+                          });
                         }
                       }}
                       placeholder="e.g., 30"
-                      className={formErrors.timeAllotted ? "border-red-500" : ""}
+                      className={
+                        formErrors.timeAllotted ? "border-red-500" : ""
+                      }
                     />
                   </div>
                 </div>
@@ -1196,8 +1217,12 @@ export default function Goals() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-timeAllotted" className="text-sm font-medium">
-                      Time (minutes) <span className="text-muted-foreground">(optional)</span>
+                    <Label
+                      htmlFor="edit-timeAllotted"
+                      className="text-sm font-medium"
+                    >
+                      Time (minutes){" "}
+                      <span className="text-muted-foreground">(optional)</span>
                     </Label>
                     <Input
                       id="edit-timeAllotted"
@@ -1208,7 +1233,9 @@ export default function Goals() {
                       onChange={(e) =>
                         setEditForm({
                           ...editForm,
-                          timeAllotted: e.target.value ? parseInt(e.target.value) : 0,
+                          timeAllotted: e.target.value
+                            ? parseInt(e.target.value)
+                            : 0,
                         })
                       }
                       placeholder="e.g., 30"
