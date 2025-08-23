@@ -76,7 +76,7 @@ export default function Dashboard() {
     description: "",
     category: "",
     type: "daily",
-    timeAllotted: 30,
+    timeAllotted: 0, // Optional field, starts as 0
     deadline: new Date().toISOString().split("T")[0],
   });
 
