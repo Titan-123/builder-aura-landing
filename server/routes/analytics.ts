@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import connectDB from "../database.js";
 import Goal from "../models/Goal.js";
+import User from "../models/User.js";
 import { AnalyticsResponse, ErrorResponse } from "@shared/api";
 
 export const handleGetAnalytics: RequestHandler<
@@ -11,6 +12,15 @@ export const handleGetAnalytics: RequestHandler<
     await connectDB();
 
     const userId = req.userId;
+
+    // Get user registration date
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        error: "USER_NOT_FOUND",
+        message: "User not found"
+      });
+    }
 
     // Get all user goals
     const goals = await Goal.find({ userId }).sort({ createdAt: -1 });
@@ -181,18 +191,36 @@ export const handleGetAnalytics: RequestHandler<
       }),
     );
 
-    // Weekly trends (last 4 weeks)
+    // Weekly trends (from user registration to now)
     const now = new Date();
+    const userRegistrationDate = new Date(user.createdAt);
     const weeklyTrends = [];
 
-    for (let i = 3; i >= 0; i--) {
+    // Calculate number of weeks since registration
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const weeksSinceRegistration = Math.floor((now.getTime() - userRegistrationDate.getTime()) / msPerWeek);
+
+    // Show last 8 weeks max, or all weeks since registration if less than 8
+    const weeksToShow = Math.min(weeksSinceRegistration + 1, 8);
+
+    for (let i = weeksToShow - 1; i >= 0; i--) {
       const weekStart = new Date(now);
       weekStart.setDate(weekStart.getDate() - i * 7 - now.getDay()); // Start of week (Sunday)
       weekStart.setHours(0, 0, 0, 0);
 
+      // Don't go earlier than user registration
+      if (weekStart < userRegistrationDate) {
+        weekStart.setTime(userRegistrationDate.getTime());
+      }
+
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() + 6); // End of week (Saturday)
       weekEnd.setHours(23, 59, 59, 999);
+
+      // Don't go later than now
+      if (weekEnd > now) {
+        weekEnd.setTime(now.getTime());
+      }
 
       const weekGoals = goals.filter((g) => {
         const goalDate = new Date(g.createdAt);
@@ -205,22 +233,45 @@ export const handleGetAnalytics: RequestHandler<
         return completedDate >= weekStart && completedDate <= weekEnd;
       });
 
+      // Create week label based on actual date
+      const weekLabel = weekStart.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+      });
+
       weeklyTrends.push({
-        week: `Week ${4 - i}`,
+        week: weekLabel,
         completed: weekCompleted.length,
         total: weekGoals.length,
       });
     }
 
-    // Monthly trends (last 6 months)
+    // Monthly trends (from user registration to now)
     const monthlyTrends = [];
 
-    for (let i = 5; i >= 0; i--) {
+    // Calculate number of months since registration
+    const monthsSinceRegistration = (now.getFullYear() - userRegistrationDate.getFullYear()) * 12 +
+                                   (now.getMonth() - userRegistrationDate.getMonth());
+
+    // Show last 6 months max, or all months since registration if less than 6
+    const monthsToShow = Math.min(monthsSinceRegistration + 1, 6);
+
+    for (let i = monthsToShow - 1; i >= 0; i--) {
       const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
       monthStart.setHours(0, 0, 0, 0);
 
+      // Don't go earlier than user registration
+      if (monthStart < userRegistrationDate) {
+        monthStart.setTime(userRegistrationDate.getTime());
+      }
+
       const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
       monthEnd.setHours(23, 59, 59, 999);
+
+      // Don't go later than now
+      if (monthEnd > now) {
+        monthEnd.setTime(now.getTime());
+      }
 
       const monthGoals = goals.filter((g) => {
         const goalDate = new Date(g.createdAt);
