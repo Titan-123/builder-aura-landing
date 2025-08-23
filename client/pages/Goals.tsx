@@ -83,7 +83,7 @@ export default function Goals() {
     category: "",
     type: "daily",
     timeAllotted: 30,
-    deadline: new Date().toISOString().split("T")[0],
+    deadline: getLocalDateString(),
     priority: "medium",
   });
 
@@ -96,7 +96,7 @@ export default function Goals() {
     category: "",
     type: "daily",
     timeAllotted: 0,
-    deadline: new Date().toISOString().split("T")[0],
+    deadline: getLocalDateString(),
     priority: "medium",
   });
 
@@ -122,7 +122,7 @@ export default function Goals() {
         category: editingGoal.category,
         type: editingGoal.type,
         timeAllotted: editingGoal.timeAllotted,
-        deadline: new Date(editingGoal.deadline).toISOString().split("T")[0],
+        deadline: getLocalDateString(new Date(editingGoal.deadline)),
         priority: editingGoal.priority || "medium",
       });
     }
@@ -331,7 +331,7 @@ export default function Goals() {
           category: "",
           type: "daily",
           timeAllotted: 0, // Reset to 0 for optional field
-          deadline: new Date().toISOString().split("T")[0],
+          deadline: getLocalDateString(),
           priority: "medium",
         });
         setFormErrors({});
@@ -405,7 +405,7 @@ export default function Goals() {
           category: "",
           type: "daily",
           timeAllotted: 0,
-          deadline: new Date().toISOString().split("T")[0],
+          deadline: getLocalDateString(),
           priority: "medium",
         });
 
