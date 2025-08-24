@@ -296,11 +296,14 @@ const App = () => {
 };
 
 // Prevent duplicate root creation during hot reloading
-const rootElement = document.getElementById("root")!;
+let root: ReturnType<typeof createRoot> | null = null;
 
-// Check if root already exists by looking for React root marker
-if (!rootElement.hasAttribute('data-react-root')) {
-  const root = createRoot(rootElement);
-  rootElement.setAttribute('data-react-root', 'true');
+const initializeApp = () => {
+  if (!root) {
+    const rootElement = document.getElementById("root")!;
+    root = createRoot(rootElement);
+  }
   root.render(<App />);
-}
+};
+
+initializeApp();
