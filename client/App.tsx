@@ -295,4 +295,10 @@ const App = () => {
   );
 };
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Prevent duplicate root creation during hot reloading
+const rootElement = document.getElementById("root")!;
+if (!rootElement._reactRootContainer) {
+  const root = createRoot(rootElement);
+  (rootElement as any)._reactRootContainer = root;
+  root.render(<App />);
+}
