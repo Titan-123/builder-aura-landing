@@ -44,11 +44,12 @@ export default function Analytics() {
 
   const fetchAnalytics = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("accessToken");
       console.log("Token exists:", !!token);
 
       if (!token) {
-        console.error("No access token found");
+        console.warn("No access token found, using sample data");
         setAnalytics(getSampleAnalytics());
         return;
       }
