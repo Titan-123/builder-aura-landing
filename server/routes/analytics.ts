@@ -155,42 +155,32 @@ export const handleGetAnalytics: RequestHandler<
 
       // Find consecutive completed days working backwards from most recent completed day
       let currentStreak = 0;
-      let startIndex = 0;
 
-      // If the most recent date is today and it's incomplete, start from yesterday
-      const mostRecentDate = datesWithDailyGoals[0];
-      const isMostRecentToday =
-        normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
-
-      console.log(
-        `📊 Analytics - Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`,
-      );
-      console.log(
-        `📊 Analytics - Today normalized: ${todayNormalized.toDateString()}`,
-      );
-
-      if (isMostRecentToday && isDayFullyCompleted(mostRecentDate) !== true) {
-        console.log(
-          "📊 Analytics - Today exists but is incomplete, starting from yesterday",
-        );
-        startIndex = 1;
-      }
-
-      // Count consecutive completed days
-      for (let i = startIndex; i < datesWithDailyGoals.length; i++) {
+      // Count consecutive completed days, starting from past days
+      // Ignore future dates and incomplete current day
+      for (let i = 0; i < datesWithDailyGoals.length; i++) {
         const currentDate = datesWithDailyGoals[i];
         const dayCompletion = isDayFullyCompleted(currentDate);
 
         const isFuture =
           normalizeDate(currentDate).getTime() > todayNormalized.getTime();
+        const isToday =
+          normalizeDate(currentDate).getTime() === todayNormalized.getTime();
+
         console.log(
-          `📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isFuture = ${isFuture}`,
+          `📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isFuture = ${isFuture}, isToday = ${isToday}`,
         );
 
         if (isFuture) {
-          // Future dates (both completed and incomplete) don't count toward current streak
+          // Future dates don't count toward current streak
           console.log(
             `📊 Analytics - Future date (${currentDate.toDateString()}), skipping for streak calculation`,
+          );
+          continue;
+        } else if (isToday && dayCompletion !== true) {
+          // Today with incomplete goals doesn't break streak, just skip it
+          console.log(
+            `📊 Analytics - Today incomplete, skipping for streak calculation`,
           );
           continue;
         } else if (dayCompletion === true) {
@@ -199,25 +189,40 @@ export const handleGetAnalytics: RequestHandler<
             `📊 Analytics - Day completed! Current streak: ${currentStreak}`,
           );
 
-          // Check if this date is consecutive with the previous one (if any)
-          if (i > 0) {
-            const nextNewerDate = datesWithDailyGoals[i - 1];
+          // Check if there's a gap in consecutive days
+          // Find the next non-future, non-skipped date
+          let nextDateIndex = i + 1;
+          while (nextDateIndex < datesWithDailyGoals.length) {
+            const nextDate = datesWithDailyGoals[nextDateIndex];
+            const nextIsFuture =
+              normalizeDate(nextDate).getTime() > todayNormalized.getTime();
+            const nextIsToday =
+              normalizeDate(nextDate).getTime() === todayNormalized.getTime();
+
+            if (!nextIsFuture && !(nextIsToday && isDayFullyCompleted(nextDate) !== true)) {
+              break;
+            }
+            nextDateIndex++;
+          }
+
+          if (nextDateIndex < datesWithDailyGoals.length) {
+            const nextValidDate = datesWithDailyGoals[nextDateIndex];
             const daysDiff = Math.floor(
-              (nextNewerDate.getTime() - currentDate.getTime()) /
+              (currentDate.getTime() - nextValidDate.getTime()) /
                 (1000 * 60 * 60 * 24),
             );
 
             if (daysDiff > 1) {
               console.log(
-                `📊 Analytics - Gap of ${daysDiff} days found, streak ends`,
+                `📊 Analytics - Gap of ${daysDiff} days found between ${currentDate.toDateString()} and ${nextValidDate.toDateString()}, streak ends`,
               );
               break;
             }
           }
         } else {
-          // Past or today incomplete date breaks the streak
+          // Past incomplete date breaks the streak
           console.log(
-            `📊 Analytics - Past/today date not completed, streak ends`,
+            `📊 Analytics - Past date not completed (${currentDate.toDateString()}), streak ends`,
           );
           break;
         }
