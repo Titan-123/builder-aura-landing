@@ -16,7 +16,6 @@ import {
   Flag,
   Star,
   Archive,
-  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -344,7 +343,7 @@ export default function Goals() {
           const goalData = await response.json();
           triggerMotivationalCelebration({
             type: "goalCreated",
-            message: "New goal created! 🎯",
+            message: "New goal created! ����",
             isFirstGoal: goals.filter((g) => g.completed).length === 0,
             category: goalData?.category,
           });
