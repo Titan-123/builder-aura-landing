@@ -288,7 +288,7 @@ export default function Analytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={[
+                    data={analytics.weeklyTrends.length > 0 ? analytics.weeklyTrends : [
                       { week: "Week 1", completed: 3 },
                       { week: "Week 2", completed: 1 },
                       { week: "Week 3", completed: 4 },
