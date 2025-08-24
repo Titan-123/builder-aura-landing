@@ -68,7 +68,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await robustFetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
