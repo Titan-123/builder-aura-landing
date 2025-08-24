@@ -27,6 +27,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import { RegisterRequest } from "@shared/api";
+import { robustFetch } from "@/lib/fetch";
 
 export default function Register() {
   const navigate = useNavigate();

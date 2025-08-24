@@ -24,6 +24,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import { LoginRequest } from "@shared/api";
+import { robustFetch } from "@/lib/fetch";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await robustFetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
