@@ -143,7 +143,7 @@ export default function Dashboard() {
         `${window.location.origin}/api/goals`,
       );
 
-      const response = await fetch("/api/goals", {
+      const response = await robustFetch("/api/goals", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -269,7 +269,7 @@ export default function Dashboard() {
         `${window.location.origin}/api/analytics`,
       );
 
-      const response = await fetch("/api/analytics", {
+      const response = await robustFetch("/api/analytics", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -375,7 +375,7 @@ export default function Dashboard() {
   const createGoal = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("/api/goals", {
+      const response = await robustFetch("/api/goals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -408,7 +408,7 @@ export default function Dashboard() {
   const toggleGoalCompletion = async (goalId: string, completed: boolean) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch(`/api/goals/${goalId}`, {
+      const response = await robustFetch(`/api/goals/${goalId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
