@@ -12,6 +12,12 @@ export default defineConfig(({ mode }) => ({
       allow: ["./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
+    hmr: {
+      overlay: false, // Disable error overlay to prevent frame issues
+    },
+  },
+  optimizeDeps: {
+    exclude: ["@vite/client"], // Exclude problematic vite client
   },
   build: {
     outDir: "dist/spa",
