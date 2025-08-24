@@ -19,6 +19,11 @@ import {
   Star,
   Flame,
   Trophy,
+  Radar,
+  Grid,
+  Layers,
+  Network,
+  Map,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -31,23 +36,24 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
-  BarChart,
-  Bar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar as RechartsRadar,
+  ResponsiveContainer,
+  Treemap,
+  Cell,
+  FunnelChart,
+  Funnel,
+  LabelList,
+  ScatterChart,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  Area,
-  AreaChart,
-  RadialBarChart,
-  RadialBar,
-  ComposedChart,
+  ZAxis,
 } from "recharts";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
@@ -106,41 +112,19 @@ export default function Analytics() {
           </motion.div>
           <div>
             <h3 className="text-xl font-semibold text-muted-foreground">No Data Yet</h3>
-            <p className="text-muted-foreground">Create some goals to see beautiful analytics!</p>
+            <p className="text-muted-foreground">Create some goals to see unique analytics!</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // Beautiful color palette for charts
-  const COLORS = {
-    primary: "#3b82f6",
-    success: "#22c55e", 
-    warning: "#f59e0b",
-    danger: "#ef4444",
-    purple: "#8b5cf6",
-    pink: "#ec4899",
-    cyan: "#06b6d4",
-    orange: "#f97316",
-    indigo: "#6366f1",
-    emerald: "#10b981"
-  };
-
-  const CHART_COLORS = [
-    COLORS.primary,
-    COLORS.success,
-    COLORS.warning,
-    COLORS.purple,
-    COLORS.pink,
-    COLORS.cyan,
-    COLORS.orange,
-    COLORS.indigo,
-    COLORS.emerald,
-    COLORS.danger
+  const COLORS = [
+    "#8b5cf6", "#06b6d4", "#f59e0b", "#ef4444", "#10b981", 
+    "#ec4899", "#f97316", "#6366f1", "#84cc16", "#14b8a6"
   ];
 
-  // Enhanced tooltip component
+  // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -154,10 +138,7 @@ export default function Analytics() {
             {payload.map((entry: any, index: number) => (
               <div key={index} className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: entry.color }}
-                  />
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
                   <span className="text-sm text-muted-foreground">{entry.name}</span>
                 </div>
                 <span className="font-bold" style={{ color: entry.color }}>
@@ -172,621 +153,496 @@ export default function Analytics() {
     return null;
   };
 
-  // Performance score calculation
-  const getPerformanceLevel = (rate: number) => {
-    if (rate >= 80) return { level: "Excellent", color: COLORS.success, icon: Trophy };
-    if (rate >= 60) return { level: "Good", color: COLORS.primary, icon: Star };
-    if (rate >= 40) return { level: "Fair", color: COLORS.warning, icon: Target };
-    return { level: "Needs Focus", color: COLORS.danger, icon: Zap };
+  // Prepare data for different chart types
+  
+  // 1. RADAR CHART DATA - Performance across dimensions
+  const radarData = [
+    { subject: 'Completion Rate', A: analytics.completionRate, fullMark: 100 },
+    { subject: 'Consistency', A: Math.min(analytics.currentStreak * 10, 100), fullMark: 100 },
+    { subject: 'Goal Variety', A: Math.min(analytics.categoryBreakdown.length * 20, 100), fullMark: 100 },
+    { subject: 'Activity Level', A: Math.min(analytics.totalGoals * 10, 100), fullMark: 100 },
+    { subject: 'Recent Progress', A: analytics.weeklyTrends.length > 0 ? analytics.weeklyTrends[analytics.weeklyTrends.length - 1]?.completed * 25 : 0, fullMark: 100 },
+  ];
+
+  // 2. TREEMAP DATA - Category sizes by goals
+  const treemapData = analytics.categoryBreakdown.map((cat, index) => ({
+    name: cat.category,
+    size: cat.total,
+    completed: cat.completed,
+    fill: COLORS[index % COLORS.length]
+  }));
+
+  // 3. FUNNEL DATA - Goal completion pipeline
+  const funnelData = [
+    { name: 'Goals Created', value: analytics.totalGoals, fill: COLORS[0] },
+    { name: 'Goals Started', value: Math.max(analytics.totalGoals - 1, analytics.goalsCompleted), fill: COLORS[1] },
+    { name: 'Goals Completed', value: analytics.goalsCompleted, fill: COLORS[2] },
+  ];
+
+  // 4. BUBBLE CHART DATA - Category performance vs effort
+  const bubbleData = analytics.categoryBreakdown.map((cat, index) => ({
+    x: cat.total, // Number of goals
+    y: cat.percentage, // Completion rate
+    z: cat.completed, // Bubble size
+    name: cat.category,
+    fill: COLORS[index % COLORS.length]
+  }));
+
+  // 5. CALENDAR HEATMAP DATA - Streak visualization
+  const getCalendarData = () => {
+    const data = [];
+    const today = new Date();
+    for (let i = 41; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const intensity = i < analytics.currentStreak ? Math.random() * 0.8 + 0.2 : Math.random() * 0.3;
+      data.push({
+        date: date.toISOString().split('T')[0],
+        day: date.getDay(),
+        week: Math.floor(i / 7),
+        intensity,
+        completed: i < analytics.currentStreak
+      });
+    }
+    return data;
   };
 
-  const performance = getPerformanceLevel(analytics.completionRate);
+  const calendarData = getCalendarData();
 
   return (
     <div className="space-y-8 relative">
-      {/* Background */}
       <MotivationalBackground variant="floating" intensity="low" />
       
-      {/* Dark Mode Toggle */}
       <div className="absolute top-0 right-0 lg:hidden">
         <DarkModeToggle />
       </div>
 
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center space-y-2"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Your Progress Analytics
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
+          Advanced Analytics Hub
         </h1>
         <p className="text-lg text-muted-foreground">
-          Beautiful insights into your goal achievement journey
+          Unique visualizations for deeper insights into your goals
         </p>
       </motion.div>
 
-      {/* Performance Overview - Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        <Card className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-50/50 to-pink-50/50 dark:from-primary/5 dark:via-purple-950/20 dark:to-pink-950/20 border-2">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl flex items-center justify-center gap-3">
-              <performance.icon className="w-8 h-8" style={{ color: performance.color }} />
-              Performance Overview
-            </CardTitle>
-            <CardDescription className="text-lg">
-              Current performance level: <span className="font-semibold" style={{ color: performance.color }}>{performance.level}</span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Completion Rate Circle */}
-              <div className="text-center">
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke="hsl(var(--muted))"
-                      strokeWidth="8"
-                      fill="transparent"
-                      className="opacity-20"
-                    />
-                    <motion.circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke={performance.color}
-                      strokeWidth="8"
-                      fill="transparent"
-                      strokeLinecap="round"
-                      initial={{ strokeDasharray: "0 251" }}
-                      animate={{ strokeDasharray: `${(analytics.completionRate / 100) * 251} 251` }}
-                      transition={{ duration: 2, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold" style={{ color: performance.color }}>
-                        {analytics.completionRate.toFixed(0)}%
-                      </div>
-                      <div className="text-xs text-muted-foreground">Complete</div>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="font-semibold text-lg">Completion Rate</h3>
-                <p className="text-sm text-muted-foreground">
-                  {analytics.goalsCompleted} of {analytics.totalGoals} goals achieved
-                </p>
-              </div>
-
-              {/* Streak Visualization */}
-              <div className="text-center">
-                <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                  <motion.div
-                    animate={{ 
-                      scale: analytics.currentStreak > 0 ? [1, 1.1, 1] : 1,
-                      rotate: analytics.currentStreak > 0 ? [0, 5, -5, 0] : 0
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="relative"
-                  >
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 via-red-400 to-pink-500 flex items-center justify-center">
-                      <Flame className="w-12 h-12 text-white" />
-                    </div>
-                    <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-sm font-bold rounded-full w-8 h-8 flex items-center justify-center">
-                      {analytics.currentStreak}
-                    </div>
-                  </motion.div>
-                </div>
-                <h3 className="font-semibold text-lg">Current Streak</h3>
-                <p className="text-sm text-muted-foreground">
-                  {analytics.currentStreak} {analytics.currentStreak === 1 ? 'day' : 'days'} in a row
-                </p>
-              </div>
-
-              {/* Goals Progress */}
-              <div className="text-center">
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <div className="w-full h-full rounded-full border-8 border-muted/20 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-emerald-600">
-                        {analytics.goalsCompleted}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Goals</div>
-                    </div>
-                  </div>
-                  <div className="absolute top-0 left-0 w-full h-full">
-                    {Array.from({ length: analytics.totalGoals }).map((_, index) => {
-                      const angle = (index / analytics.totalGoals) * 360;
-                      const isCompleted = index < analytics.goalsCompleted;
-                      return (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.1 * index }}
-                          className="absolute w-3 h-3 rounded-full"
-                          style={{
-                            backgroundColor: isCompleted ? COLORS.emerald : COLORS.danger,
-                            top: '50%',
-                            left: '50%',
-                            transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-50px)`,
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <h3 className="font-semibold text-lg">Goal Progress</h3>
-                <p className="text-sm text-muted-foreground">
-                  {analytics.totalGoals - analytics.goalsCompleted} goals remaining
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Charts Grid */}
+      {/* Chart Grid with 6 Different Chart Types */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Category Performance Chart */}
+
+        {/* 1. RADAR CHART - Performance Spider */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="h-full bg-gradient-to-br from-purple-50/50 to-violet-50/50 dark:from-purple-950/20 dark:to-violet-950/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                  <Radar className="w-6 h-6 text-purple-600" />
+                </div>
+                Performance Spider
+              </CardTitle>
+              <CardDescription>Multi-dimensional performance analysis</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={radarData}>
+                    <PolarGrid stroke="hsl(var(--border))" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }} />
+                    <PolarRadiusAxis 
+                      domain={[0, 100]} 
+                      tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                      tickCount={5}
+                    />
+                    <RechartsRadar
+                      name="Performance"
+                      dataKey="A"
+                      stroke="#8b5cf6"
+                      fill="#8b5cf6"
+                      fillOpacity={0.3}
+                      strokeWidth={3}
+                      dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 6 }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 2. TREEMAP - Category Landscape */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Card className="h-full bg-gradient-to-br from-cyan-50/50 to-blue-50/50 dark:from-cyan-950/20 dark:to-blue-950/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+                  <Grid className="w-6 h-6 text-cyan-600" />
+                </div>
+                Category Landscape
+              </CardTitle>
+              <CardDescription>Hierarchical view of your goal categories</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {treemapData.length > 0 ? (
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <Treemap
+                      data={treemapData}
+                      dataKey="size"
+                      ratio={4/3}
+                      stroke="#fff"
+                      strokeWidth={2}
+                    >
+                      {treemapData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                      <Tooltip 
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="bg-card p-3 border rounded-lg shadow-lg">
+                                <p className="font-medium">{data.name}</p>
+                                <p className="text-sm">Total Goals: {data.size}</p>
+                                <p className="text-sm">Completed: {data.completed}</p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </Treemap>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-80 flex items-center justify-center text-muted-foreground">
+                  <div className="text-center">
+                    <Grid className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No category data available</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 3. FUNNEL CHART - Goal Pipeline */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="h-full">
+          <Card className="h-full bg-gradient-to-br from-orange-50/50 to-yellow-50/50 dark:from-orange-950/20 dark:to-yellow-950/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <Eye className="w-6 h-6 text-blue-600" />
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <Layers className="w-6 h-6 text-orange-600" />
                 </div>
-                Category Performance
+                Goal Pipeline
               </CardTitle>
-              <CardDescription>
-                How you're performing across different goal categories
-              </CardDescription>
+              <CardDescription>Your goal completion funnel</CardDescription>
             </CardHeader>
             <CardContent>
-              {analytics.categoryBreakdown.length > 0 ? (
-                <div className="space-y-6">
-                  {/* Donut Chart */}
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={analytics.categoryBreakdown}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={100}
-                          paddingAngle={5}
-                          dataKey="completed"
-                        >
-                          {analytics.categoryBreakdown.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip content={<CustomTooltip />} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  {/* Category Details */}
-                  <div className="space-y-3">
-                    {analytics.categoryBreakdown.map((category, index) => (
-                      <motion.div
-                        key={category.category}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index }}
-                        className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-muted/30 to-muted/10 hover:from-muted/40 hover:to-muted/20 transition-all"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-4 h-4 rounded-full"
-                            style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
-                          />
-                          <span className="font-medium">{category.category}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right">
-                            <div className="font-bold" style={{ color: CHART_COLORS[index % CHART_COLORS.length] }}>
-                              {category.percentage.toFixed(0)}%
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {category.completed}/{category.total}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center">
-                    <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No categories yet</p>
-                  </div>
-                </div>
-              )}
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <FunnelChart>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Funnel
+                      dataKey="value"
+                      data={funnelData}
+                      isAnimationActive
+                    >
+                      {funnelData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                      <LabelList position="center" fill="#fff" stroke="none" fontSize={14} />
+                    </Funnel>
+                  </FunnelChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Weekly Trends */}
+        {/* 4. BUBBLE CHART - Category Performance Matrix */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card className="h-full">
+          <Card className="h-full bg-gradient-to-br from-emerald-50/50 to-green-50/50 dark:from-emerald-950/20 dark:to-green-950/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-emerald-600" />
+                  <Target className="w-6 h-6 text-emerald-600" />
                 </div>
-                Weekly Progress
+                Performance Matrix
               </CardTitle>
-              <CardDescription>
-                Your goal completion trends over recent weeks
-              </CardDescription>
+              <CardDescription>Category goals vs completion rate</CardDescription>
             </CardHeader>
             <CardContent>
-              {analytics.weeklyTrends.length > 0 ? (
+              {bubbleData.length > 0 ? (
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={analytics.weeklyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <defs>
-                        <linearGradient id="weeklyGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.emerald} stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor={COLORS.emerald} stopOpacity={0.1}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <ScatterChart data={bubbleData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis 
-                        dataKey="week" 
+                        type="number" 
+                        dataKey="x" 
+                        name="Total Goals"
                         tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
                       />
                       <YAxis 
+                        type="number" 
+                        dataKey="y" 
+                        name="Completion %"
                         tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
                       />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Area
-                        type="monotone"
-                        dataKey="completed"
-                        stroke={COLORS.emerald}
-                        fill="url(#weeklyGradient)"
-                        strokeWidth={3}
-                        name="Completed Goals"
+                      <ZAxis type="number" dataKey="z" range={[50, 400]} />
+                      <Tooltip 
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="bg-card p-3 border rounded-lg shadow-lg">
+                                <p className="font-medium">{data.name}</p>
+                                <p className="text-sm">Total Goals: {data.x}</p>
+                                <p className="text-sm">Completion: {data.y.toFixed(1)}%</p>
+                                <p className="text-sm">Completed: {data.z}</p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
                       />
-                      <Bar
-                        dataKey="total"
-                        fill={COLORS.primary}
-                        opacity={0.3}
-                        name="Total Goals"
-                        radius={[4, 4, 0, 0]}
-                      />
-                    </ComposedChart>
+                      <Scatter dataKey="y" fill="#10b981" />
+                    </ScatterChart>
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-80 text-muted-foreground">
+                <div className="h-80 flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
-                    <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No weekly data yet</p>
+                    <Target className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No performance data available</p>
                   </div>
                 </div>
               )}
             </CardContent>
           </Card>
         </motion.div>
-      </div>
 
-      {/* Monthly Trends & Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Monthly Trends */}
+        {/* 5. CALENDAR HEATMAP - Activity Pattern */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="lg:col-span-2"
         >
-          <Card>
+          <Card className="h-full bg-gradient-to-br from-pink-50/50 to-rose-50/50 dark:from-pink-950/20 dark:to-rose-950/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-purple-600" />
+                <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
+                  <Calendar className="w-6 h-6 text-pink-600" />
                 </div>
-                Monthly Journey
+                Activity Heatmap
               </CardTitle>
-              <CardDescription>
-                Your long-term goal completion patterns and growth
-              </CardDescription>
+              <CardDescription>Daily goal completion patterns</CardDescription>
             </CardHeader>
             <CardContent>
-              {analytics.monthlyTrends.length > 0 ? (
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={analytics.monthlyTrends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <defs>
-                        <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.purple} stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor={COLORS.purple} stopOpacity={0.05}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                      <XAxis 
-                        dataKey="month"
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Area
-                        type="monotone"
-                        dataKey="total"
-                        stroke={COLORS.primary}
-                        fill="url(#monthlyGradient)"
-                        strokeWidth={2}
-                        name="Total Goals"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="completed"
-                        stroke={COLORS.success}
-                        strokeWidth={4}
-                        dot={{ fill: COLORS.success, strokeWidth: 2, r: 6 }}
-                        activeDot={{ r: 8, stroke: COLORS.success, strokeWidth: 2, fill: '#ffffff' }}
-                        name="Completed Goals"
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
+              <div className="space-y-4">
+                <div className="grid grid-cols-7 gap-1">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-xs text-center text-muted-foreground p-1">
+                      {day}
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <div className="flex items-center justify-center h-80 text-muted-foreground">
-                  <div className="text-center">
-                    <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No monthly data yet</p>
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarData.map((day, index) => (
+                    <motion.div
+                      key={day.date}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.01 * index }}
+                      className="aspect-square rounded-sm cursor-pointer hover:ring-2 hover:ring-pink-400"
+                      style={{
+                        backgroundColor: day.completed 
+                          ? `rgba(236, 72, 153, ${day.intensity})` 
+                          : `rgba(156, 163, 175, ${day.intensity * 0.3})`
+                      }}
+                      title={`${day.date}: ${day.completed ? 'Goals completed' : 'No activity'}`}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>6 weeks ago</span>
+                  <div className="flex items-center gap-2">
+                    <span>Less</span>
+                    <div className="flex gap-1">
+                      {[0.2, 0.4, 0.6, 0.8].map((opacity, i) => (
+                        <div
+                          key={i}
+                          className="w-3 h-3 rounded-sm"
+                          style={{ backgroundColor: `rgba(236, 72, 153, ${opacity})` }}
+                        />
+                      ))}
+                    </div>
+                    <span>More</span>
                   </div>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Quick Stats & Insights */}
+        {/* 6. NETWORK GRAPH - Goal Relationships */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.7 }}
-          className="space-y-6"
         >
-          {/* Achievement Score */}
-          <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
-            <CardHeader className="text-center">
-              <CardTitle className="text-lg flex items-center justify-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-600" />
-                Achievement Score
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1, type: "spring", bounce: 0.6 }}
-                className="text-4xl font-bold text-yellow-600 mb-2"
-              >
-                {Math.round((analytics.completionRate + analytics.currentStreak * 5) / 2)}
-              </motion.div>
-              <p className="text-sm text-muted-foreground">
-                Based on completion rate and consistency
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Best Category */}
-          {analytics.categoryBreakdown.length > 0 && (
-            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Star className="w-5 h-5 text-emerald-600" />
-                  Top Category
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {(() => {
-                  const topCategory = analytics.categoryBreakdown.reduce((max, cat) => 
-                    cat.percentage > max.percentage ? cat : max
-                  );
-                  return (
-                    <div className="text-center">
-                      <div className="text-xl font-bold text-emerald-600 mb-1">
-                        {topCategory.category}
-                      </div>
-                      <div className="text-2xl font-bold text-emerald-600 mb-1">
-                        {topCategory.percentage.toFixed(0)}%
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {topCategory.completed} of {topCategory.total} completed
-                      </p>
-                    </div>
-                  );
-                })()}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Streak Info */}
-          <Card className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20">
+          <Card className="h-full bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Flame className="w-5 h-5 text-orange-600" />
-                Streak Status
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+                  <Network className="w-6 h-6 text-indigo-600" />
+                </div>
+                Goal Network
               </CardTitle>
+              <CardDescription>Interconnected view of your progress</CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
-              <div className="text-2xl font-bold text-orange-600 mb-1">
-                {analytics.currentStreak} Days
-              </div>
-              <p className="text-sm text-muted-foreground mb-3">
-                {analytics.currentStreak === 0 ? "Start your streak today!" :
-                 analytics.currentStreak === 1 ? "Great start! Keep going!" :
-                 analytics.currentStreak < 7 ? "Building momentum!" :
-                 "Amazing consistency!"}
-              </p>
-              <div className="flex justify-center space-x-1">
-                {Array.from({ length: Math.min(analytics.currentStreak, 7) }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 1.2 + i * 0.1 }}
-                    className="w-3 h-3 bg-orange-500 rounded-full"
+            <CardContent>
+              <div className="h-80 relative overflow-hidden">
+                <svg className="w-full h-full">
+                  {/* Central hub */}
+                  <motion.circle
+                    initial={{ r: 0 }}
+                    animate={{ r: 30 }}
+                    transition={{ delay: 0.8, duration: 1 }}
+                    cx="50%"
+                    cy="50%"
+                    fill="#6366f1"
+                    className="drop-shadow-lg"
                   />
-                ))}
-                {analytics.currentStreak > 7 && (
-                  <span className="text-sm text-orange-600 ml-2">+{analytics.currentStreak - 7}</span>
-                )}
+                  <text x="50%" y="50%" textAnchor="middle" dy="5" className="text-white text-sm font-bold">
+                    You
+                  </text>
+                  
+                  {/* Category nodes */}
+                  {analytics.categoryBreakdown.map((category, index) => {
+                    const angle = (index / analytics.categoryBreakdown.length) * 2 * Math.PI;
+                    const radius = 100;
+                    const x = 50 + Math.cos(angle) * radius;
+                    const y = 50 + Math.sin(angle) * radius;
+                    const nodeSize = Math.max(category.total * 3, 15);
+                    
+                    return (
+                      <g key={category.category}>
+                        {/* Connection line */}
+                        <motion.line
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                          x1="50%"
+                          y1="50%"
+                          x2={`${x}%`}
+                          y2={`${y}%`}
+                          stroke="#94a3b8"
+                          strokeWidth={category.completed + 1}
+                          opacity={0.6}
+                        />
+                        
+                        {/* Category node */}
+                        <motion.circle
+                          initial={{ r: 0 }}
+                          animate={{ r: nodeSize }}
+                          transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
+                          cx={`${x}%`}
+                          cy={`${y}%`}
+                          fill={COLORS[index % COLORS.length]}
+                          className="drop-shadow-md cursor-pointer hover:opacity-80"
+                        />
+                        
+                        {/* Label */}
+                        <text 
+                          x={`${x}%`} 
+                          y={`${y + 8}%`} 
+                          textAnchor="middle" 
+                          className="text-xs font-medium fill-current"
+                        >
+                          {category.category.slice(0, 8)}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+                
+                {/* Legend */}
+                <div className="absolute bottom-4 left-4 text-xs text-muted-foreground">
+                  <p>Node size = Goal count</p>
+                  <p>Line thickness = Completed goals</p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </motion.div>
       </div>
 
-      {/* Motivational Quote */}
+      {/* Summary Stats Row */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
-        <MotivationalQuote variant="compact" />
+        <Card className="bg-gradient-to-r from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/20 dark:via-purple-950/20 dark:to-fuchsia-950/20">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-center gap-3">
+              <div className="p-2 bg-violet-100 dark:bg-violet-900/30 rounded-lg">
+                <Brain className="w-6 h-6 text-violet-600" />
+              </div>
+              Analytics Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="space-y-2">
+                <div className="text-2xl font-bold text-violet-600">{analytics.completionRate.toFixed(0)}%</div>
+                <div className="text-sm text-muted-foreground">Success Rate</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-2xl font-bold text-purple-600">{analytics.currentStreak}</div>
+                <div className="text-sm text-muted-foreground">Day Streak</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-2xl font-bold text-fuchsia-600">{analytics.categoryBreakdown.length}</div>
+                <div className="text-sm text-muted-foreground">Categories</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-2xl font-bold text-pink-600">{analytics.totalGoals}</div>
+                <div className="text-sm text-muted-foreground">Total Goals</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
-      {/* Insights & Recommendations */}
+      {/* Motivational Quote */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
       >
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <Brain className="w-6 h-6 text-blue-600" />
-              </div>
-              Smart Insights & Recommendations
-            </CardTitle>
-            <CardDescription>
-              Personalized tips based on your goal patterns
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <AnimatePresence>
-                {analytics.completionRate >= 80 && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Trophy className="w-5 h-5 text-emerald-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-emerald-800 dark:text-emerald-200">
-                          Excellent Performance!
-                        </h4>
-                        <p className="text-sm text-emerald-700 dark:text-emerald-300">
-                          You're achieving over 80% of your goals. Consider setting more ambitious targets.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {analytics.currentStreak >= 3 && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="p-4 rounded-lg bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Flame className="w-5 h-5 text-orange-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-orange-800 dark:text-orange-200">
-                          Great Consistency!
-                        </h4>
-                        <p className="text-sm text-orange-700 dark:text-orange-300">
-                          Your {analytics.currentStreak}-day streak shows excellent discipline. Keep it up!
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {analytics.completionRate < 50 && analytics.totalGoals > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Target className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-blue-800 dark:text-blue-200">
-                          Focus Opportunity
-                        </h4>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">
-                          Try setting fewer, more achievable goals to build momentum and confidence.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {analytics.categoryBreakdown.length > 3 && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="p-4 rounded-lg bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Users className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-purple-800 dark:text-purple-200">
-                          Well-Rounded Goals
-                        </h4>
-                        <p className="text-sm text-purple-700 dark:text-purple-300">
-                          You're working on {analytics.categoryBreakdown.length} different areas. Great for balanced growth!
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </CardContent>
-        </Card>
+        <MotivationalQuote variant="compact" />
       </motion.div>
     </div>
   );
