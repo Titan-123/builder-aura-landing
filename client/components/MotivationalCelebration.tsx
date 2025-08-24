@@ -393,9 +393,9 @@ export const triggerMotivationalCelebration = ({
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
             className={`
               ${t.visible ? "animate-enter" : "animate-leave"}
-              max-w-sm w-full relative overflow-hidden
-              pointer-events-auto flex items-center gap-3 p-4
-              backdrop-blur-xl rounded-xl text-white
+              max-w-xs w-full relative overflow-hidden
+              pointer-events-auto flex items-center gap-2 p-3
+              backdrop-blur-xl rounded-lg text-white
               border border-white/20
             `}
             style={{
@@ -423,18 +423,18 @@ export const triggerMotivationalCelebration = ({
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="text-2xl"
+              className="text-xl"
             >
               🔥
             </motion.div>
             <div className="flex-1 min-w-0">
               <p
-                className="text-sm font-bold"
+                className="text-xs font-bold"
                 style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
               >
                 {streakMessage}
               </p>
-              <p className="text-xs opacity-90 mt-1">
+              <p className="text-xs opacity-90 mt-0.5">
                 {streak} days strong! 💪
               </p>
             </div>
