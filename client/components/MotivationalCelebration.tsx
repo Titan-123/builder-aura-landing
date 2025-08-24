@@ -374,7 +374,7 @@ export const triggerMotivationalCelebration = ({
       </motion.div>
     ),
     {
-      duration: 7000,
+      duration: 3000,
       position: "top-center",
     },
   );
