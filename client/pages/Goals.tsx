@@ -245,6 +245,18 @@ export default function Goals() {
 
       if (!token) {
         console.warn("No access token found, cannot fetch goals");
+        console.log("localStorage keys:", Object.keys(localStorage));
+        toast.error("Please log in to view your goals");
+        setGoals([]);
+        setLoading(false);
+        return;
+      }
+
+      // Validate token format
+      if (token.length < 10) {
+        console.warn("Token seems invalid (too short):", token.length, "characters");
+        localStorage.removeItem("accessToken");
+        toast.error("Invalid session - please log in again");
         setGoals([]);
         setLoading(false);
         return;
@@ -318,11 +330,15 @@ export default function Goals() {
       if (error.name === "AbortError") {
         console.warn("Request was aborted (timeout or cancelled)");
         toast.error("Request timeout - please check your connection");
-      } else if (error.message.includes('Failed to fetch')) {
-        console.error("Network connectivity issue");
-        toast.error("Network error - please check your connection");
+      } else if (error.message && error.message.includes('Failed to fetch')) {
+        console.error("Network connectivity issue - likely server is down or unreachable");
+        toast.error("Server unavailable - using sample data");
+      } else if (error instanceof TypeError) {
+        console.error("TypeError occurred - possible CORS or network issue");
+        toast.error("Connection error - using sample data");
       } else {
-        toast.error("Failed to load goals - please try again");
+        console.error("Unknown error type occurred");
+        toast.error("Failed to load goals - using sample data");
       }
 
       // Provide sample data as fallback when API fails
