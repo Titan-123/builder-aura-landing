@@ -330,12 +330,12 @@ export default function Analytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={[
+                    data={analytics.weeklyTrends.length > 0 ? analytics.weeklyTrends : [
                       { week: "Aug 21", completed: 0 },
                       { week: "Aug 22", completed: 0 },
-                      { week: "Aug 23", completed: 1 },
-                      { week: "Aug 24", completed: 2 },
-                      { week: "Aug 25", completed: 3 },
+                      { week: "Aug 23", completed: analytics.currentStreak >= 3 ? 1 : 0 },
+                      { week: "Aug 24", completed: analytics.currentStreak >= 2 ? Math.min(analytics.goalsCompleted - 1, 2) : 0 },
+                      { week: "Aug 25", completed: analytics.goalsCompleted },
                     ]}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
