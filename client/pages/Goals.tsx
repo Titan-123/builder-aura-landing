@@ -254,6 +254,19 @@ export default function Goals() {
       console.log("Current window.location:", window.location.href);
       console.log("Authorization token present:", !!token);
 
+      // Test API connectivity first
+      try {
+        console.log("Testing API connectivity with /api/ping...");
+        const pingResponse = await fetch("/api/ping");
+        console.log("Ping response status:", pingResponse.status);
+        if (pingResponse.ok) {
+          const pingData = await pingResponse.json();
+          console.log("Ping response data:", pingData);
+        }
+      } catch (pingError) {
+        console.error("API ping failed:", pingError);
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         console.warn("Request timeout after 10 seconds");
