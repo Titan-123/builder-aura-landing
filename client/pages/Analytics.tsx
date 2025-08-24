@@ -33,6 +33,7 @@ import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
 import MotivationalBackground from "@/components/MotivationalBackground";
 import { AnalyticsResponse } from "@shared/api";
+import { robustFetch } from "@/lib/fetch";
 
 export default function Analytics() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
@@ -55,7 +56,7 @@ export default function Analytics() {
       }
 
       console.log("Fetching analytics from /api/analytics");
-      const response = await fetch("/api/analytics", {
+      const response = await robustFetch("/api/analytics", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
