@@ -109,7 +109,7 @@ export default function Dashboard() {
             deadline: new Date().toISOString(),
             completed: false,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           },
           {
             id: "sample-2",
@@ -124,8 +124,8 @@ export default function Dashboard() {
             completed: true,
             completedAt: new Date().toISOString(),
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
+            updatedAt: new Date().toISOString(),
+          },
         ]);
         setLoading(false);
         return;
@@ -137,7 +137,10 @@ export default function Dashboard() {
       console.log("Making direct API call to /api/goals");
       console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
       console.log("Current origin:", window.location.origin);
-      console.log("Request URL will be:", `${window.location.origin}/api/goals`);
+      console.log(
+        "Request URL will be:",
+        `${window.location.origin}/api/goals`,
+      );
 
       const response = await fetch("/api/goals", {
         method: "GET",
@@ -151,7 +154,11 @@ export default function Dashboard() {
         const data = await response.json();
         setGoals(data.goals || []);
       } else {
-        console.error("API error - Status:", response.status, response.statusText);
+        console.error(
+          "API error - Status:",
+          response.status,
+          response.statusText,
+        );
         if (response.status === 401) {
           localStorage.removeItem("accessToken");
           toast.error("Session expired - please log in again");
@@ -173,8 +180,8 @@ export default function Dashboard() {
             deadline: new Date().toISOString(),
             completed: false,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
+            updatedAt: new Date().toISOString(),
+          },
         ]);
       }
     } catch (error: any) {
@@ -184,11 +191,13 @@ export default function Dashboard() {
       console.error("Error type:", typeof error);
       console.error("Full error:", error);
 
-      if (error?.message?.includes('Failed to fetch')) {
-        console.error("Browser fetch failed - possible CORS, network, or proxy issue");
+      if (error?.message?.includes("Failed to fetch")) {
+        console.error(
+          "Browser fetch failed - possible CORS, network, or proxy issue",
+        );
         console.error("Backend is running but frontend can't reach it");
         toast.success("🔄 Working in offline mode with sample goals");
-      } else if (error?.name === 'TypeError') {
+      } else if (error?.name === "TypeError") {
         console.error("TypeError in fetch - likely network-level issue");
         toast.success("📱 Offline mode activated");
       } else {
@@ -210,8 +219,8 @@ export default function Dashboard() {
           deadline: new Date().toISOString(),
           completed: false,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       ]);
     } finally {
       setLoading(false);
@@ -234,10 +243,10 @@ export default function Dashboard() {
           categoryBreakdown: [
             { category: "Health", total: 1, completed: 0 },
             { category: "Personal Development", total: 1, completed: 1 },
-            { category: "Work", total: 1, completed: 1 }
+            { category: "Work", total: 1, completed: 1 },
           ],
           weeklyTrends: [],
-          monthlyTrends: []
+          monthlyTrends: [],
         };
         setAnalytics(sampleAnalytics);
         setStreaks({
@@ -254,7 +263,10 @@ export default function Dashboard() {
       console.log("Making direct API call to /api/analytics");
       console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
       console.log("Current origin:", window.location.origin);
-      console.log("Request URL will be:", `${window.location.origin}/api/analytics`);
+      console.log(
+        "Request URL will be:",
+        `${window.location.origin}/api/analytics`,
+      );
 
       const response = await fetch("/api/analytics", {
         method: "GET",
@@ -278,7 +290,11 @@ export default function Dashboard() {
           streak: data.currentStreak,
         });
       } else {
-        console.error("Analytics API error - Status:", response.status, response.statusText);
+        console.error(
+          "Analytics API error - Status:",
+          response.status,
+          response.statusText,
+        );
         if (response.status === 401) {
           localStorage.removeItem("accessToken");
           toast.error("Session expired - please log in again");
@@ -295,10 +311,10 @@ export default function Dashboard() {
           totalGoals: 3,
           categoryBreakdown: [
             { category: "Health", total: 1, completed: 0 },
-            { category: "Personal Development", total: 1, completed: 1 }
+            { category: "Personal Development", total: 1, completed: 1 },
           ],
           weeklyTrends: [],
-          monthlyTrends: []
+          monthlyTrends: [],
         };
         setAnalytics(sampleAnalytics);
         setStreaks({
@@ -314,12 +330,18 @@ export default function Dashboard() {
       console.error("Error type:", typeof error);
       console.error("Full error:", error);
 
-      if (error?.message?.includes('Failed to fetch')) {
-        console.error("Analytics fetch failed - possible CORS, network, or proxy issue");
-        console.error("Backend is running but frontend can't reach analytics endpoint");
+      if (error?.message?.includes("Failed to fetch")) {
+        console.error(
+          "Analytics fetch failed - possible CORS, network, or proxy issue",
+        );
+        console.error(
+          "Backend is running but frontend can't reach analytics endpoint",
+        );
         toast.success("📊 Analytics offline mode active");
-      } else if (error?.name === 'TypeError') {
-        console.error("TypeError in analytics fetch - likely network-level issue");
+      } else if (error?.name === "TypeError") {
+        console.error(
+          "TypeError in analytics fetch - likely network-level issue",
+        );
         toast.success("📈 Analytics working in offline mode");
       } else {
         console.error("Unknown analytics error occurred");
@@ -335,10 +357,10 @@ export default function Dashboard() {
         totalGoals: 3,
         categoryBreakdown: [
           { category: "Health", total: 1, completed: 0 },
-          { category: "Personal Development", total: 1, completed: 1 }
+          { category: "Personal Development", total: 1, completed: 1 },
         ],
         weeklyTrends: [],
-        monthlyTrends: []
+        monthlyTrends: [],
       };
       setAnalytics(sampleAnalytics);
       setStreaks({
@@ -590,12 +612,12 @@ export default function Dashboard() {
                 transition={{ duration: 0.5 }}
                 animate={{
                   rotate: [0, 5, -5, 0],
-                  scale: [1, 1.05, 1]
+                  scale: [1, 1.05, 1],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  repeatDelay: 3
+                  repeatDelay: 3,
                 }}
               >
                 <Zap className="h-5 w-5 text-orange-500" />
@@ -641,14 +663,18 @@ export default function Dashboard() {
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.5 }}
-                animate={overdueGoals.length > 0 ? {
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
-                } : {}}
+                animate={
+                  overdueGoals.length > 0
+                    ? {
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0],
+                      }
+                    : {}
+                }
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
-                  repeatDelay: 2
+                  repeatDelay: 2,
                 }}
               >
                 <AlertCircle className="h-5 w-5 text-red-500" />
@@ -658,7 +684,9 @@ export default function Dashboard() {
               <div className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                 {overdueGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">overdue goals</p>
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
+                overdue goals
+              </p>
               {upcomingGoals.length > 0 && (
                 <motion.p
                   initial={{ opacity: 0 }}

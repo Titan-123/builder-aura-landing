@@ -23,19 +23,19 @@ export const handleGetAnalytics: RequestHandler<
         categoryBreakdown: [
           { category: "Health", total: 1, completed: 0 },
           { category: "Personal Development", total: 1, completed: 1 },
-          { category: "Work", total: 1, completed: 1 }
+          { category: "Work", total: 1, completed: 1 },
         ],
         weeklyTrends: [
           { week: "Week 1", completed: 0 },
           { week: "Week 2", completed: 1 },
           { week: "Week 3", completed: 2 },
-          { week: "Week 4", completed: 2 }
+          { week: "Week 4", completed: 2 },
         ],
         monthlyTrends: [
           { month: "Jan", completed: 8 },
           { month: "Feb", completed: 12 },
-          { month: "Mar", completed: 15 }
-        ]
+          { month: "Mar", completed: 15 },
+        ],
       };
 
       res.json(mockAnalytics);
@@ -381,19 +381,19 @@ export const handleGetAnalytics: RequestHandler<
       categoryBreakdown: [
         { category: "Health", total: 1, completed: 0 },
         { category: "Personal Development", total: 1, completed: 1 },
-        { category: "Work", total: 1, completed: 1 }
+        { category: "Work", total: 1, completed: 1 },
       ],
       weeklyTrends: [
         { week: "Week 1", completed: 0 },
         { week: "Week 2", completed: 1 },
         { week: "Week 3", completed: 2 },
-        { week: "Week 4", completed: 2 }
+        { week: "Week 4", completed: 2 },
       ],
       monthlyTrends: [
         { month: "Jan", completed: 8 },
         { month: "Feb", completed: 12 },
-        { month: "Mar", completed: 15 }
-      ]
+        { month: "Mar", completed: 15 },
+      ],
     };
 
     res.json(mockAnalytics);

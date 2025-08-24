@@ -36,7 +36,9 @@ export const handleRegister: RequestHandler<
 
     // Add timeout protection
     timeoutId = setTimeout(() => {
-      console.warn("⏰ Registration request taking too long, providing fallback");
+      console.warn(
+        "⏰ Registration request taking too long, providing fallback",
+      );
       if (!res.headersSent) {
         const mockUserId = "mock-user-register-timeout";
         const { accessToken, refreshToken } = generateTokens(mockUserId);
@@ -85,14 +87,15 @@ export const handleRegister: RequestHandler<
       // Use provided name or generate from email
       let displayName = name?.trim();
       if (!displayName) {
-        const emailName = email.split('@')[0];
-        displayName = emailName
-          .replace(/[0-9]/g, '') // Remove numbers
-          .replace(/[._-]/g, ' ') // Replace common separators with spaces
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ')
-          .trim() || 'User';
+        const emailName = email.split("@")[0];
+        displayName =
+          emailName
+            .replace(/[0-9]/g, "") // Remove numbers
+            .replace(/[._-]/g, " ") // Replace common separators with spaces
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ")
+            .trim() || "User";
       }
 
       const mockUser = {
@@ -211,14 +214,15 @@ export const handleLogin: RequestHandler<
 
         // Generate proper name from email
         const email = req.body.email || "demo@example.com";
-        const emailName = email.split('@')[0];
-        const displayName = emailName
-          .replace(/[0-9]/g, '') // Remove numbers
-          .replace(/[._-]/g, ' ') // Replace common separators with spaces
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ')
-          .trim() || 'User';
+        const emailName = email.split("@")[0];
+        const displayName =
+          emailName
+            .replace(/[0-9]/g, "") // Remove numbers
+            .replace(/[._-]/g, " ") // Replace common separators with spaces
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ")
+            .trim() || "User";
 
         res.json({
           user: {
@@ -256,14 +260,15 @@ export const handleLogin: RequestHandler<
       const { accessToken, refreshToken } = generateTokens(mockUserId);
 
       // Generate proper name from email
-      const emailName = email.split('@')[0]; // Get part before @
-      const displayName = emailName
-        .replace(/[0-9]/g, '') // Remove numbers
-        .replace(/[._-]/g, ' ') // Replace common separators with spaces
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-        .join(' ')
-        .trim() || 'User'; // Fallback to 'User' if empty
+      const emailName = email.split("@")[0]; // Get part before @
+      const displayName =
+        emailName
+          .replace(/[0-9]/g, "") // Remove numbers
+          .replace(/[._-]/g, " ") // Replace common separators with spaces
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+          .join(" ")
+          .trim() || "User"; // Fallback to 'User' if empty
 
       const mockUser = {
         id: mockUserId,
@@ -334,14 +339,15 @@ export const handleLogin: RequestHandler<
 
       // Generate proper name from email
       const userEmail = email?.toLowerCase().trim() || "demo@example.com";
-      const emailName = userEmail.split('@')[0];
-      const displayName = emailName
-        .replace(/[0-9]/g, '') // Remove numbers
-        .replace(/[._-]/g, ' ') // Replace common separators with spaces
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-        .trim() || 'User';
+      const emailName = userEmail.split("@")[0];
+      const displayName =
+        emailName
+          .replace(/[0-9]/g, "") // Remove numbers
+          .replace(/[._-]/g, " ") // Replace common separators with spaces
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+          .trim() || "User";
 
       const mockUser = {
         id: mockUserId,
