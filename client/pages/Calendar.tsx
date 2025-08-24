@@ -26,6 +26,7 @@ import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
 import MotivationalBackground from "@/components/MotivationalBackground";
 import { Goal } from "@shared/api";
+import { robustFetch } from "@/lib/fetch";
 
 export default function Calendar() {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -134,7 +135,7 @@ export default function Calendar() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch("/api/goals", {
+      const response = await robustFetch("/api/goals", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
