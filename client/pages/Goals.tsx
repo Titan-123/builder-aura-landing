@@ -16,6 +16,7 @@ import {
   Flag,
   Star,
   Archive,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
