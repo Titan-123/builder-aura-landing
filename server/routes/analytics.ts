@@ -199,7 +199,10 @@ export const handleGetAnalytics: RequestHandler<
             const nextIsToday =
               normalizeDate(nextDate).getTime() === todayNormalized.getTime();
 
-            if (!nextIsFuture && !(nextIsToday && isDayFullyCompleted(nextDate) !== true)) {
+            if (
+              !nextIsFuture &&
+              !(nextIsToday && isDayFullyCompleted(nextDate) !== true)
+            ) {
               break;
             }
             nextDateIndex++;
