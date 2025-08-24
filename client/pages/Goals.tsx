@@ -299,7 +299,7 @@ export default function Goals() {
       console.log("Fetching goals from /api/goals...");
 
       // Simplified fetch without AbortController to avoid issues
-      const response = await fetch("/api/goals", {
+      const response = await robustFetch("/api/goals", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -417,7 +417,7 @@ export default function Goals() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch("/api/goals", {
+      const response = await robustFetch("/api/goals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -491,7 +491,7 @@ export default function Goals() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch(`/api/goals/${editingGoal.id}`, {
+      const response = await robustFetch(`/api/goals/${editingGoal.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -548,7 +548,7 @@ export default function Goals() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const response = await fetch(`/api/goals/${goalId}`, {
+      const response = await robustFetch(`/api/goals/${goalId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -609,7 +609,7 @@ export default function Goals() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const response = await fetch(`/api/goals/${goalId}`, {
+      const response = await robustFetch(`/api/goals/${goalId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
