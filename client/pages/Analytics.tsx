@@ -285,56 +285,50 @@ export default function Analytics() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {(() => {
-                // Use actual data if available, otherwise show sample data
-                const weeklyData = analytics.weeklyTrends.length > 0
-                  ? analytics.weeklyTrends
-                  : [
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={[
                       { week: "Week 1", completed: 3 },
                       { week: "Week 2", completed: 1 },
                       { week: "Week 3", completed: 4 },
                       { week: "Week 4", completed: 2 },
                       { week: "Week 5", completed: 5 },
-                    ];
-
-                return (
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={weeklyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis
-                          dataKey="week"
-                          tick={{ fontSize: 12 }}
-                          stroke="#6b7280"
-                        />
-                        <YAxis
-                          tick={{ fontSize: 12 }}
-                          stroke="#6b7280"
-                        />
-                        <Tooltip
-                          formatter={(value: any) => [value, 'Goals Completed']}
-                          labelFormatter={(label) => `${label}`}
-                          contentStyle={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="completed"
-                          stroke="#22c55e"
-                          strokeWidth={4}
-                          dot={{ fill: '#22c55e', strokeWidth: 2, r: 8 }}
-                          activeDot={{ r: 10, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
-                          name="Goals Completed"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })()}
+                    ]}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis
+                      dataKey="week"
+                      tick={{ fontSize: 12 }}
+                      stroke="#6b7280"
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12 }}
+                      stroke="#6b7280"
+                    />
+                    <Tooltip
+                      formatter={(value: any) => [value, 'Goals Completed']}
+                      labelFormatter={(label) => `${label}`}
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="completed"
+                      stroke="#22c55e"
+                      strokeWidth={4}
+                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 8 }}
+                      activeDot={{ r: 10, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
+                      name="Goals Completed"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
