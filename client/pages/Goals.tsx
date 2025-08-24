@@ -251,6 +251,8 @@ export default function Goals() {
       }
 
       console.log("Fetching goals from /api/goals...");
+      console.log("Current window.location:", window.location.href);
+      console.log("Authorization token present:", !!token);
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
