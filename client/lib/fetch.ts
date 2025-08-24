@@ -4,21 +4,21 @@ const originalFetch = window.fetch;
 // Robust fetch function that falls back to XMLHttpRequest if fetch is compromised
 export const robustFetch = async (
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> => {
   // First try the original native fetch
   try {
-    if (originalFetch && typeof originalFetch === 'function') {
+    if (originalFetch && typeof originalFetch === "function") {
       return await originalFetch(url, options);
     }
   } catch (error) {
-    console.warn('Native fetch failed, falling back to XMLHttpRequest:', error);
+    console.warn("Native fetch failed, falling back to XMLHttpRequest:", error);
   }
 
   // Fallback to XMLHttpRequest if fetch is compromised
   return new Promise<Response>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    const method = options.method || 'GET';
+    const method = options.method || "GET";
 
     xhr.open(method, url, true);
 
@@ -42,7 +42,7 @@ export const robustFetch = async (
           try {
             return JSON.parse(xhr.responseText);
           } catch (e) {
-            throw new Error('Invalid JSON response');
+            throw new Error("Invalid JSON response");
           }
         },
         text: async () => xhr.responseText,
@@ -52,11 +52,13 @@ export const robustFetch = async (
     };
 
     xhr.onerror = () => {
-      reject(new Error(`XMLHttpRequest failed: ${xhr.status} ${xhr.statusText}`));
+      reject(
+        new Error(`XMLHttpRequest failed: ${xhr.status} ${xhr.statusText}`),
+      );
     };
 
     xhr.ontimeout = () => {
-      reject(new Error('XMLHttpRequest timeout'));
+      reject(new Error("XMLHttpRequest timeout"));
     };
 
     // Set timeout
