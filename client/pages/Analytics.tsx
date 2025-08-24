@@ -262,7 +262,7 @@ export default function Analytics() {
           </Card>
         </motion.div>
 
-        {/* 3. Weekly Progress Line Chart - Shows Trends */}
+        {/* 3. Weekly Progress Cards - Easier to Understand */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -273,43 +273,98 @@ export default function Analytics() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
-                Weekly Progress Trend
+                Weekly Progress
               </CardTitle>
               <CardDescription>
-                Track your goal completion over recent weeks
+                Your goal completion for recent weeks
               </CardDescription>
             </CardHeader>
             <CardContent>
               {analytics.weeklyTrends.length > 0 ? (
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={analytics.weeklyTrends}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="week" />
-                      <YAxis />
-                      <Tooltip 
-                        formatter={(value: any, name: string) => [value, name === 'completed' ? 'Goals Completed' : 'Total Goals']}
-                        labelFormatter={(label) => `Week: ${label}`}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="completed" 
-                        stroke="#22c55e" 
-                        strokeWidth={3}
-                        dot={{ fill: '#22c55e', strokeWidth: 2, r: 6 }}
-                        name="Completed"
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="total" 
-                        stroke="#94a3b8" 
-                        strokeWidth={2}
-                        strokeDasharray="5 5"
-                        dot={{ fill: '#94a3b8', r: 4 }}
-                        name="Total"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {analytics.weeklyTrends.map((week, index) => {
+                    const completionRate = week.total > 0 ? (week.completed / week.total) * 100 : 0;
+                    const isCurrentWeek = index === analytics.weeklyTrends.length - 1;
+
+                    return (
+                      <motion.div
+                        key={week.week}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 * index }}
+                        className={`p-4 rounded-lg border-2 transition-all duration-300 ${
+                          isCurrentWeek
+                            ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-300 dark:border-green-700'
+                            : 'bg-gradient-to-br from-muted/20 to-muted/10 border-border hover:border-green-200 dark:hover:border-green-800'
+                        }`}
+                      >
+                        <div className="text-center space-y-3">
+                          {/* Week Label */}
+                          <div className="text-sm font-medium text-muted-foreground">
+                            {week.week}
+                            {isCurrentWeek && (
+                              <span className="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded-full">
+                                Current
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Completion Circle */}
+                          <div className="relative w-16 h-16 mx-auto">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                stroke="hsl(var(--muted))"
+                                strokeWidth="8"
+                                fill="transparent"
+                                className="opacity-20"
+                              />
+                              <motion.circle
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                stroke={isCurrentWeek ? "#22c55e" : "#3b82f6"}
+                                strokeWidth="8"
+                                fill="transparent"
+                                strokeLinecap="round"
+                                initial={{ strokeDasharray: "0 251" }}
+                                animate={{ strokeDasharray: `${(completionRate / 100) * 251} 251` }}
+                                transition={{ duration: 1.5, delay: 0.2 * index }}
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-sm font-bold" style={{ color: isCurrentWeek ? "#22c55e" : "#3b82f6" }}>
+                                {completionRate.toFixed(0)}%
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Stats */}
+                          <div className="space-y-1">
+                            <div className="text-2xl font-bold text-foreground">
+                              {week.completed}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              of {week.total} goals completed
+                            </div>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${completionRate}%` }}
+                              transition={{ duration: 1.5, delay: 0.3 * index }}
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: isCurrentWeek ? "#22c55e" : "#3b82f6" }}
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="h-80 flex items-center justify-center text-muted-foreground">
