@@ -26,8 +26,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
 } from "recharts";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
