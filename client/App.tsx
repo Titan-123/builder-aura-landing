@@ -81,12 +81,39 @@ function PlaceholderPage({ title }: { title: string }) {
   );
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <HotToaster
+const App = () => {
+  // Suppress Vite overlay errors that cause frame issues
+  useEffect(() => {
+    const handleError = (e: ErrorEvent) => {
+      if (e.message?.includes('frame') || e.message?.includes('ErrorOverlay')) {
+        console.warn('Suppressed error overlay issue:', e.message);
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleRejection = (e: PromiseRejectionEvent) => {
+      if (e.reason?.message?.includes('frame') || e.reason?.message?.includes('ErrorOverlay')) {
+        console.warn('Suppressed unhandled rejection:', e.reason);
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleRejection);
+    };
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <HotToaster
         position="top-center"
         toastOptions={{
           duration: 4000,
@@ -251,9 +278,10 @@ const App = () => (
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 createRoot(document.getElementById("root")!).render(<App />);
