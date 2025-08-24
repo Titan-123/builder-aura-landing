@@ -137,7 +137,11 @@ export const handleGetAnalytics: RequestHandler<
         const isFuture = normalizeDate(currentDate).getTime() > todayNormalized.getTime();
         console.log(`📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isFuture = ${isFuture}`);
 
-        if (dayCompletion === true) {
+        if (isFuture) {
+          // Future dates (both completed and incomplete) don't count toward current streak
+          console.log(`📊 Analytics - Future date (${currentDate.toDateString()}), skipping for streak calculation`);
+          continue;
+        } else if (dayCompletion === true) {
           currentStreak++;
           console.log(`📊 Analytics - Day completed! Current streak: ${currentStreak}`);
 
@@ -154,10 +158,6 @@ export const handleGetAnalytics: RequestHandler<
               break;
             }
           }
-        } else if (isFuture) {
-          // Future incomplete dates don't break the streak, just skip them
-          console.log(`📊 Analytics - Future date incomplete, skipping (doesn't break streak)`);
-          continue;
         } else {
           // Past or today incomplete date breaks the streak
           console.log(`📊 Analytics - Past/today date not completed, streak ends`);
