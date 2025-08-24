@@ -313,16 +313,16 @@ export const triggerMotivationalCelebration = ({
           <div className="w-px bg-white/20" />
           <motion.button
             whileHover={{
-              scale: 1.05,
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              scale: 1.1,
+              backgroundColor: "rgba(255, 255, 255, 0.25)",
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => toast.dismiss(t.id)}
-            className="p-4 flex items-center justify-center text-white/90 hover:text-white transition-all duration-300 rounded-r-2xl group"
+            className="p-3 flex items-center justify-center text-white hover:text-white transition-all duration-200 rounded-r-2xl group bg-white/10 hover:bg-white/20"
             title="Close notification"
             style={{
-              background: "rgba(255, 255, 255, 0.05)",
               backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
             }}
           >
             <motion.svg
