@@ -811,43 +811,40 @@ export default function Goals() {
               </div>
             </div>
 
-            {/* Action Buttons - Always visible for better UX */}
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
-                  className={`transition-all hover:scale-110 ${
-                    goal.completed
-                      ? "text-green-600 hover:text-green-700 hover:bg-green-50"
-                      : "text-gray-500 hover:text-green-600 hover:bg-green-50"
-                  }`}
-                  title={
-                    goal.completed ? "Mark as incomplete" : "Mark as complete"
-                  }
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setEditingGoal(goal)}
-                  className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all hover:scale-110"
-                  title="Edit goal"
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
-              </div>
-              {/* Close/Delete button - more prominent */}
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-1 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleGoalCompletion(goal.id, !goal.completed)}
+                className={`transition-all hover:scale-110 ${
+                  goal.completed
+                    ? "text-green-600 hover:text-green-700 hover:bg-green-50"
+                    : "text-gray-500 hover:text-green-600 hover:bg-green-50"
+                }`}
+                title={
+                  goal.completed ? "Mark as incomplete" : "Mark as complete"
+                }
+              >
+                <CheckCircle2 className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditingGoal(goal)}
+                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all hover:scale-110"
+                title="Edit goal"
+              >
+                <Edit className="w-5 h-5" />
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => deleteGoal(goal.id)}
-                className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all hover:scale-110 opacity-70 hover:opacity-100"
-                title="Remove goal"
+                className="text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all hover:scale-110"
+                title="Delete goal"
               >
-                <X className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </Button>
             </div>
 
