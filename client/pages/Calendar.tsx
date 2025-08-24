@@ -105,9 +105,10 @@ export default function Calendar() {
           localStorage.removeItem("accessToken");
         }
 
-        // Set empty state for failed requests
-        setGoals([]);
-        setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
+        // Set fallback sample data for failed requests
+        console.log("Setting fallback sample data for Calendar");
+        setGoals(getSampleGoals());
+        setStreaks({ dailyStreak: 2, weeklyStreak: 1, monthlyStreak: 1 });
       }
     } catch (error: any) {
       console.error("Failed to fetch goals:", error);
