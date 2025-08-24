@@ -289,22 +289,6 @@ export const triggerMotivationalCelebration = ({
               >
                 {celebration.message}
               </motion.p>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                className="inline-flex items-center gap-2 text-xs bg-white/15 backdrop-blur-sm rounded-full px-2 py-1 border border-white/20"
-                style={{
-                  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-                }}
-              >
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-white/80"
-                />
-                <span className="font-medium truncate max-w-[120px]">"{goalTitle}"</span>
-              </motion.div>
             </div>
           </div>
         </div>
@@ -374,7 +358,7 @@ export const triggerMotivationalCelebration = ({
       </motion.div>
     ),
     {
-      duration: 3000,
+      duration: 2000,
       position: "top-center",
     },
   );
@@ -461,7 +445,7 @@ export const triggerMotivationalCelebration = ({
           </motion.div>
         ),
         {
-          duration: 2000,
+          duration: 1500,
           position: "top-center",
         },
       );
