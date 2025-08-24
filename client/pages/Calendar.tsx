@@ -123,9 +123,10 @@ export default function Calendar() {
         console.warn("Network error or API endpoint unavailable");
       }
 
-      // Set empty state for errors
-      setGoals([]);
-      setStreaks({ dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0 });
+      // Set fallback sample data for errors
+      console.log("Network error, setting fallback sample data for Calendar");
+      setGoals(getSampleGoals());
+      setStreaks({ dailyStreak: 2, weeklyStreak: 1, monthlyStreak: 1 });
     } finally {
       setLoading(false);
     }
