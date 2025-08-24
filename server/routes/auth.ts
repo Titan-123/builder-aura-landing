@@ -82,9 +82,22 @@ export const handleRegister: RequestHandler<
       const mockUserId = "mock-user-" + Date.now();
       const { accessToken, refreshToken } = generateTokens(mockUserId);
 
+      // Use provided name or generate from email
+      let displayName = name?.trim();
+      if (!displayName) {
+        const emailName = email.split('@')[0];
+        displayName = emailName
+          .replace(/[0-9]/g, '') // Remove numbers
+          .replace(/[._-]/g, ' ') // Replace common separators with spaces
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+          .trim() || 'User';
+      }
+
       const mockUser = {
         id: mockUserId,
-        name: name.trim(),
+        name: displayName,
         email: email.toLowerCase().trim(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -196,11 +209,22 @@ export const handleLogin: RequestHandler<
         const mockUserId = "mock-user-timeout";
         const { accessToken, refreshToken } = generateTokens(mockUserId);
 
+        // Generate proper name from email
+        const email = req.body.email || "demo@example.com";
+        const emailName = email.split('@')[0];
+        const displayName = emailName
+          .replace(/[0-9]/g, '') // Remove numbers
+          .replace(/[._-]/g, ' ') // Replace common separators with spaces
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+          .trim() || 'User';
+
         res.json({
           user: {
             id: mockUserId,
-            name: "Demo User",
-            email: req.body.email || "demo@example.com",
+            name: displayName,
+            email: email,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           },
@@ -231,9 +255,19 @@ export const handleLogin: RequestHandler<
       const mockUserId = "mock-user-" + Date.now();
       const { accessToken, refreshToken } = generateTokens(mockUserId);
 
+      // Generate proper name from email
+      const emailName = email.split('@')[0]; // Get part before @
+      const displayName = emailName
+        .replace(/[0-9]/g, '') // Remove numbers
+        .replace(/[._-]/g, ' ') // Replace common separators with spaces
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+        .join(' ')
+        .trim() || 'User'; // Fallback to 'User' if empty
+
       const mockUser = {
         id: mockUserId,
-        name: "Demo User",
+        name: displayName,
         email: email.toLowerCase().trim(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -298,10 +332,21 @@ export const handleLogin: RequestHandler<
       const mockUserId = "mock-user-fallback";
       const { accessToken, refreshToken } = generateTokens(mockUserId);
 
+      // Generate proper name from email
+      const userEmail = email?.toLowerCase().trim() || "demo@example.com";
+      const emailName = userEmail.split('@')[0];
+      const displayName = emailName
+        .replace(/[0-9]/g, '') // Remove numbers
+        .replace(/[._-]/g, ' ') // Replace common separators with spaces
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .trim() || 'User';
+
       const mockUser = {
         id: mockUserId,
-        name: "Demo User",
-        email: email?.toLowerCase().trim() || "demo@example.com",
+        name: displayName,
+        email: userEmail,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
