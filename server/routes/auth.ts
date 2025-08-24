@@ -93,6 +93,7 @@ export const handleRegister: RequestHandler<
         accessToken,
         refreshToken,
       });
+      clearTimeout(timeoutId);
       return;
     }
 
@@ -236,6 +237,7 @@ export const handleLogin: RequestHandler<
         accessToken,
         refreshToken,
       });
+      clearTimeout(timeoutId);
       return;
     }
 
@@ -274,6 +276,7 @@ export const handleLogin: RequestHandler<
       accessToken,
       refreshToken,
     });
+    clearTimeout(timeoutId);
   } catch (error: any) {
     console.error("Login error:", error);
 
