@@ -26,8 +26,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
 } from "recharts";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MotivationalQuote from "@/components/MotivationalQuote";
@@ -290,61 +290,47 @@ export default function Analytics() {
                 const weeklyData = analytics.weeklyTrends.length > 0
                   ? analytics.weeklyTrends
                   : [
-                      { week: "Aug 3", completed: 2, total: 3 },
-                      { week: "Aug 10", completed: 1, total: 2 },
-                      { week: "Aug 17", completed: 3, total: 4 },
-                      { week: "Aug 24", completed: 2, total: 3 },
+                      { week: "Week 1", completed: 3 },
+                      { week: "Week 2", completed: 1 },
+                      { week: "Week 3", completed: 4 },
+                      { week: "Week 4", completed: 2 },
+                      { week: "Week 5", completed: 5 },
                     ];
 
                 return (
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={weeklyData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                      >
-                      <defs>
-                        <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0.1}/>
-                        </linearGradient>
-                        <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                      <XAxis
-                        dataKey="week"
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <Tooltip
-                        formatter={(value: any, name: string) => [value, name === 'completed' ? 'Goals Completed' : 'Total Goals']}
-                        labelFormatter={(label) => `Week: ${label}`}
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="completed"
-                        stroke="#22c55e"
-                        fill="url(#completedGradient)"
-                        strokeWidth={4}
-                        name="Goals Completed"
-                        dot={{ fill: '#22c55e', strokeWidth: 2, r: 6 }}
-                        activeDot={{ r: 8, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
-                      />
-                      </AreaChart>
+                      <LineChart data={weeklyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis
+                          dataKey="week"
+                          tick={{ fontSize: 12 }}
+                          stroke="#6b7280"
+                        />
+                        <YAxis
+                          tick={{ fontSize: 12 }}
+                          stroke="#6b7280"
+                        />
+                        <Tooltip
+                          formatter={(value: any) => [value, 'Goals Completed']}
+                          labelFormatter={(label) => `${label}`}
+                          contentStyle={{
+                            backgroundColor: '#ffffff',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="completed"
+                          stroke="#22c55e"
+                          strokeWidth={4}
+                          dot={{ fill: '#22c55e', strokeWidth: 2, r: 8 }}
+                          activeDot={{ r: 10, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
+                          name="Goals Completed"
+                        />
+                      </LineChart>
                     </ResponsiveContainer>
                   </div>
                 );
