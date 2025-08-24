@@ -164,11 +164,11 @@ export const triggerMotivationalCelebration = ({
         }}
         className={`
           ${t.visible ? "animate-enter" : "animate-leave"}
-          max-w-md w-full relative overflow-hidden
+          max-w-xs w-full relative overflow-hidden
           pointer-events-auto flex text-white
           transform transition-all duration-500
-          backdrop-blur-xl rounded-2xl
-          shadow-2xl shadow-green-500/25
+          backdrop-blur-xl rounded-xl
+          shadow-xl shadow-green-500/20
           border border-white/20
         `}
         style={{
@@ -218,8 +218,8 @@ export const triggerMotivationalCelebration = ({
           />
         </div>
 
-        <div className="flex-1 w-0 p-6 relative z-10">
-          <div className="flex items-start gap-4">
+        <div className="flex-1 w-0 p-4 relative z-10">
+          <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
               <motion.div
                 animate={{
