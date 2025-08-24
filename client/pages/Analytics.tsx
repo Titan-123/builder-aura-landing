@@ -333,9 +333,9 @@ export default function Analytics() {
                     data={[
                       { week: "Aug 22", completed: 0 },
                       { week: "Aug 23", completed: 1 },
-                      { week: "Aug 24", completed: analytics.goalsCompleted },
-                      { week: "Aug 25", completed: analytics.goalsCompleted },
-                      { week: "Aug 26", completed: analytics.goalsCompleted },
+                      { week: "Aug 24", completed: 2 },
+                      { week: "Aug 25", completed: 2 },
+                      { week: "Aug 26", completed: 2 },
                     ]}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
