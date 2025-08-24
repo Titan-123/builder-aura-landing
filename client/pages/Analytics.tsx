@@ -277,6 +277,11 @@ export default function Analytics() {
               </CardTitle>
               <CardDescription>
                 Your goal completion trend over time
+                {analytics.weeklyTrends.length === 0 && (
+                  <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">
+                    Sample Data
+                  </span>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>
