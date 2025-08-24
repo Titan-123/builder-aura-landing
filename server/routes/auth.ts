@@ -29,11 +29,13 @@ export const handleRegister: RequestHandler<
   AuthResponse | ErrorResponse,
   RegisterRequest
 > = async (req, res) => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
   try {
     console.log("📝 Registration attempt started");
 
     // Add timeout protection
-    const timeoutId = setTimeout(() => {
+    timeoutId = setTimeout(() => {
       console.warn("⏰ Registration request taking too long, providing fallback");
       if (!res.headersSent) {
         const mockUserId = "mock-user-register-timeout";
@@ -54,7 +56,7 @@ export const handleRegister: RequestHandler<
     }, 5000); // 5 second timeout
 
     const dbConnection = await connectDB();
-    clearTimeout(timeoutId);
+    if (timeoutId) clearTimeout(timeoutId);
 
     const { name, email, password } = req.body;
 
@@ -180,11 +182,13 @@ export const handleLogin: RequestHandler<
   AuthResponse | ErrorResponse,
   LoginRequest
 > = async (req, res) => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
   try {
     console.log("🔐 Login attempt started");
 
     // Add timeout protection
-    const timeoutId = setTimeout(() => {
+    timeoutId = setTimeout(() => {
       console.warn("⏰ Login request taking too long, providing fallback");
       if (!res.headersSent) {
         const mockUserId = "mock-user-timeout";
@@ -205,7 +209,7 @@ export const handleLogin: RequestHandler<
     }, 5000); // 5 second timeout
 
     const dbConnection = await connectDB();
-    clearTimeout(timeoutId);
+    if (timeoutId) clearTimeout(timeoutId);
 
     const { email, password } = req.body;
 
@@ -233,12 +237,14 @@ export const handleLogin: RequestHandler<
         updatedAt: new Date().toISOString(),
       };
 
-      res.json({
-        user: mockUser,
-        accessToken,
-        refreshToken,
-      });
-      clearTimeout(timeoutId);
+      if (!res.headersSent) {
+        res.json({
+          user: mockUser,
+          accessToken,
+          refreshToken,
+        });
+      }
+      if (timeoutId) clearTimeout(timeoutId);
       return;
     }
 
