@@ -134,6 +134,7 @@ export const handleRegister: RequestHandler<
     });
   } catch (error: any) {
     console.error("Register error:", error);
+    clearTimeout(timeoutId); // Clear timeout on error
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -279,6 +280,7 @@ export const handleLogin: RequestHandler<
     clearTimeout(timeoutId);
   } catch (error: any) {
     console.error("Login error:", error);
+    clearTimeout(timeoutId); // Clear timeout on error
 
     // Provide mock login as fallback when database operations fail
     console.log("Database error occurred, providing mock login");
