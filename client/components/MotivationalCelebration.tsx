@@ -236,7 +236,7 @@ export const triggerMotivationalCelebration = ({
                   repeat: 2,
                   ease: "easeInOut",
                 }}
-                className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
+                className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
                 style={{
                   background: `
                     linear-gradient(145deg,
@@ -251,7 +251,7 @@ export const triggerMotivationalCelebration = ({
                   `,
                 }}
               >
-                <celebration.icon className="w-7 h-7" />
+                <celebration.icon className="w-5 h-5" />
                 <motion.div
                   animate={{
                     scale: [0, 1.5, 0],
@@ -262,7 +262,7 @@ export const triggerMotivationalCelebration = ({
                     repeat: Infinity,
                     ease: "easeOut",
                   }}
-                  className="absolute inset-0 rounded-2xl bg-white/30"
+                  className="absolute inset-0 rounded-xl bg-white/30"
                 />
               </motion.div>
             </div>
