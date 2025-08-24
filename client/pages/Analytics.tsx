@@ -320,21 +320,13 @@ export default function Analytics() {
                       />
                       <Area
                         type="monotone"
-                        dataKey="total"
-                        stackId="1"
-                        stroke="#3b82f6"
-                        fill="url(#totalGradient)"
-                        strokeWidth={2}
-                        name="Total Goals"
-                      />
-                      <Area
-                        type="monotone"
                         dataKey="completed"
-                        stackId="2"
                         stroke="#22c55e"
                         fill="url(#completedGradient)"
-                        strokeWidth={3}
-                        name="Completed Goals"
+                        strokeWidth={4}
+                        name="Goals Completed"
+                        dot={{ fill: '#22c55e', strokeWidth: 2, r: 6 }}
+                        activeDot={{ r: 8, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
