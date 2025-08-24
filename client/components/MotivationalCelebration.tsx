@@ -271,7 +271,7 @@ export const triggerMotivationalCelebration = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-base font-bold leading-tight mb-2"
+                className="text-sm font-bold leading-tight mb-1"
                 style={{
                   textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 }}
@@ -282,7 +282,7 @@ export const triggerMotivationalCelebration = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-sm opacity-95 leading-relaxed mb-3"
+                className="text-xs opacity-90 leading-relaxed mb-2"
                 style={{
                   textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
                 }}
@@ -293,7 +293,7 @@ export const triggerMotivationalCelebration = ({
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
-                className="inline-flex items-center gap-2 text-xs bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/20"
+                className="inline-flex items-center gap-2 text-xs bg-white/15 backdrop-blur-sm rounded-full px-2 py-1 border border-white/20"
                 style={{
                   boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.2)",
                 }}
@@ -303,7 +303,7 @@ export const triggerMotivationalCelebration = ({
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-2 h-2 rounded-full bg-white/80"
                 />
-                <span className="font-medium truncate">"{goalTitle}"</span>
+                <span className="font-medium truncate max-w-[120px]">"{goalTitle}"</span>
               </motion.div>
             </div>
           </div>
