@@ -136,6 +136,8 @@ export default function Dashboard() {
 
       console.log("Making direct API call to /api/goals");
       console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
+      console.log("Current origin:", window.location.origin);
+      console.log("Request URL will be:", `${window.location.origin}/api/goals`);
 
       const response = await fetch("/api/goals", {
         method: "GET",
@@ -251,6 +253,8 @@ export default function Dashboard() {
 
       console.log("Making direct API call to /api/analytics");
       console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
+      console.log("Current origin:", window.location.origin);
+      console.log("Request URL will be:", `${window.location.origin}/api/analytics`);
 
       const response = await fetch("/api/analytics", {
         method: "GET",
