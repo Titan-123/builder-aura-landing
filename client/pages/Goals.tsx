@@ -240,6 +240,7 @@ export default function Goals() {
 
   const fetchGoals = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("accessToken");
 
       if (!token) {
@@ -249,10 +250,16 @@ export default function Goals() {
         return;
       }
 
+      console.log("Fetching goals from /api/goals...");
+
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => {
+        console.warn("Request timeout after 10 seconds");
+        controller.abort();
+      }, 10000);
 
       const response = await fetch("/api/goals", {
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -261,25 +268,46 @@ export default function Goals() {
       });
 
       clearTimeout(timeoutId);
+      console.log("API Response status:", response.status, response.statusText);
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Goals fetched successfully:", data.goals?.length || 0, "goals");
         setGoals(data.goals || []);
       } else {
+        const errorText = await response.text().catch(() => 'Unknown error');
         console.error(
-          "Failed to fetch goals:",
-          response.status,
-          response.statusText,
+          "Failed to fetch goals - Status:", response.status,
+          "StatusText:", response.statusText,
+          "Response:", errorText
         );
+
         if (response.status === 401) {
+          console.log("Unauthorized - removing token");
           localStorage.removeItem("accessToken");
+          toast.error("Please log in again");
+        } else if (response.status >= 500) {
+          toast.error("Server error - please try again later");
+        } else {
+          toast.error(`Failed to load goals (${response.status})`);
         }
         setGoals([]);
       }
     } catch (error: any) {
-      console.error("Failed to fetch goals:", error);
-      if (error.name !== "AbortError") {
-        toast.error("Failed to load goals");
+      console.error("Network error fetching goals:", {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+
+      if (error.name === "AbortError") {
+        console.warn("Request was aborted (timeout or cancelled)");
+        toast.error("Request timeout - please check your connection");
+      } else if (error.message.includes('Failed to fetch')) {
+        console.error("Network connectivity issue");
+        toast.error("Network error - please check your connection");
+      } else {
+        toast.error("Failed to load goals - please try again");
       }
       setGoals([]);
     } finally {
