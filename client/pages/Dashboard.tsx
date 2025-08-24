@@ -132,8 +132,20 @@ export default function Dashboard() {
       }
 
       console.log("Fetching goals from /api/goals...");
+      console.log("Current location:", window.location.href);
+
+      // Test basic connectivity first
+      try {
+        console.log("Testing API connectivity...");
+        const pingResponse = await fetch("/api/ping");
+        console.log("Ping response status:", pingResponse.status);
+      } catch (pingError) {
+        console.error("API ping failed:", pingError);
+        throw new Error("Server unreachable");
+      }
 
       const response = await fetch("/api/goals", {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -171,8 +183,22 @@ export default function Dashboard() {
         ]);
       }
     } catch (error: any) {
-      console.error("Network error:", error?.message || error);
-      toast.error("Connection issue - using sample data");
+      console.error("Dashboard fetchGoals error:");
+      console.error("Error name:", error?.name);
+      console.error("Error message:", error?.message);
+      console.error("Error type:", typeof error);
+      console.error("Full error:", error);
+
+      if (error?.message?.includes('Failed to fetch')) {
+        console.error("Network fetch failed - server may be unreachable");
+        toast.error("Server unreachable - using sample data");
+      } else if (error?.message?.includes('Server unreachable')) {
+        console.error("API connectivity test failed");
+        toast.error("API not responding - using sample data");
+      } else {
+        console.error("Unknown network error occurred");
+        toast.error("Connection issue - using sample data");
+      }
 
       // Always provide sample data as fallback
       setGoals([
@@ -227,8 +253,20 @@ export default function Dashboard() {
       }
 
       console.log("Fetching analytics from /api/analytics...");
+      console.log("Current location:", window.location.href);
+
+      // Test basic connectivity first if not already tested
+      try {
+        console.log("Testing analytics API connectivity...");
+        const pingResponse = await fetch("/api/ping");
+        console.log("Analytics ping response status:", pingResponse.status);
+      } catch (pingError) {
+        console.error("Analytics API ping failed:", pingError);
+        throw new Error("Server unreachable for analytics");
+      }
 
       const response = await fetch("/api/analytics", {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -279,8 +317,22 @@ export default function Dashboard() {
         });
       }
     } catch (error: any) {
-      console.error("Analytics network error:", error?.message || error);
-      toast.error("Connection issue - using sample data");
+      console.error("Dashboard fetchAnalytics error:");
+      console.error("Error name:", error?.name);
+      console.error("Error message:", error?.message);
+      console.error("Error type:", typeof error);
+      console.error("Full error:", error);
+
+      if (error?.message?.includes('Failed to fetch')) {
+        console.error("Analytics fetch failed - server may be unreachable");
+        toast.error("Analytics server unreachable - using sample data");
+      } else if (error?.message?.includes('Server unreachable')) {
+        console.error("Analytics API connectivity test failed");
+        toast.error("Analytics API not responding - using sample data");
+      } else {
+        console.error("Unknown analytics error occurred");
+        toast.error("Analytics connection issue - using sample data");
+      }
 
       // Always provide sample analytics as fallback
       const sampleAnalytics = {
