@@ -262,7 +262,7 @@ export default function Analytics() {
           </Card>
         </motion.div>
 
-        {/* 3. Weekly Progress - Simple Bar Chart */}
+        {/* 3. Weekly Progress - Smooth Curve Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -276,28 +276,67 @@ export default function Analytics() {
                 Weekly Progress
               </CardTitle>
               <CardDescription>
-                Goal completion by week
+                Your goal completion trend over time
               </CardDescription>
             </CardHeader>
             <CardContent>
               {analytics.weeklyTrends.length > 0 ? (
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
+                    <AreaChart
                       data={analytics.weeklyTrends}
-                      layout="horizontal"
                       margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis dataKey="week" type="category" width={60} />
+                      <defs>
+                        <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0.1}/>
+                        </linearGradient>
+                        <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                      <XAxis
+                        dataKey="week"
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
                       <Tooltip
                         formatter={(value: any, name: string) => [value, name === 'completed' ? 'Goals Completed' : 'Total Goals']}
                         labelFormatter={(label) => `Week: ${label}`}
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
                       />
-                      <Bar dataKey="completed" fill="#22c55e" name="Completed" radius={[0, 4, 4, 0]} />
-                      <Bar dataKey="total" fill="#e5e7eb" name="Total" radius={[0, 4, 4, 0]} />
-                    </BarChart>
+                      <Area
+                        type="monotone"
+                        dataKey="total"
+                        stackId="1"
+                        stroke="#3b82f6"
+                        fill="url(#totalGradient)"
+                        strokeWidth={2}
+                        name="Total Goals"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="completed"
+                        stackId="2"
+                        stroke="#22c55e"
+                        fill="url(#completedGradient)"
+                        strokeWidth={3}
+                        name="Completed Goals"
+                      />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </div>
               ) : (
