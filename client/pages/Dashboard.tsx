@@ -58,6 +58,7 @@ import {
 import MotivationalBackground from "@/components/MotivationalBackground";
 import CategorySelect from "@/components/CategorySelect";
 import { Goal, CreateGoalRequest, AnalyticsResponse } from "@shared/api";
+import { robustFetch } from "@/lib/fetch";
 import { getLocalDateString } from "@/lib/date";
 
 export default function Dashboard() {
