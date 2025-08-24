@@ -134,15 +134,8 @@ export default function Dashboard() {
       console.log("Fetching goals from /api/goals...");
       console.log("Current location:", window.location.href);
 
-      // Test basic connectivity first
-      try {
-        console.log("Testing API connectivity...");
-        const pingResponse = await fetch("/api/ping");
-        console.log("Ping response status:", pingResponse.status);
-      } catch (pingError) {
-        console.error("API ping failed:", pingError);
-        throw new Error("Server unreachable");
-      }
+      console.log("Making direct API call to /api/goals");
+      console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
 
       const response = await fetch("/api/goals", {
         method: "GET",
@@ -255,15 +248,8 @@ export default function Dashboard() {
       console.log("Fetching analytics from /api/analytics...");
       console.log("Current location:", window.location.href);
 
-      // Test basic connectivity first if not already tested
-      try {
-        console.log("Testing analytics API connectivity...");
-        const pingResponse = await fetch("/api/ping");
-        console.log("Analytics ping response status:", pingResponse.status);
-      } catch (pingError) {
-        console.error("Analytics API ping failed:", pingError);
-        throw new Error("Server unreachable for analytics");
-      }
+      console.log("Making direct API call to /api/analytics");
+      console.log("Using token:", token ? "[TOKEN PRESENT]" : "[NO TOKEN]");
 
       const response = await fetch("/api/analytics", {
         method: "GET",
