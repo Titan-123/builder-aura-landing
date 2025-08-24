@@ -186,7 +186,63 @@ export const handleGetGoals: RequestHandler<
   GoalsResponse | ErrorResponse
 > = async (req: any, res) => {
   try {
-    await connectDB();
+    const dbConnection = await connectDB();
+
+    // If no database connection, use mock data
+    if (!dbConnection) {
+      console.log("Using mock data for goals");
+      const mockGoals = [
+        {
+          id: "mock-1",
+          userId: req.userId || "demo-user",
+          title: "Morning Exercise",
+          description: "30 minutes of cardio or strength training",
+          category: "Health",
+          type: "daily" as const,
+          priority: "high" as const,
+          timeAllotted: 30,
+          deadline: new Date().toISOString(),
+          completed: false,
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: "mock-2",
+          userId: req.userId || "demo-user",
+          title: "Read 10 Pages",
+          description: "Daily reading habit for personal growth",
+          category: "Personal Development",
+          type: "daily" as const,
+          priority: "medium" as const,
+          timeAllotted: 20,
+          deadline: new Date().toISOString(),
+          completed: true,
+          completedAt: new Date().toISOString(),
+          createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: "mock-3",
+          userId: req.userId || "demo-user",
+          title: "Project Planning",
+          description: "Plan next week's project milestones",
+          category: "Work",
+          type: "weekly" as const,
+          priority: "high" as const,
+          timeAllotted: 60,
+          deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          completed: false,
+          createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ];
+
+      res.json({
+        goals: mockGoals,
+        total: mockGoals.length,
+      });
+      return;
+    }
 
     // One-time migration: Add default priority to goals that don't have it
     await Goal.updateMany(
