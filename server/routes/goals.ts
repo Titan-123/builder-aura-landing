@@ -204,7 +204,7 @@ export const handleGetGoals: RequestHandler<
           deadline: new Date().toISOString(),
           completed: false,
           createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
         {
           id: "mock-2",
@@ -219,7 +219,7 @@ export const handleGetGoals: RequestHandler<
           completed: true,
           completedAt: new Date().toISOString(),
           createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
         {
           id: "mock-3",
@@ -233,8 +233,8 @@ export const handleGetGoals: RequestHandler<
           deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
           completed: false,
           createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       ];
 
       res.json({
@@ -293,7 +293,7 @@ export const handleGetGoals: RequestHandler<
         deadline: new Date().toISOString(),
         completed: false,
         createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         id: "mock-2",
@@ -308,7 +308,7 @@ export const handleGetGoals: RequestHandler<
         completed: true,
         completedAt: new Date().toISOString(),
         createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         id: "mock-3",
@@ -322,8 +322,8 @@ export const handleGetGoals: RequestHandler<
         deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         completed: false,
         createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
     console.log("Database unavailable, serving mock goals");
@@ -583,7 +583,7 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     });
 
     // Filter and show only daily goals
-    const dailyGoals = goals.filter(goal => goal.type === "daily");
+    const dailyGoals = goals.filter((goal) => goal.type === "daily");
     console.log("🔍 Daily Goals Only:", dailyGoals.length);
     dailyGoals.forEach((goal, index) => {
       const goalDate = new Date(goal.deadline);
@@ -657,7 +657,8 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
 
     // If the most recent date is today and it's incomplete, start from yesterday
     const mostRecentDate = datesWithDailyGoals[0];
-    const isMostRecentToday = normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
+    const isMostRecentToday =
+      normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
 
     console.log(
       `📅 Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`,
@@ -705,7 +706,9 @@ export const handleGetStreaks: RequestHandler<{}, any | ErrorResponse> = async (
     const dailyStreak = currentStreak;
 
     console.log(`🎯 Final daily streak: ${dailyStreak}`);
-    console.log(`📊 Streak calculation summary: startIndex=${startIndex}, totalDates=${datesWithDailyGoals.length}`);
+    console.log(
+      `📊 Streak calculation summary: startIndex=${startIndex}, totalDates=${datesWithDailyGoals.length}`,
+    );
 
     // Weekly and monthly streaks (simplified for now)
     let weeklyStreak = 0;

@@ -57,7 +57,7 @@ export default function Analytics() {
       const response = await fetch("/api/analytics", {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -122,20 +122,31 @@ export default function Analytics() {
         <div className="text-center space-y-4">
           <BarChart3 className="w-16 h-16 text-muted-foreground mx-auto" />
           <div>
-            <h3 className="text-xl font-semibold text-muted-foreground">No Data Yet</h3>
-            <p className="text-muted-foreground">Create some goals to see your analytics!</p>
+            <h3 className="text-xl font-semibold text-muted-foreground">
+              No Data Yet
+            </h3>
+            <p className="text-muted-foreground">
+              Create some goals to see your analytics!
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  const COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
+  const COLORS = [
+    "#22c55e",
+    "#3b82f6",
+    "#f59e0b",
+    "#ef4444",
+    "#8b5cf6",
+    "#06b6d4",
+  ];
 
   return (
     <div className="space-y-8 relative">
       <MotivationalBackground variant="floating" intensity="low" />
-      
+
       <div className="absolute top-0 right-0 lg:hidden">
         <DarkModeToggle />
       </div>
@@ -171,7 +182,7 @@ export default function Analytics() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="text-3xl font-bold text-orange-500 mb-2">
@@ -182,7 +193,7 @@ export default function Analytics() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="text-3xl font-bold text-green-500 mb-2">
@@ -193,7 +204,7 @@ export default function Analytics() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="text-3xl font-bold text-blue-500 mb-2">
@@ -209,7 +220,6 @@ export default function Analytics() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* 1. Category Bar Chart - Simple and Clear */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -232,8 +242,8 @@ export default function Analytics() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics.categoryBreakdown}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="category" 
+                      <XAxis
+                        dataKey="category"
                         tick={{ fontSize: 12 }}
                         interval={0}
                         angle={-45}
@@ -241,11 +251,15 @@ export default function Analytics() {
                         height={60}
                       />
                       <YAxis />
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value: any, name: string) => [value, name]}
                         labelFormatter={(label) => `Category: ${label}`}
                       />
-                      <Bar dataKey="completed" fill="#22c55e" name="Completed" />
+                      <Bar
+                        dataKey="completed"
+                        fill="#22c55e"
+                        name="Completed"
+                      />
                       <Bar dataKey="total" fill="#e5e7eb" name="Total" />
                     </BarChart>
                   </ResponsiveContainer>
@@ -284,8 +298,17 @@ export default function Analytics() {
                   <PieChart>
                     <Pie
                       data={[
-                        { name: 'Completed', value: analytics.goalsCompleted, fill: '#22c55e' },
-                        { name: 'Remaining', value: analytics.totalGoals - analytics.goalsCompleted, fill: '#e5e7eb' }
+                        {
+                          name: "Completed",
+                          value: analytics.goalsCompleted,
+                          fill: "#22c55e",
+                        },
+                        {
+                          name: "Remaining",
+                          value:
+                            analytics.totalGoals - analytics.goalsCompleted,
+                          fill: "#e5e7eb",
+                        },
                       ]}
                       cx="50%"
                       cy="50%"
@@ -345,18 +368,15 @@ export default function Analytics() {
                       tick={{ fontSize: 12 }}
                       stroke="#6b7280"
                     />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      stroke="#6b7280"
-                    />
+                    <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" />
                     <Tooltip
-                      formatter={(value: any) => [value, 'Goals Completed']}
+                      formatter={(value: any) => [value, "Goals Completed"]}
                       labelFormatter={(label) => `${label}`}
                       contentStyle={{
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                       }}
                     />
                     <Line
@@ -364,8 +384,13 @@ export default function Analytics() {
                       dataKey="completed"
                       stroke="#22c55e"
                       strokeWidth={4}
-                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 8 }}
-                      activeDot={{ r: 10, stroke: '#22c55e', strokeWidth: 3, fill: '#ffffff' }}
+                      dot={{ fill: "#22c55e", strokeWidth: 2, r: 8 }}
+                      activeDot={{
+                        r: 10,
+                        stroke: "#22c55e",
+                        strokeWidth: 3,
+                        fill: "#ffffff",
+                      }}
                       name="Goals Completed"
                     />
                   </LineChart>
@@ -400,7 +425,8 @@ export default function Analytics() {
                         Excellent Performance!
                       </h4>
                       <p className="text-sm text-green-700 dark:text-green-300">
-                        You're completing {analytics.completionRate.toFixed(0)}% of your goals. Keep it up!
+                        You're completing {analytics.completionRate.toFixed(0)}%
+                        of your goals. Keep it up!
                       </p>
                     </div>
                   </div>
@@ -416,7 +442,8 @@ export default function Analytics() {
                         Great Consistency!
                       </h4>
                       <p className="text-sm text-orange-700 dark:text-orange-300">
-                        {analytics.currentStreak} days in a row! Your consistency is paying off.
+                        {analytics.currentStreak} days in a row! Your
+                        consistency is paying off.
                       </p>
                     </div>
                   </div>
@@ -432,7 +459,8 @@ export default function Analytics() {
                         Balanced Approach
                       </h4>
                       <p className="text-sm text-blue-700 dark:text-blue-300">
-                        Working on {analytics.categoryBreakdown.length} categories shows great balance!
+                        Working on {analytics.categoryBreakdown.length}{" "}
+                        categories shows great balance!
                       </p>
                     </div>
                   </div>
@@ -448,7 +476,8 @@ export default function Analytics() {
                         Room for Improvement
                       </h4>
                       <p className="text-sm text-purple-700 dark:text-purple-300">
-                        Try focusing on fewer goals to build momentum and confidence.
+                        Try focusing on fewer goals to build momentum and
+                        confidence.
                       </p>
                     </div>
                   </div>

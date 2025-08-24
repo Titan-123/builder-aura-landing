@@ -18,7 +18,7 @@ export const handleGetAnalytics: RequestHandler<
     if (!user) {
       return res.status(404).json({
         error: "USER_NOT_FOUND",
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -35,9 +35,13 @@ export const handleGetAnalytics: RequestHandler<
         id: goal._id,
         title: goal.title,
         type: goal.type,
-        deadline: goal.deadline ? new Date(goal.deadline).toDateString() : "No deadline",
+        deadline: goal.deadline
+          ? new Date(goal.deadline).toDateString()
+          : "No deadline",
         completed: goal.completed,
-        completedAt: goal.completedAt ? new Date(goal.completedAt).toDateString() : "Not completed"
+        completedAt: goal.completedAt
+          ? new Date(goal.completedAt).toDateString()
+          : "Not completed",
       });
     });
 
@@ -107,11 +111,16 @@ export const handleGetAnalytics: RequestHandler<
         .sort((a, b) => b.getTime() - a.getTime()); // Sort newest first
 
       if (datesWithDailyGoals.length === 0) {
-        console.log("📊 Analytics - No daily goals found for streak calculation");
+        console.log(
+          "📊 Analytics - No daily goals found for streak calculation",
+        );
         return 0;
       }
 
-      console.log("📊 Analytics - Dates with daily goals:", datesWithDailyGoals.map(d => d.toDateString()));
+      console.log(
+        "📊 Analytics - Dates with daily goals:",
+        datesWithDailyGoals.map((d) => d.toDateString()),
+      );
 
       // Find consecutive completed days working backwards from most recent completed day
       let currentStreak = 0;
@@ -119,13 +128,20 @@ export const handleGetAnalytics: RequestHandler<
 
       // If the most recent date is today and it's incomplete, start from yesterday
       const mostRecentDate = datesWithDailyGoals[0];
-      const isMostRecentToday = normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
+      const isMostRecentToday =
+        normalizeDate(mostRecentDate).getTime() === todayNormalized.getTime();
 
-      console.log(`📊 Analytics - Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`);
-      console.log(`📊 Analytics - Today normalized: ${todayNormalized.toDateString()}`);
+      console.log(
+        `📊 Analytics - Most recent date: ${mostRecentDate.toDateString()}, isToday: ${isMostRecentToday}`,
+      );
+      console.log(
+        `📊 Analytics - Today normalized: ${todayNormalized.toDateString()}`,
+      );
 
       if (isMostRecentToday && isDayFullyCompleted(mostRecentDate) !== true) {
-        console.log("📊 Analytics - Today exists but is incomplete, starting from yesterday");
+        console.log(
+          "📊 Analytics - Today exists but is incomplete, starting from yesterday",
+        );
         startIndex = 1;
       }
 
@@ -134,16 +150,23 @@ export const handleGetAnalytics: RequestHandler<
         const currentDate = datesWithDailyGoals[i];
         const dayCompletion = isDayFullyCompleted(currentDate);
 
-        const isFuture = normalizeDate(currentDate).getTime() > todayNormalized.getTime();
-        console.log(`📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isFuture = ${isFuture}`);
+        const isFuture =
+          normalizeDate(currentDate).getTime() > todayNormalized.getTime();
+        console.log(
+          `📊 Analytics - Checking ${currentDate.toDateString()}: dayCompletion = ${dayCompletion}, isFuture = ${isFuture}`,
+        );
 
         if (isFuture) {
           // Future dates (both completed and incomplete) don't count toward current streak
-          console.log(`📊 Analytics - Future date (${currentDate.toDateString()}), skipping for streak calculation`);
+          console.log(
+            `📊 Analytics - Future date (${currentDate.toDateString()}), skipping for streak calculation`,
+          );
           continue;
         } else if (dayCompletion === true) {
           currentStreak++;
-          console.log(`📊 Analytics - Day completed! Current streak: ${currentStreak}`);
+          console.log(
+            `📊 Analytics - Day completed! Current streak: ${currentStreak}`,
+          );
 
           // Check if this date is consecutive with the previous one (if any)
           if (i > 0) {
@@ -154,13 +177,17 @@ export const handleGetAnalytics: RequestHandler<
             );
 
             if (daysDiff > 1) {
-              console.log(`📊 Analytics - Gap of ${daysDiff} days found, streak ends`);
+              console.log(
+                `📊 Analytics - Gap of ${daysDiff} days found, streak ends`,
+              );
               break;
             }
           }
         } else {
           // Past or today incomplete date breaks the streak
-          console.log(`📊 Analytics - Past/today date not completed, streak ends`);
+          console.log(
+            `📊 Analytics - Past/today date not completed, streak ends`,
+          );
           break;
         }
       }
@@ -198,7 +225,9 @@ export const handleGetAnalytics: RequestHandler<
 
     // Calculate number of weeks since registration
     const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-    const weeksSinceRegistration = Math.floor((now.getTime() - userRegistrationDate.getTime()) / msPerWeek);
+    const weeksSinceRegistration = Math.floor(
+      (now.getTime() - userRegistrationDate.getTime()) / msPerWeek,
+    );
 
     // Show last 8 weeks max, or all weeks since registration if less than 8
     const weeksToShow = Math.min(weeksSinceRegistration + 1, 8);
@@ -236,7 +265,7 @@ export const handleGetAnalytics: RequestHandler<
       // Create week label based on actual date
       const weekLabel = weekStart.toLocaleDateString("en-US", {
         month: "short",
-        day: "numeric"
+        day: "numeric",
       });
 
       weeklyTrends.push({
@@ -250,8 +279,9 @@ export const handleGetAnalytics: RequestHandler<
     const monthlyTrends = [];
 
     // Calculate number of months since registration
-    const monthsSinceRegistration = (now.getFullYear() - userRegistrationDate.getFullYear()) * 12 +
-                                   (now.getMonth() - userRegistrationDate.getMonth());
+    const monthsSinceRegistration =
+      (now.getFullYear() - userRegistrationDate.getFullYear()) * 12 +
+      (now.getMonth() - userRegistrationDate.getMonth());
 
     // Show last 6 months max, or all months since registration if less than 6
     const monthsToShow = Math.min(monthsSinceRegistration + 1, 6);

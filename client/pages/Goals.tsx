@@ -259,7 +259,7 @@ export default function Goals() {
             deadline: new Date().toISOString(),
             completed: false,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           },
           {
             id: "sample-2",
@@ -274,7 +274,7 @@ export default function Goals() {
             completed: true,
             completedAt: new Date().toISOString(),
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           },
           {
             id: "sample-3",
@@ -288,8 +288,8 @@ export default function Goals() {
             deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
             completed: false,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
+            updatedAt: new Date().toISOString(),
+          },
         ]);
         setLoading(false);
         return;
@@ -299,7 +299,7 @@ export default function Goals() {
 
       // Simplified fetch without AbortController to avoid issues
       const response = await fetch("/api/goals", {
-        method: 'GET',
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -311,13 +311,21 @@ export default function Goals() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Goals fetched successfully:", data.goals?.length || 0, "goals");
+        console.log(
+          "Goals fetched successfully:",
+          data.goals?.length || 0,
+          "goals",
+        );
         setGoals(data.goals || []);
         if (data.goals?.length === 0) {
           toast.success("No goals found - create your first goal!");
         }
       } else {
-        console.error("API error - Status:", response.status, response.statusText);
+        console.error(
+          "API error - Status:",
+          response.status,
+          response.statusText,
+        );
 
         if (response.status === 401) {
           localStorage.removeItem("accessToken");
@@ -340,8 +348,8 @@ export default function Goals() {
             deadline: new Date().toISOString(),
             completed: false,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
+            updatedAt: new Date().toISOString(),
+          },
         ]);
       }
     } catch (error: any) {
@@ -362,7 +370,7 @@ export default function Goals() {
           deadline: new Date().toISOString(),
           completed: false,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
         {
           id: "sample-2",
@@ -377,8 +385,8 @@ export default function Goals() {
           completed: true,
           completedAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       ]);
     } finally {
       setLoading(false);
