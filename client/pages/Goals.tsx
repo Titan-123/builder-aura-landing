@@ -294,11 +294,11 @@ export default function Goals() {
         setGoals([]);
       }
     } catch (error: any) {
-      console.error("Network error fetching goals:", {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
+      console.error("Network error fetching goals:");
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+      console.error("Full error object:", error);
 
       if (error.name === "AbortError") {
         console.warn("Request was aborted (timeout or cancelled)");
