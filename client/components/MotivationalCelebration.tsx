@@ -318,7 +318,7 @@ export const triggerMotivationalCelebration = ({
             }}
             whileTap={{ scale: 0.9 }}
             onClick={() => toast.dismiss(t.id)}
-            className="p-3 flex items-center justify-center text-white hover:text-white transition-all duration-200 rounded-r-2xl group bg-white/10 hover:bg-white/20"
+            className="p-2 flex items-center justify-center text-white hover:text-white transition-all duration-200 rounded-r-xl group bg-white/10 hover:bg-white/20"
             title="Close notification"
             style={{
               backdropFilter: "blur(10px)",
@@ -326,7 +326,7 @@ export const triggerMotivationalCelebration = ({
             }}
           >
             <motion.svg
-              className="w-6 h-6"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -336,7 +336,7 @@ export const triggerMotivationalCelebration = ({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 d="M6 18L18 6M6 6l12 12"
               />
             </motion.svg>
