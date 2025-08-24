@@ -164,11 +164,11 @@ export const triggerMotivationalCelebration = ({
         }}
         className={`
           ${t.visible ? "animate-enter" : "animate-leave"}
-          max-w-md w-full relative overflow-hidden
+          max-w-xs w-full relative overflow-hidden
           pointer-events-auto flex text-white
           transform transition-all duration-500
-          backdrop-blur-xl rounded-2xl
-          shadow-2xl shadow-green-500/25
+          backdrop-blur-xl rounded-xl
+          shadow-xl shadow-green-500/20
           border border-white/20
         `}
         style={{
@@ -218,8 +218,8 @@ export const triggerMotivationalCelebration = ({
           />
         </div>
 
-        <div className="flex-1 w-0 p-6 relative z-10">
-          <div className="flex items-start gap-4">
+        <div className="flex-1 w-0 p-4 relative z-10">
+          <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
               <motion.div
                 animate={{
@@ -236,7 +236,7 @@ export const triggerMotivationalCelebration = ({
                   repeat: 2,
                   ease: "easeInOut",
                 }}
-                className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
+                className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
                 style={{
                   background: `
                     linear-gradient(145deg,
@@ -251,7 +251,7 @@ export const triggerMotivationalCelebration = ({
                   `,
                 }}
               >
-                <celebration.icon className="w-7 h-7" />
+                <celebration.icon className="w-5 h-5" />
                 <motion.div
                   animate={{
                     scale: [0, 1.5, 0],
@@ -262,7 +262,7 @@ export const triggerMotivationalCelebration = ({
                     repeat: Infinity,
                     ease: "easeOut",
                   }}
-                  className="absolute inset-0 rounded-2xl bg-white/30"
+                  className="absolute inset-0 rounded-xl bg-white/30"
                 />
               </motion.div>
             </div>
@@ -271,7 +271,7 @@ export const triggerMotivationalCelebration = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-base font-bold leading-tight mb-2"
+                className="text-sm font-bold leading-tight mb-1"
                 style={{
                   textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 }}
@@ -282,29 +282,13 @@ export const triggerMotivationalCelebration = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-sm opacity-95 leading-relaxed mb-3"
+                className="text-xs opacity-90 leading-relaxed mb-2"
                 style={{
                   textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 {celebration.message}
               </motion.p>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                className="inline-flex items-center gap-2 text-xs bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/20"
-                style={{
-                  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-                }}
-              >
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-white/80"
-                />
-                <span className="font-medium truncate">"{goalTitle}"</span>
-              </motion.div>
             </div>
           </div>
         </div>
@@ -313,20 +297,20 @@ export const triggerMotivationalCelebration = ({
           <div className="w-px bg-white/20" />
           <motion.button
             whileHover={{
-              scale: 1.05,
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              scale: 1.1,
+              backgroundColor: "rgba(255, 255, 255, 0.25)",
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => toast.dismiss(t.id)}
-            className="p-4 flex items-center justify-center text-white/90 hover:text-white transition-all duration-300 rounded-r-2xl group"
+            className="p-2 flex items-center justify-center text-white hover:text-white transition-all duration-200 rounded-r-xl group bg-white/10 hover:bg-white/20"
             title="Close notification"
             style={{
-              background: "rgba(255, 255, 255, 0.05)",
               backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
             }}
           >
             <motion.svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -336,7 +320,7 @@ export const triggerMotivationalCelebration = ({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 d="M6 18L18 6M6 6l12 12"
               />
             </motion.svg>
@@ -374,7 +358,7 @@ export const triggerMotivationalCelebration = ({
       </motion.div>
     ),
     {
-      duration: 7000,
+      duration: 2000,
       position: "top-center",
     },
   );
@@ -393,9 +377,9 @@ export const triggerMotivationalCelebration = ({
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
             className={`
               ${t.visible ? "animate-enter" : "animate-leave"}
-              max-w-sm w-full relative overflow-hidden
-              pointer-events-auto flex items-center gap-3 p-4
-              backdrop-blur-xl rounded-xl text-white
+              max-w-xs w-full relative overflow-hidden
+              pointer-events-auto flex items-center gap-2 p-3
+              backdrop-blur-xl rounded-lg text-white
               border border-white/20
             `}
             style={{
@@ -423,18 +407,18 @@ export const triggerMotivationalCelebration = ({
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="text-2xl"
+              className="text-xl"
             >
               🔥
             </motion.div>
             <div className="flex-1 min-w-0">
               <p
-                className="text-sm font-bold"
+                className="text-xs font-bold"
                 style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
               >
                 {streakMessage}
               </p>
-              <p className="text-xs opacity-90 mt-1">
+              <p className="text-xs opacity-90 mt-0.5">
                 {streak} days strong! 💪
               </p>
             </div>
@@ -461,7 +445,7 @@ export const triggerMotivationalCelebration = ({
           </motion.div>
         ),
         {
-          duration: 4000,
+          duration: 1500,
           position: "top-center",
         },
       );
