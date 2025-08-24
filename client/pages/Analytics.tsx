@@ -331,11 +331,11 @@ export default function Analytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={[
-                      { week: "Aug 10", completed: Math.max(analytics.goalsCompleted - 2, 1) },
-                      { week: "Aug 17", completed: Math.max(analytics.goalsCompleted - 1, 1) },
-                      { week: "Aug 24", completed: analytics.goalsCompleted },
-                      { week: "Aug 31", completed: Math.min(analytics.goalsCompleted + 1, analytics.totalGoals) },
-                      { week: "Sep 7", completed: Math.min(analytics.goalsCompleted + 2, analytics.totalGoals + 1) },
+                      { week: "Aug 21", completed: 0 },
+                      { week: "Aug 22", completed: 0 },
+                      { week: "Aug 23", completed: 1 },
+                      { week: "Aug 24", completed: 2 },
+                      { week: "Aug 25", completed: 3 },
                     ]}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
