@@ -136,7 +136,7 @@ export const handleRegister: RequestHandler<
     });
   } catch (error: any) {
     console.error("Register error:", error);
-    clearTimeout(timeoutId); // Clear timeout on error
+    if (timeoutId) clearTimeout(timeoutId); // Clear timeout on error
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -154,26 +154,28 @@ export const handleRegister: RequestHandler<
       });
     }
 
-    // Provide mock registration as fallback when database operations fail
-    console.log("Database error occurred, providing mock registration");
-    const { name, email } = req.body;
+    // Provide mock registration as fallback when database operations fail if not already sent
+    if (!res.headersSent) {
+      console.log("Database error occurred, providing mock registration");
+      const { name, email } = req.body;
 
-    const mockUserId = "mock-user-register-" + Date.now();
-    const { accessToken, refreshToken } = generateTokens(mockUserId);
+      const mockUserId = "mock-user-register-" + Date.now();
+      const { accessToken, refreshToken } = generateTokens(mockUserId);
 
-    const mockUser = {
-      id: mockUserId,
-      name: name?.trim() || "Demo User",
-      email: email?.toLowerCase().trim() || "demo@example.com",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+      const mockUser = {
+        id: mockUserId,
+        name: name?.trim() || "Demo User",
+        email: email?.toLowerCase().trim() || "demo@example.com",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    res.status(201).json({
-      user: mockUser,
-      accessToken,
-      refreshToken,
-    });
+      res.status(201).json({
+        user: mockUser,
+        accessToken,
+        refreshToken,
+      });
+    }
   }
 };
 
@@ -288,26 +290,28 @@ export const handleLogin: RequestHandler<
     console.error("Login error:", error);
     clearTimeout(timeoutId); // Clear timeout on error
 
-    // Provide mock login as fallback when database operations fail
-    console.log("Database error occurred, providing mock login");
-    const { email } = req.body;
+    // Provide mock login as fallback when database operations fail if not already sent
+    if (!res.headersSent) {
+      console.log("Database error occurred, providing mock login");
+      const { email } = req.body;
 
-    const mockUserId = "mock-user-fallback";
-    const { accessToken, refreshToken } = generateTokens(mockUserId);
+      const mockUserId = "mock-user-fallback";
+      const { accessToken, refreshToken } = generateTokens(mockUserId);
 
-    const mockUser = {
-      id: mockUserId,
-      name: "Demo User",
-      email: email?.toLowerCase().trim() || "demo@example.com",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+      const mockUser = {
+        id: mockUserId,
+        name: "Demo User",
+        email: email?.toLowerCase().trim() || "demo@example.com",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    res.json({
-      user: mockUser,
-      accessToken,
-      refreshToken,
-    });
+      res.json({
+        user: mockUser,
+        accessToken,
+        refreshToken,
+      });
+    }
   }
 };
 
