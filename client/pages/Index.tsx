@@ -32,7 +32,7 @@ export default function Index() {
       title: "Smart Goal Setting",
       description:
         "Transform your dreams into achievable milestones with our intelligent goal tracking system.",
-      color: "from-blue-500 to-blue-600",
+      color: "from-green-500 to-green-600",
       motivational: "Turn dreams into reality!",
     },
     {
@@ -40,7 +40,7 @@ export default function Index() {
       title: "Visual Progress",
       description:
         "Watch your success unfold day by day with beautiful calendar views and streak tracking.",
-      color: "from-purple-500 to-purple-600",
+      color: "from-emerald-500 to-emerald-600",
       motivational: "See your growth!",
     },
     {
@@ -48,7 +48,7 @@ export default function Index() {
       title: "Powerful Analytics",
       description:
         "Discover insights that fuel your motivation and guide your journey to greatness.",
-      color: "from-green-500 to-green-600",
+      color: "from-teal-500 to-teal-600",
       motivational: "Data-driven success!",
     },
     {
@@ -56,7 +56,7 @@ export default function Index() {
       title: "Achievement Tracking",
       description:
         "Celebrate every victory and build unstoppable momentum with our completion system.",
-      color: "from-orange-500 to-orange-600",
+      color: "from-green-500 to-emerald-500",
       motivational: "Celebrate every win!",
     },
     {
@@ -64,7 +64,7 @@ export default function Index() {
       title: "Motivational Engine",
       description:
         "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
-      color: "from-yellow-500 to-yellow-600",
+      color: "from-emerald-500 to-teal-500",
       motivational: "Stay inspired daily!",
     },
     {
@@ -72,7 +72,7 @@ export default function Index() {
       title: "Achievement System",
       description:
         "Unlock badges and rewards as you conquer your goals and reach new heights.",
-      color: "from-pink-500 to-pink-600",
+      color: "from-teal-500 to-green-500",
       motivational: "Become a champion!",
     },
   ];
@@ -107,7 +107,7 @@ export default function Index() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-slate-900 dark:to-teal-950 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950 dark:via-slate-900 dark:to-yellow-950 relative overflow-hidden">
       {/* Enhanced Motivational Background */}
       <MotivationalBackground variant="floating" intensity="medium" />
 
@@ -127,7 +127,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full"
+          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"
           animate={{
             y: [0, 30, 0],
             x: [0, 20, 0],
@@ -142,7 +142,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-green-400 to-teal-400 rounded-full"
+          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-teal-400 to-green-400 rounded-full"
           animate={{
             scale: [1, 1.8, 1],
             opacity: [0.3, 0.9, 0.3],
