@@ -56,7 +56,7 @@ export default function Index() {
       title: "Achievement Tracking",
       description:
         "Celebrate every victory and build unstoppable momentum with our completion system.",
-      color: "from-orange-500 to-orange-600",
+      color: "from-emerald-500 to-emerald-600",
       motivational: "Celebrate every win!",
     },
     {
@@ -64,7 +64,7 @@ export default function Index() {
       title: "Motivational Engine",
       description:
         "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
-      color: "from-yellow-500 to-yellow-600",
+      color: "from-teal-500 to-teal-600",
       motivational: "Stay inspired daily!",
     },
     {
