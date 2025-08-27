@@ -32,7 +32,7 @@ export default function Index() {
       title: "Smart Goal Setting",
       description:
         "Transform your dreams into achievable milestones with our intelligent goal tracking system.",
-      color: "from-amber-500 to-amber-600",
+      color: "from-green-500 to-green-600",
       motivational: "Turn dreams into reality!",
     },
     {
@@ -40,7 +40,7 @@ export default function Index() {
       title: "Visual Progress",
       description:
         "Watch your success unfold day by day with beautiful calendar views and streak tracking.",
-      color: "from-orange-500 to-orange-600",
+      color: "from-emerald-500 to-emerald-600",
       motivational: "See your growth!",
     },
     {
@@ -48,7 +48,7 @@ export default function Index() {
       title: "Powerful Analytics",
       description:
         "Discover insights that fuel your motivation and guide your journey to greatness.",
-      color: "from-yellow-500 to-yellow-600",
+      color: "from-teal-500 to-teal-600",
       motivational: "Data-driven success!",
     },
     {
@@ -56,7 +56,7 @@ export default function Index() {
       title: "Achievement Tracking",
       description:
         "Celebrate every victory and build unstoppable momentum with our completion system.",
-      color: "from-amber-500 to-orange-500",
+      color: "from-green-500 to-emerald-500",
       motivational: "Celebrate every win!",
     },
     {
@@ -64,7 +64,7 @@ export default function Index() {
       title: "Motivational Engine",
       description:
         "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
-      color: "from-orange-500 to-yellow-500",
+      color: "from-emerald-500 to-teal-500",
       motivational: "Stay inspired daily!",
     },
     {
@@ -72,7 +72,7 @@ export default function Index() {
       title: "Achievement System",
       description:
         "Unlock badges and rewards as you conquer your goals and reach new heights.",
-      color: "from-yellow-500 to-amber-500",
+      color: "from-teal-500 to-green-500",
       motivational: "Become a champion!",
     },
   ];
@@ -114,7 +114,7 @@ export default function Index() {
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-20 w-8 h-8 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"
+          className="absolute top-20 left-20 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"
           animate={{
             y: [0, -40, 0],
             opacity: [0.3, 0.8, 0.3],
@@ -127,7 +127,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full"
+          className="absolute top-40 right-32 w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"
           animate={{
             y: [0, 30, 0],
             x: [0, 20, 0],
@@ -142,7 +142,7 @@ export default function Index() {
           }}
         />
         <motion.div
-          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full"
+          className="absolute bottom-32 left-40 w-6 h-6 bg-gradient-to-r from-teal-400 to-green-400 rounded-full"
           animate={{
             scale: [1, 1.8, 1],
             opacity: [0.3, 0.9, 0.3],
@@ -171,7 +171,7 @@ export default function Index() {
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-yellow-500 text-white shadow-2xl"
+              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white shadow-2xl"
             >
               <motion.div
                 animate={{
@@ -207,11 +207,11 @@ export default function Index() {
                 className="inline-block"
               >
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
-                  <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent bg-300% animate-gradient">
+                  <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent bg-300% animate-gradient">
                     Transform Your Dreams
                   </span>
                   <br />
-                  <span className="bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
                     Into Reality
                   </span>
                 </h1>
@@ -225,7 +225,7 @@ export default function Index() {
               >
                 Unleash your potential with our revolutionary goal tracking
                 system.
-                <span className="font-semibold text-amber-600 dark:text-amber-400">
+                <span className="font-semibold text-green-600 dark:text-green-400">
                   {
                     motivationalMessages[
                       Math.floor(Math.random() * motivationalMessages.length)
@@ -249,7 +249,7 @@ export default function Index() {
                 <Button
                   asChild
                   size="lg"
-                  className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 shadow-xl hover:shadow-2xl transform transition-all"
+                  className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-xl hover:shadow-2xl transform transition-all"
                 >
                   <Link to="/register" className="gap-2">
                     <Sparkles className="w-5 h-5" />
@@ -266,7 +266,7 @@ export default function Index() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="text-lg px-8 py-4 h-auto border-2 border-amber-300 hover:bg-amber-50 dark:border-amber-700 dark:hover:bg-amber-950"
+                  className="text-lg px-8 py-4 h-auto border-2 border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-950"
                 >
                   <Link to="/login">Continue Journey</Link>
                 </Button>
@@ -285,7 +285,7 @@ export default function Index() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-4 mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Your Success Toolkit
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
@@ -323,7 +323,7 @@ export default function Index() {
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="text-sm font-semibold text-amber-600 dark:text-amber-400"
+                      className="text-sm font-semibold text-green-600 dark:text-green-400"
                     >
                       {feature.motivational}
                     </motion.div>
@@ -346,7 +346,7 @@ export default function Index() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 text-white py-20 relative overflow-hidden"
+        className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white py-20 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/20" />
         <MotivationalBackground variant="success" />
@@ -413,7 +413,7 @@ export default function Index() {
         >
           <div className="space-y-4">
             <motion.h2
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
@@ -438,7 +438,7 @@ export default function Index() {
             <Button
               asChild
               size="lg"
-              className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 shadow-2xl hover:shadow-3xl transform transition-all"
+              className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transform transition-all"
             >
               <Link to="/register" className="gap-3">
                 <Flame className="w-6 h-6" />
