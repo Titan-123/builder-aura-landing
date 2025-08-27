@@ -84,7 +84,7 @@ export default function Register() {
         localStorage.setItem("user", JSON.stringify(data.user));
 
         triggerCelebration();
-        toast.success(`Welcome to GoalTracker, ${data.user.name}! 🎉`, {
+        toast.success(`Welcome to TrackRise, ${data.user.name}! 🎉`, {
           duration: 4000,
           position: "top-center",
         });
@@ -178,7 +178,7 @@ export default function Register() {
             </motion.div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                GoalTracker
+                TrackRise
               </h1>
               <motion.p
                 initial={{ opacity: 0 }}
