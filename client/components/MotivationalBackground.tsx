@@ -33,12 +33,12 @@ export default function MotivationalBackground({
     return (
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-yellow-500/10"
+          className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10"
           animate={{
             background: [
-              'linear-gradient(45deg, rgba(245, 158, 11, 0.1), rgba(249, 115, 22, 0.1), rgba(234, 179, 8, 0.1))',
-              'linear-gradient(45deg, rgba(249, 115, 22, 0.1), rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.1))',
-              'linear-gradient(45deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.1), rgba(249, 115, 22, 0.1))',
+              'linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1), rgba(20, 184, 166, 0.1))',
+              'linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(20, 184, 166, 0.1), rgba(34, 197, 94, 0.1))',
+              'linear-gradient(45deg, rgba(20, 184, 166, 0.1), rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1))',
             ]
           }}
           transition={{
@@ -57,7 +57,7 @@ export default function MotivationalBackground({
         {Array.from({ length: getParticleCount() }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"
+            className="absolute w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -91,7 +91,7 @@ export default function MotivationalBackground({
           return (
             <motion.div
               key={i}
-              className="absolute text-yellow-400"
+              className="absolute text-emerald-400"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -121,7 +121,7 @@ export default function MotivationalBackground({
 
   // Default floating variant
   const floatingElements = [
-    { icon: Star, color: 'text-yellow-400', size: 'w-4 h-4' },
+    { icon: Star, color: 'text-emerald-400', size: 'w-4 h-4' },
     { icon: Sparkles, color: 'text-emerald-400', size: 'w-5 h-5' },
     { icon: Heart, color: 'text-teal-400', size: 'w-4 h-4' },
     { icon: Zap, color: 'text-green-400', size: 'w-4 h-4' },
@@ -171,7 +171,7 @@ export const CelebrationBackground = () => (
     <motion.div
       className="absolute inset-0"
       style={{
-        background: 'radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.3) 0%, rgba(255, 105, 180, 0.2) 50%, rgba(138, 43, 226, 0.1) 100%)'
+        background: 'radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(20, 184, 166, 0.1) 100%)'
       }}
       animate={{
         scale: [1, 1.1, 1],
@@ -188,7 +188,7 @@ export const CelebrationBackground = () => (
     {Array.from({ length: 8 }).map((_, i) => (
       <motion.div
         key={i}
-        className="absolute top-1/2 left-1/2 w-1 bg-gradient-to-t from-transparent via-yellow-400/30 to-transparent"
+        className="absolute top-1/2 left-1/2 w-1 bg-gradient-to-t from-transparent via-emerald-400/30 to-transparent"
         style={{
           height: '200px',
           transformOrigin: 'bottom center',
