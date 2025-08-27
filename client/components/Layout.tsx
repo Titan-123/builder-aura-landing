@@ -82,7 +82,7 @@ export default function Layout({ children }: LayoutProps) {
                   <Target className="w-5 h-5" />
                 </motion.div>
                 <span className="text-xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                  GoalTracker
+                  TrackRise
                 </span>
               </motion.div>
 
