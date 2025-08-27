@@ -57,7 +57,7 @@ export default function Layout({ children }: LayoutProps) {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950 dark:via-slate-900 dark:to-yellow-950 relative">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-slate-900 dark:to-teal-950 relative">
       {/* Motivational Background */}
       <MotivationalBackground variant="gradient" intensity="low" />
       {/* Top Navbar */}
