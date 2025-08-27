@@ -826,7 +826,7 @@ export default function Dashboard() {
           <Card className="border-2 border-border/50 bg-card/95 backdrop-blur-sm shadow-md">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-emerald-500" />
+                <Calendar className="w-5 h-5 text-orange-500" />
                 Upcoming Deadlines
               </CardTitle>
               <CardDescription>Goals due in the next 7 days</CardDescription>
