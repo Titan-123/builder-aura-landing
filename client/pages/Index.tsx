@@ -249,7 +249,7 @@ export default function Index() {
                 <Button
                   asChild
                   size="lg"
-                  className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-xl hover:shadow-2xl transform transition-all"
+                  className="text-lg px-8 py-4 h-auto bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 shadow-xl hover:shadow-2xl transform transition-all"
                 >
                   <Link to="/register" className="gap-2">
                     <Sparkles className="w-5 h-5" />
@@ -266,7 +266,7 @@ export default function Index() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="text-lg px-8 py-4 h-auto border-2 border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-950"
+                  className="text-lg px-8 py-4 h-auto border-2 border-amber-300 hover:bg-amber-50 dark:border-amber-700 dark:hover:bg-amber-950"
                 >
                   <Link to="/login">Continue Journey</Link>
                 </Button>
@@ -285,7 +285,7 @@ export default function Index() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-4 mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
             Your Success Toolkit
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
@@ -323,7 +323,7 @@ export default function Index() {
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="text-sm font-semibold text-green-600 dark:text-green-400"
+                      className="text-sm font-semibold text-amber-600 dark:text-amber-400"
                     >
                       {feature.motivational}
                     </motion.div>
@@ -346,7 +346,7 @@ export default function Index() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white py-20 relative overflow-hidden"
+        className="bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 text-white py-20 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/20" />
         <MotivationalBackground variant="success" />
@@ -413,7 +413,7 @@ export default function Index() {
         >
           <div className="space-y-4">
             <motion.h2
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
@@ -438,7 +438,7 @@ export default function Index() {
             <Button
               asChild
               size="lg"
-              className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transform transition-all"
+              className="text-xl px-12 py-6 h-auto bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 shadow-2xl hover:shadow-3xl transform transition-all"
             >
               <Link to="/register" className="gap-3">
                 <Flame className="w-6 h-6" />
