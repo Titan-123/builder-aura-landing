@@ -29,72 +29,72 @@ export default function Index() {
   const features = [
     {
       icon: Target,
-      title: "Smart Goal Setting",
+      title: "Daily Goal Tracking",
       description:
-        "Transform your dreams into achievable milestones with our intelligent goal tracking system.",
+        "Set and track your daily goals with precision. Mark completions and watch your consistency grow.",
       color: "from-green-500 to-green-600",
-      motivational: "Turn dreams into reality!",
+      motivational: "Every day counts!",
     },
     {
       icon: Calendar,
-      title: "Visual Progress",
+      title: "Calendar View & Streaks",
       description:
-        "Watch your success unfold day by day with beautiful calendar views and streak tracking.",
+        "Visualize your progress with our intuitive calendar interface. Build powerful streaks and never break the chain.",
       color: "from-emerald-500 to-emerald-600",
-      motivational: "See your growth!",
+      motivational: "Build unstoppable streaks!",
     },
     {
       icon: BarChart3,
-      title: "Powerful Analytics",
+      title: "Progress Analytics",
       description:
-        "Discover insights that fuel your motivation and guide your journey to greatness.",
+        "Get detailed insights into your daily habits, completion rates, and performance trends over time.",
       color: "from-teal-500 to-teal-600",
-      motivational: "Data-driven success!",
+      motivational: "Data-driven progress!",
     },
     {
       icon: CheckCircle2,
-      title: "Achievement Tracking",
+      title: "Daily Check-ins",
       description:
-        "Celebrate every victory and build unstoppable momentum with our completion system.",
+        "Simple daily check-ins to mark your goals complete. Build the habit of consistent daily action.",
       color: "from-green-500 to-emerald-500",
-      motivational: "Celebrate every win!",
+      motivational: "Consistency is key!",
     },
     {
-      icon: Zap,
-      title: "Motivational Engine",
+      icon: Flame,
+      title: "Streak Tracking",
       description:
-        "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
+        "Watch your streak counters climb as you maintain daily consistency. Never lose momentum again.",
       color: "from-emerald-500 to-teal-500",
-      motivational: "Stay inspired daily!",
+      motivational: "Keep the fire burning!",
     },
     {
       icon: Trophy,
-      title: "Achievement System",
+      title: "Achievement Milestones",
       description:
-        "Unlock badges and rewards as you conquer your goals and reach new heights.",
+        "Celebrate streak milestones and goal achievements. Unlock badges for daily consistency.",
       color: "from-teal-500 to-green-500",
-      motivational: "Become a champion!",
+      motivational: "Earn your victories!",
     },
   ];
 
   const stats = [
     {
-      value: "💪",
-      label: "Unlimited Potential",
-      icon: Star,
-      description: "No limits on your dreams",
+      value: "📅",
+      label: "Daily Tracking",
+      icon: Calendar,
+      description: "Track goals every single day",
     },
     {
-      value: "🎯",
-      label: "Goal Mastery",
-      icon: Target,
-      description: "Track everything that matters",
+      value: "🔥",
+      label: "Streak Building",
+      icon: Flame,
+      description: "Build unstoppable daily habits",
     },
     {
-      value: "🚀",
-      label: "Success Analytics",
+      value: "📊",
+      label: "Progress Analytics",
       icon: BarChart3,
-      description: "Insights that inspire growth",
+      description: "Analyze your daily performance",
     },
   ];
 
@@ -193,8 +193,9 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="space-y-6"
+              className="space-y-8"
             >
+              {/* App Name */}
               <motion.div
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -206,33 +207,49 @@ export default function Index() {
                 }}
                 className="inline-block"
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
+                <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent bg-300% animate-gradient">
-                    Transform Your Dreams
-                  </span>
-                  <br />
-                  <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    Into Reality
+                    TrackRise
                   </span>
                 </h1>
               </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
+              {/* Tagline */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
               >
-                Unleash your potential with our revolutionary goal tracking
-                system.
-                <span className="font-semibold text-green-600 dark:text-green-400">
-                  {
-                    motivationalMessages[
-                      Math.floor(Math.random() * motivationalMessages.length)
-                    ]
-                  }
-                </span>
-              </motion.p>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">
+                  A smarter way to track your day-to-day growth.
+                </h2>
+              </motion.div>
+
+              {/* What the app does */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="space-y-4"
+              >
+                <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
+                  Set daily goals • Track your progress with beautiful calendars
+                  • Build unstoppable streaks • Get insights that drive
+                  continuous improvement
+                </p>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex items-center justify-center gap-2 text-base text-green-600 dark:text-green-400 font-medium"
+                >
+                  <Calendar className="w-5 h-5" />
+                  <span>Daily tracking made simple and powerful</span>
+                  <Target className="w-5 h-5" />
+                </motion.div>
+              </motion.div>
             </motion.div>
 
             {/* CTA Buttons */}
@@ -286,11 +303,11 @@ export default function Index() {
           className="text-center space-y-4 mb-16"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            Your Success Toolkit
+            Smart Tools for Daily Growth
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Everything you need to conquer your goals and unlock your true
-            potential.
+            Intelligent features designed to help you track, measure, and
+            accelerate your day-to-day growth.
           </p>
         </motion.div>
 
@@ -359,10 +376,11 @@ export default function Index() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Join the Success Revolution
+              Join the Growth Movement
             </h2>
             <p className="text-lg opacity-90">
-              Thousands are already transforming their lives. Your turn!
+              Thousands are already tracking their day-to-day growth. Start
+              yours today!
             </p>
           </motion.div>
 
@@ -423,11 +441,11 @@ export default function Index() {
                 ease: "easeInOut",
               }}
             >
-              Your Dreams Are Waiting
+              Start Your Growth Journey
             </motion.h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Every champion started with a single step. Make today the day you
-              begin your extraordinary journey.
+              Experience a smarter way to track your day-to-day growth. Start
+              building the habits that matter most.
             </p>
           </div>
 
