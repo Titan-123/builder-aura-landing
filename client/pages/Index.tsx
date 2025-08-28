@@ -212,7 +212,7 @@ export default function Index() {
                   </span>
                   <br />
                   <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    Daily Goal Mastery
+                    A smarter way to track your day-to-day growth.
                   </span>
                 </h1>
               </motion.div>
@@ -223,7 +223,7 @@ export default function Index() {
                 transition={{ delay: 0.5 }}
                 className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
               >
-                Track daily goals, build unstoppable streaks, and analyze your progress with our powerful calendar-based tracking system.
+Transform your daily habits into measurable growth. Track goals, visualize progress, and unlock insights that drive continuous improvement.
                 <span className="font-semibold text-green-600 dark:text-green-400">
                   {
                     motivationalMessages[
