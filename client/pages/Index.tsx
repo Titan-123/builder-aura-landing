@@ -193,8 +193,9 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="space-y-6"
+              className="space-y-8"
             >
+              {/* App Name */}
               <motion.div
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -206,32 +207,47 @@ export default function Index() {
                 }}
                 className="inline-block"
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
+                <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent bg-300% animate-gradient">
                     TrackRise
-                  </span>
-                  <br />
-                  <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    A smarter way to track your day-to-day growth.
                   </span>
                 </h1>
               </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
+              {/* Tagline */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
               >
-Transform your daily habits into measurable growth. Track goals, visualize progress, and unlock insights that drive continuous improvement.
-                <span className="font-semibold text-green-600 dark:text-green-400">
-                  {
-                    motivationalMessages[
-                      Math.floor(Math.random() * motivationalMessages.length)
-                    ]
-                  }
-                </span>
-              </motion.p>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">
+                  A smarter way to track your day-to-day growth.
+                </h2>
+              </motion.div>
+
+              {/* What the app does */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="space-y-4"
+              >
+                <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
+                  Set daily goals • Track your progress with beautiful calendars • Build unstoppable streaks • Get insights that drive continuous improvement
+                </p>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex items-center justify-center gap-2 text-base text-green-600 dark:text-green-400 font-medium"
+                >
+                  <Calendar className="w-5 h-5" />
+                  <span>Daily tracking made simple and powerful</span>
+                  <Target className="w-5 h-5" />
+                </motion.div>
+              </motion.div>
             </motion.div>
 
             {/* CTA Buttons */}
