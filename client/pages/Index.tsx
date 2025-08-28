@@ -234,7 +234,9 @@ export default function Index() {
                 className="space-y-4"
               >
                 <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                  Set daily goals • Track your progress with beautiful calendars • Build unstoppable streaks • Get insights that drive continuous improvement
+                  Set daily goals • Track your progress with beautiful calendars
+                  • Build unstoppable streaks • Get insights that drive
+                  continuous improvement
                 </p>
 
                 <motion.div
@@ -304,7 +306,8 @@ export default function Index() {
             Smart Tools for Daily Growth
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Intelligent features designed to help you track, measure, and accelerate your day-to-day growth.
+            Intelligent features designed to help you track, measure, and
+            accelerate your day-to-day growth.
           </p>
         </motion.div>
 
@@ -376,7 +379,8 @@ export default function Index() {
               Join the Growth Movement
             </h2>
             <p className="text-lg opacity-90">
-              Thousands are already tracking their day-to-day growth. Start yours today!
+              Thousands are already tracking their day-to-day growth. Start
+              yours today!
             </p>
           </motion.div>
 
@@ -440,7 +444,8 @@ export default function Index() {
               Start Your Growth Journey
             </motion.h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Experience a smarter way to track your day-to-day growth. Start building the habits that matter most.
+              Experience a smarter way to track your day-to-day growth. Start
+              building the habits that matter most.
             </p>
           </div>
 
