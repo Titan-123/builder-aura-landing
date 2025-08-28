@@ -421,11 +421,10 @@ export default function Index() {
                 ease: "easeInOut",
               }}
             >
-              Your Dreams Are Waiting
+              Start Your Daily Tracking
             </motion.h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Every champion started with a single step. Make today the day you
-              begin your extraordinary journey.
+              Begin building consistent daily habits today. Track your goals, build streaks, and watch your progress unfold.
             </p>
           </div>
 
