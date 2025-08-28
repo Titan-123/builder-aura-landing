@@ -285,10 +285,10 @@ Transform your daily habits into measurable growth. Track goals, visualize progr
           className="text-center space-y-4 mb-16"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            Your Daily Tracking Toolkit
+            Smart Tools for Daily Growth
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Everything you need to track daily goals, build powerful streaks, and analyze your progress over time.
+            Intelligent features designed to help you track, measure, and accelerate your day-to-day growth.
           </p>
         </motion.div>
 
@@ -421,10 +421,10 @@ Transform your daily habits into measurable growth. Track goals, visualize progr
                 ease: "easeInOut",
               }}
             >
-              Start Your Daily Tracking
+              Start Your Growth Journey
             </motion.h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Begin building consistent daily habits today. Track your goals, build streaks, and watch your progress unfold.
+              Experience a smarter way to track your day-to-day growth. Start building the habits that matter most.
             </p>
           </div>
 
