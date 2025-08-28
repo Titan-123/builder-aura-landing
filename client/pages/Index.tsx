@@ -285,11 +285,10 @@ export default function Index() {
           className="text-center space-y-4 mb-16"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            Your Success Toolkit
+            Your Daily Tracking Toolkit
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Everything you need to conquer your goals and unlock your true
-            potential.
+            Everything you need to track daily goals, build powerful streaks, and analyze your progress over time.
           </p>
         </motion.div>
 
