@@ -29,51 +29,51 @@ export default function Index() {
   const features = [
     {
       icon: Target,
-      title: "Smart Goal Setting",
+      title: "Daily Goal Tracking",
       description:
-        "Transform your dreams into achievable milestones with our intelligent goal tracking system.",
+        "Set and track your daily goals with precision. Mark completions and watch your consistency grow.",
       color: "from-green-500 to-green-600",
-      motivational: "Turn dreams into reality!",
+      motivational: "Every day counts!",
     },
     {
       icon: Calendar,
-      title: "Visual Progress",
+      title: "Calendar View & Streaks",
       description:
-        "Watch your success unfold day by day with beautiful calendar views and streak tracking.",
+        "Visualize your progress with our intuitive calendar interface. Build powerful streaks and never break the chain.",
       color: "from-emerald-500 to-emerald-600",
-      motivational: "See your growth!",
+      motivational: "Build unstoppable streaks!",
     },
     {
       icon: BarChart3,
-      title: "Powerful Analytics",
+      title: "Progress Analytics",
       description:
-        "Discover insights that fuel your motivation and guide your journey to greatness.",
+        "Get detailed insights into your daily habits, completion rates, and performance trends over time.",
       color: "from-teal-500 to-teal-600",
-      motivational: "Data-driven success!",
+      motivational: "Data-driven progress!",
     },
     {
       icon: CheckCircle2,
-      title: "Achievement Tracking",
+      title: "Daily Check-ins",
       description:
-        "Celebrate every victory and build unstoppable momentum with our completion system.",
+        "Simple daily check-ins to mark your goals complete. Build the habit of consistent daily action.",
       color: "from-green-500 to-emerald-500",
-      motivational: "Celebrate every win!",
+      motivational: "Consistency is key!",
     },
     {
-      icon: Zap,
-      title: "Motivational Engine",
+      icon: Flame,
+      title: "Streak Tracking",
       description:
-        "Stay inspired with dynamic quotes, celebrations, and motivational feedback.",
+        "Watch your streak counters climb as you maintain daily consistency. Never lose momentum again.",
       color: "from-emerald-500 to-teal-500",
-      motivational: "Stay inspired daily!",
+      motivational: "Keep the fire burning!",
     },
     {
       icon: Trophy,
-      title: "Achievement System",
+      title: "Achievement Milestones",
       description:
-        "Unlock badges and rewards as you conquer your goals and reach new heights.",
+        "Celebrate streak milestones and goal achievements. Unlock badges for daily consistency.",
       color: "from-teal-500 to-green-500",
-      motivational: "Become a champion!",
+      motivational: "Earn your victories!",
     },
   ];
 
