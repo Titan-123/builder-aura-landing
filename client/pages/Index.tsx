@@ -79,22 +79,22 @@ export default function Index() {
 
   const stats = [
     {
-      value: "💪",
-      label: "Unlimited Potential",
-      icon: Star,
-      description: "No limits on your dreams",
+      value: "📅",
+      label: "Daily Tracking",
+      icon: Calendar,
+      description: "Track goals every single day",
     },
     {
-      value: "🎯",
-      label: "Goal Mastery",
-      icon: Target,
-      description: "Track everything that matters",
+      value: "🔥",
+      label: "Streak Building",
+      icon: Flame,
+      description: "Build unstoppable daily habits",
     },
     {
-      value: "🚀",
-      label: "Success Analytics",
+      value: "📊",
+      label: "Progress Analytics",
       icon: BarChart3,
-      description: "Insights that inspire growth",
+      description: "Analyze your daily performance",
     },
   ];
 
