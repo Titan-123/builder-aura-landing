@@ -357,10 +357,10 @@ Transform your daily habits into measurable growth. Track goals, visualize progr
             className="text-center mb-12"
           >
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Join the Success Revolution
+              Join the Growth Movement
             </h2>
             <p className="text-lg opacity-90">
-              Thousands are already transforming their lives. Your turn!
+              Thousands are already tracking their day-to-day growth. Start yours today!
             </p>
           </motion.div>
 
