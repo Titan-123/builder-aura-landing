@@ -208,11 +208,11 @@ export default function Index() {
               >
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent bg-300% animate-gradient">
-                    Transform Your Dreams
+                    TrackRise
                   </span>
                   <br />
                   <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    Into Reality
+                    Daily Goal Mastery
                   </span>
                 </h1>
               </motion.div>
@@ -223,8 +223,7 @@ export default function Index() {
                 transition={{ delay: 0.5 }}
                 className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed"
               >
-                Unleash your potential with our revolutionary goal tracking
-                system.
+                Track daily goals, build unstoppable streaks, and analyze your progress with our powerful calendar-based tracking system.
                 <span className="font-semibold text-green-600 dark:text-green-400">
                   {
                     motivationalMessages[
